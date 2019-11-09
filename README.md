@@ -1,5 +1,7 @@
 # Form builder
 
+本次实验的目的是希望测试Mongodb和MySQL在表单应用场景的性能比较。
+
 ## 实验环境
 
 28核 XEON (超线程) + 64 GB 400GB SSD
