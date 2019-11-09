@@ -6,10 +6,12 @@
 
 ## 应用
 
-使用的库
+## 使用的库
 
 - Flask webframework
 - Gunicorn
+
+## 接口
 
 - POST /form/mysql
 - POST /form/mongodb
@@ -22,18 +24,11 @@
 
 ## 压力测试脚本
 
-压力测试脚本使用 Click库开发，并发使用Gevent的coroutine。支持Jinjia模版。
+### 使用的库
 
 - [Jinja](https://jinja.palletsprojects.com)
 - [Gevent](http://www.gevent.org/intro.html)
 - [Click](https://click.palletsprojects.com/en/7.x/)
-
-```
-def sequence(step):
-    """ 每多少次请求步进一
-    """
-    pass
-```
 
 ```shell
 $ load -c 100 -t 100 -n 100 http://127.0.0.1/form/mysql -d {form_id: 1, user_id: {%sequqnce(10)%}}
@@ -82,15 +77,21 @@ Percentage of the requests served within a certain time (ms)
  100%    133 (longest request)
 ```
 
-## 测试结果数据表格
+```
+def sequence(step):
+    """ 每多少次请求步进一
+    """
+    pass
+```
 
-最后生成的日志表格保存为csv格式。字段如下
+## 实验结果
 
-- timestamp
-- url
-- post data
-- response time
+请求日志保存为csv表格。
 
-## 测试结果数据图表
+- Unix timestamp 保留小数点后两位
+- URL 
+- Response time 单次请求响应时间
 
-使用趋势图暂时时间趋势下的响应平均值。使用excel生成。
+### 图表
+
+使用Excel制作趋势图按时间显示响应平均值。
