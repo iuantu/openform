@@ -67,13 +67,10 @@ def get_database():
 def submit():
     form_values = request.json
     form = mongo.db.forms.find_one({"id": 1})
-    
 
     for field in form['fields']:
-        print(field['name'])
-        
         try:
-            if field['required'] and not getattr(form_values, field['name']):
+            if field['required'] and not form_values.get(field['name'], None):
                 raise Exception("%s missing." % field['name'])
         except AttributeError:
             raise Exception("%s invalid" % field['name'])
