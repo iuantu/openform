@@ -1,6 +1,8 @@
 import pdb
 import json
+import pymongo
 import datetime
+from flask_pymongo import PyMongo
 from bson.json_util import dumps
 from flask import Flask, escape, request, jsonify, make_response
 
@@ -65,6 +67,14 @@ def get_database():
 def submit():
     form_values = request.json
     form = mongo.db.forms.find_one({"id": 1})
+
+    for field in form['fields']:
+        try:
+            if field['required'] and not form_values.get(field['name'], None):
+                raise Exception("%s missing." % field['name'])
+        except AttributeError:
+            raise Exception("%s invalid" % field['name'])
+    
     row = mongo.db.rows.insert_one(form_values)
     inserted_id = row.inserted_id
     form_values["_id"] = str(inserted_id)
