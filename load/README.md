@@ -33,11 +33,15 @@ Content-Type: application/json
     "form_id": 1,
     "user_id": 1,
     "values": {
-        1: "CJ",
-        2: "cj@iuantu.com",
-        3: "Python 工程师",
-        4: "元图（上海）网络科技有限公司"
-        6: "简介： 不知道该说什么。"
+        "name": "CJ",
+        "email": "cj@iuantu.com",
+        "title": "Python 工程师",
+        "company": "元图（上海）网络科技有限公司",
+        "bio": "简介： 不知道该说什么。"
     }
 }
+```
+
+```
+curl http://127.0.0.1:5000/form/mysql -H "Content-Type: application/json" -X POST -d '{"form_id": 1, "user_id": 1, "values": {"name": "CJ", "email": "cj@iuantu.com", "title": "Python \\u5de5\\u7a0b\\u5e08", "company": "\\u5143\\u56fe\\uff08\\u4e0a\\u6d77\\uff09\\u7f51\\u7edc\\u79d1\\u6280\\u6709\\u9650\\u516c\\u53f8", "bio": "\\u7b80\\u4ecb\\uff1a \\u4e0d\\u77e5\\u9053\\u8be5\\u8bf4\\u4ec0\\u4e48\\u3002"}}'
 ```
