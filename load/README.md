@@ -14,7 +14,7 @@ $ venv/bin/pip3 install -r requirements.txt
 并发测试时提高 `-w`的值，按并发数调整。
 
 ```shell
-$ venv/bin/gunicorn --bind 0.0.0.0:5000 openbuilder:app -w 10
+$ venv/bin/gunicorn --bind 0.0.0.0:5000 app:app -w 10
 ```
 
 4. 调试模式

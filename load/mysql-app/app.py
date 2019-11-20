@@ -10,6 +10,7 @@ db = mysql.connector.connect(
   host="127.0.0.1",
   user="root",
   passwd="123456",
+  database="formbuilder",
   auth_plugin='mysql_native_password',
 )
 
@@ -58,10 +59,10 @@ def setup():
     ;""")
     db.commit()
 
-try:
-    setup()
-except Exception as e:
-    print(e)
+# try:
+#     setup()
+# except Exception as e:
+#     print(e)
 
 @app.route('/form/mysql', methods=['POST'])
 def submit():
