@@ -1,20 +1,38 @@
+import os
 import pdb
+import sys
 import json
+import click
 import datetime
 import mysql.connector
 from flask import Flask, escape, request, jsonify, make_response
+from mysql.connector.errors import ProgrammingError
 
 app = Flask(__name__)
 
-db = mysql.connector.connect(
-  host="127.0.0.1",
-  user="root",
-  passwd="123456",
-  database="formbuilder",
-  auth_plugin='mysql_native_password',
+database_connect_configuration = dict(
+    host=os.getenv('MYSQL_HOST', '127.0.0.1'),
+    user=os.getenv('MYSQL_USER', 'root'),
+    passwd=os.getenv('MYSQL_PASSWORD', ''),
+    database=os.getenv('MYSQL_DATABASE', 'formbuilder'),
+    auth_plugin='mysql_native_password',
 )
 
+try:
+    db = mysql.connector.connect(**database_connect_configuration)
+except ProgrammingError:
+    print('database don\'t exists')
+    # sys.exit(1)
+
+# print(os.getenv('MYSQL_PASSWORD'))
+
+@app.cli.command()
 def setup():
+
+    config = database_connect_configuration.copy()
+    del config['database']
+    db = mysql.connector.connect(**config)
+
     cursor = db.cursor()
     cursor.execute("DROP DATABASE IF EXISTS formbuilder")
     cursor.execute("CREATE DATABASE IF NOT EXISTS formbuilder")
@@ -58,11 +76,6 @@ def setup():
     (1, "bio", 1000, false)
     ;""")
     db.commit()
-
-# try:
-#     setup()
-# except Exception as e:
-#     print(e)
 
 @app.route('/form/mysql', methods=['POST'])
 def submit():
