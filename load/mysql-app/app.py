@@ -86,8 +86,21 @@ def submit():
 
     cursor.execute("SELECT * FROM fields WHERE form_id=1")
     fields = cursor.fetchall()
+
+    user_id = form_values['user_id']
+    form_id = form_values['form_id']
+
+    del form_values['user_id']
+    del form_values['form_id']
+
+    parameters = {
+        'user_id': user_id,
+        'form_id': form_id,
+        'values': json.dumps(form_values),
+    }
     
-    statement = """INSERT INTO `rows` (form_id, user_id, `values`) VALUES (1, 1, '%s');""" % json.dumps(form_values)
+    statement = "INSERT INTO `rows` (form_id, user_id, `values`) VALUES (%(form_id)d, %(user_id)d, '%(values)s');" % parameters
+    
     cursor.execute(statement)
     db.commit()
 
