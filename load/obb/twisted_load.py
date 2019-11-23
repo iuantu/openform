@@ -1,6 +1,7 @@
 # from twisted.internet import epollreactor
 # epollreactor.install()
 
+import core
 import sys
 import json
 import time
@@ -95,10 +96,12 @@ class RequestContext:
     body_readed_at = None
     state = STATE_REQUEST
     data = None
+    behaviour = None
 
     def __init__(self, index, context):
         self.index = index
         self.context = context
+        self.behaviour = context.behaviour_class(index)
 
     def succeed(self):
         self.context.done += 1
@@ -160,9 +163,9 @@ def request(request_context):
     if request_context.data:
         byte = BytesProducer(request_context.data)
 
-    setting = request_context.context.setting
-    if hasattr(setting, 'data'):
-        data = setting.data()
+    behaviour = request_context.behaviour
+    if hasattr(behaviour, 'data'):
+        data = behaviour.data()
 
         if isinstance(data, dict):
             data = json.dumps(data)
@@ -170,16 +173,16 @@ def request(request_context):
         byte = BytesProducer(data)
 
     method = 'GET'
-    if hasattr(setting, 'method'):
-        method = setting.method()
+    if hasattr(behaviour, 'method'):
+        method = behaviour.method()
     
     headers = {'User-Agent': ['Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0']}
-    if hasattr(setting, 'headers'):
-        headers.update(setting.headers())
+    if hasattr(behaviour, 'headers'):
+        headers.update(behaviour.headers())
 
     d = agent.request(
         str.encode(method),
-        b'http://127.0.0.1:5000/form/mysql',
+        b'http://127.0.0.1:5001/form/mysql',
         Headers(headers),
         byte)
 
@@ -222,7 +225,7 @@ def bench(url=None, concurrency=1, file=None, requests=1, timelimit=0, header={}
         logging.basicConfig(level=logging.DEBUG)
     else:
         logging.basicConfig(level=logging.INFO)
-    setting = __import__("submit")
+    behaviour_module = __import__("submit")
 
     context = Context()
     context.startup_at = time.time()
@@ -231,7 +234,7 @@ def bench(url=None, concurrency=1, file=None, requests=1, timelimit=0, header={}
     context.url = url
     context.data = data
     context.launch_total = (context.requests / context.concurrency)
-    context.setting = setting
+    context.behaviour_class = behaviour_module.HttpRequestBehaviour
     context.csv = csv
 
     context.request_contexts = [RequestContext(i, context) for i in range(context.requests)]
