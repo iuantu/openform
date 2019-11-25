@@ -5,10 +5,17 @@ import json
 import click
 import datetime
 import mysql.connector
+from mysql.connector import pooling
 from flask import Flask, escape, request, jsonify, make_response
 from mysql.connector.errors import ProgrammingError
+from flask_dotenv import DotEnv
+
+pooling.CNX_POOL_MAXSIZE = 100
+POOL_SIZE=32
 
 app = Flask(__name__)
+env = DotEnv()
+env.init_app(app, verbose_mode=True)
 
 database_connect_configuration = dict(
     host=os.getenv('MYSQL_HOST', '127.0.0.1'),
@@ -18,8 +25,13 @@ database_connect_configuration = dict(
     auth_plugin='mysql_native_password',
 )
 
+print(database_connect_configuration)
+
 try:
-    db = mysql.connector.connect(**database_connect_configuration)
+    config = database_connect_configuration.copy()
+    config.update(pool_size=POOL_SIZE)
+    pool = mysql.connector.pooling.MySQLConnectionPool(**config)
+
 except ProgrammingError:
     print('database don\'t exists')
     # sys.exit(1)
@@ -79,8 +91,10 @@ def setup():
 
 @app.route('/form/mysql', methods=['POST'])
 def submit():
+    conn = pool.get_connection()
+
     form_values = request.json
-    cursor = db.cursor(dictionary=True)
+    cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM forms WHERE id=2")
     form = cursor.fetchone()
 
@@ -102,17 +116,26 @@ def submit():
     statement = "INSERT INTO `rows` (form_id, user_id, `values`) VALUES (%(form_id)d, %(user_id)d, '%(values)s');" % parameters
     
     cursor.execute(statement)
-    db.commit()
+    conn.commit()
+
+    cursor.close()
+    conn.close()
 
     form_values["id"] = cursor.lastrowid
     return form_values
 
 @app.route('/form/mysql/<id>/rows', methods=['GET'])
 def fetch(id):
+    conn = pool.get_connection()
+
     user_id = request.args.get("user_id", 1)
     page = request.args.get("page", 1)
-    cursor = db.cursor(dictionary=True)
+    cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM `rows` WHERE user_id = %d LIMIT 100 OFFSET %d" % (user_id, (page - 1) * 100))
     response = make_response(json.dumps(cursor.fetchall()), 200)
     response.headers['Content-Type'] = 'application/json'
+
+    cursor.close()
+    conn.close()
+
     return response
