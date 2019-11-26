@@ -1,11 +1,13 @@
 # from twisted.internet import epollreactor
 # epollreactor.install()
-
+from io import IOBase
 import core
 import sys
 import json
 import time
+import math
 import click
+import threading
 import logging
 import urllib
 from datetime import datetime
@@ -18,6 +20,135 @@ from zope.interface import implementer
 
 from twisted.internet.defer import succeed
 from twisted.web.iweb import IBodyProducer
+
+from typing import List
+
+STATE_REQUEST = 0
+STATE_REQUESTED = 1
+STATE_RESPONSE = 2
+STATE_SUCCEEDED = 3
+STATE_FAILDED = 4
+
+class RequestContext:
+    
+    index = 0
+    connected_at = None
+    requested_at = None
+    body_readed_at = None
+    state = STATE_REQUEST
+    data = None
+    behaviour = None
+
+    def __init__(self, index, context):
+        self.index = index
+        self.context = context
+        if context:
+            self.behaviour = context.behaviour_class(index)
+
+    def succeed(self):
+        self.context.done += 1
+        self.context.succeeded += 1
+        self.state = STATE_SUCCEEDED
+
+        self.is_done()
+
+    def is_done(self):
+        if self.context.done == self.context.requests:
+            reactor.stop()
+            load_done(self.context)
+
+    def fail(self):
+        self.context.done += 1
+        self.context.failed += 1
+        self.state = STATE_FAILDED
+
+        self.is_done()
+
+class RequestContextList:
+
+    size: int = 0
+    sequence: int = 0
+    request_contexts: List[RequestContext] = []
+
+    def __init__(self, size: int):
+        self.size = size
+
+    def alloc(self) -> RequestContext:
+        rc = RequestContext(sequence, None)
+        self.sequence += 1
+        return rc
+
+    def push(self, request_context: RequestContext):
+        self.request_contexts.append(request_context)
+
+    def pop(self, timeout=1.0) -> RequestContext:
+        while True:
+            if len(self.request_contexts) == 0:
+                time.sleep(1)
+                continue
+            
+            out = self.request_contexts[0]
+            del self.request_contexts[0]
+
+            return out
+
+    def is_full(self) -> bool:
+        return self.size == self.sequence + 1
+
+
+class CSVReporter(threading.Thread):
+    """
+    >>> import io
+    >>> rcs = RequestContextList(1)
+    >>> rc = RequestContext(0, None)
+    >>> rc.body_readed_at = datetime.now()
+    >>> rc.connected_at = datetime.now()
+    >>> rc.responsed_at = datetime.now()
+    >>> rcs.push(rc)
+    >>> output = io.StringIO()
+    >>> reporter = CSVReporter(rcs, output)
+    >>> reporter.quiting = True
+    >>> reporter.run()
+    >>> len(output.getvalue()) > 0
+    True
+    """
+
+    quiting: bool = False
+    request_context_list: List[RequestContext]
+    output: IOBase = None
+
+    def __init__(self, request_context_list: List[RequestContext], output):
+        super().__init__()
+        self.request_context_list = request_context_list
+        self.output = output
+
+    def run(self):
+        while True:
+            rc = self.request_context_list.pop()
+            logging.debug('test')
+
+            try:
+                resposne_datetime = rc.body_readed_at - rc.connected_at
+                output = "%s,%s,%s,%s,%s\n" % (datetime_split(rc.responsed_at) \
+                    + datetime_split(rc.body_readed_at) +
+                    (resposne_datetime.seconds + resposne_datetime.microseconds / 1000 / 1000,)
+                    )
+            except Exception as e:
+                raise e
+                continue
+            
+            self.output.write(output)
+            self.output.flush()
+
+            if self.quiting:
+                break
+
+    def quit(self):
+        self.quiting = True
+
+class ApplicationLifecycle:
+    def quit(self):
+        pass
 
 @implementer(IBodyProducer)
 class BytesProducer(object):
@@ -39,12 +170,6 @@ done = 0
 launched = 0
 request_index = 0
 
-STATE_REQUEST = 0
-STATE_REQUESTED = 1
-STATE_RESPONSE = 2
-STATE_SUCCEEDED = 3
-STATE_FAILDED = 4
-
 def datetime_split(dt):
     responsed_at_date = dt.strftime("%Y-%m-%d")
     responsed_at_time = "%s.%d" % (dt.time().strftime("%H:%M:%S"), 
@@ -53,29 +178,7 @@ def datetime_split(dt):
     return (responsed_at_date, responsed_at_time)
 
 def load_done(context):
-    if not context.csv:
-        return
-
-    header = ("responsed_at_date,responsed_at_time,body_readed_at_date,body_readed_at_time," \
-        + "response_time\n")
-    fd = open(context.csv, 'w')
-    fd.write(header)
-    fd.flush()
-
-    for request_context in context.request_contexts:
-        
-
-        try:
-            resposne_datetime = request_context.body_readed_at - request_context.connected_at
-            output = "%s,%s,%s,%s,%s\n" % (datetime_split(request_context.responsed_at) \
-                + datetime_split(request_context.body_readed_at) +
-                (resposne_datetime.seconds + resposne_datetime.microseconds / 1000 / 1000,)
-                )
-        except:
-            continue
-        
-        fd.write(output)
-        fd.flush()
+    pass
 
 class Context:
     requests = 1
@@ -88,39 +191,6 @@ class Context:
     failed = 0
     startup_at = 0
 
-class RequestContext:
-    
-    index = 0
-    connected_at = None
-    requested_at = None
-    body_readed_at = None
-    state = STATE_REQUEST
-    data = None
-    behaviour = None
-
-    def __init__(self, index, context):
-        self.index = index
-        self.context = context
-        self.behaviour = context.behaviour_class(index)
-
-    def succeed(self):
-        self.context.done += 1
-        self.context.succeeded += 1
-        self.state = STATE_SUCCEEDED
-
-        self.is_done()
-
-    def is_done(self):
-        if self.context.done == self.context.requests:
-            reactor.stop()
-            load_done(self.context)
-
-    def fail(self):
-        self.context.done += 1
-        self.context.failed += 1
-        self.state = STATE_FAILDED
-
-        self.is_done()
 
 agent = Agent(reactor)
 
@@ -192,16 +262,60 @@ def request(request_context):
         errbackArgs=[request_context]
     )
 
+
+class HttpRequest:
+    def do(self, rc: RequestContext):
+        pass
+
+class MotherShip:
+    launched: int = 0
+    total: int = 0
+    concurrency: int = 0
+
+    def __init__(self, concurrency: int, requests: int):
+        self.concurrency = concurrency
+        self.total = math.ceil(requests / concurrency)
+
+    def fly(self):
+        pass
+
+    def launch(self):
+        """
+        >>> ms = MotherShip(10, 10)
+        >>> reactor.run()
+        """
+        
+        self.launched += 1
+        start = time.time()
+        for i in range(self.concurrency):
+            reactor.callLater(1 / self.concurrency, self.fly, *[self.request_context_list.alloc()])
+        end = time.time()
+        next_schedule = (end - start)
+
+        if self.launched < self.total:
+            reactor.callLater(next_schedule, self.launch)
+
+
+class ReactorTest:
+    def test(self):
+        """
+        >>> def stop():
+        ...     reactor.stop()
+        >>> deplayed_call = reactor.callLater(0.1, stop)
+        >>> reactor.run()
+        >>> True
+        True
+        """
+        pass
+
 def launch(context):
     context.launched += 1
     start = time.time()
     
     for i in range(context.concurrency):
-        request_context = context.request_contexts[context.request_index]
-        context.request_index += 1
-        reactor.callLater((1 / context.concurrency) * i, request, *[request_context])
+        reactor.callLater((1 / context.concurrency) * i, request, *[context.request_context_list.alloc()])
     end = time.time()
-    next_schedule = 1# - (end - start)
+    next_schedule = (end - start)
     if context.launched < context.launch_total:
         reactor.callLater(next_schedule, launch, *[context])
 
@@ -236,18 +350,13 @@ def bench(url=None, concurrency=1, file=None, requests=1, timelimit=0, header={}
     context.launch_total = (context.requests / context.concurrency)
     context.behaviour_class = behaviour_module.HttpRequestBehaviour
     context.csv = csv
+    context.request_context_list = RequestContextList(context.requests)
 
-    context.request_contexts = [RequestContext(i, context) for i in range(context.requests)]
     launch(context)
 
     loop = task.LoopingCall(monitor, *[context])
 
-    # Start looping every 1 second.
     loopDeferred = loop.start(1.0)
-
-    # Add callbacks for stop and failure.
-    # loopDeferred.addCallback(lambda x: print(x))
-    # loopDeferred.addErrback(lambda x: print(x))
 
     reactor.run()
 
