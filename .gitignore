@@ -1,1 +1,12 @@
-venv/
+*.pyc
+app.db
+./tmp
+./build/*
+.idea
+env
+venv
+*.sublime*
+**/__pycache__
+*.csv
+*.xlsx
+.env
