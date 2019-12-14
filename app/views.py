@@ -51,7 +51,7 @@ db.create_all()
 class OpenForm(BaseApi):
     # base_route = '/openform/v1'
 
-    @expose('/forms', methods=['POST'])
+    @expose('/forms/', methods=['POST'])
     def create(self):
         """create a form
         ---
