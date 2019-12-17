@@ -10,3 +10,4 @@ venv
 *.csv
 *.xlsx
 .env
+.vscode
