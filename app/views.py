@@ -32,6 +32,7 @@ from . import appbuilder, db
     )
 """
 
+
 """
     Application wide 404 error handler
 """
@@ -47,4 +48,4 @@ def page_not_found(e):
     )
 
 
-db.create_all()
+# db.create_all()
