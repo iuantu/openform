@@ -7,6 +7,7 @@ from app.models import (
 )
 from . import OpenFormTestCase
 
+
 class FormModelTest(OpenFormTestCase):
 
     def test_create_form(self):

@@ -1,6 +1,7 @@
 from flask_appbuilder.api import BaseApi, expose
 from . import appbuilder
 
+
 class UserApi(BaseApi):
     resource_name = 'user'
 
@@ -39,5 +40,6 @@ class UserApi(BaseApi):
                       type: string
         """
         pass
+
 
 appbuilder.add_api(UserApi)

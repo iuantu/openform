@@ -38,6 +38,7 @@ except ProgrammingError:
 
 # print(os.getenv('MYSQL_PASSWORD'))
 
+
 @app.cli.command()
 def setup():
 
@@ -123,6 +124,7 @@ def submit():
 
     form_values["id"] = cursor.lastrowid
     return form_values
+
 
 @app.route('/form/mysql/<id>/rows', methods=['GET'])
 def fetch(id):
