@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class AbstractHttpRequestBehaviour(ABC):
 
     def __init__(self, index):

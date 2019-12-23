@@ -3,11 +3,14 @@ from typing import Dict, Tuple, Sequence, TypeVar, Generic
 
 E = TypeVar('E')
 
+
 class Element:
     children : Tuple[E]
 
+
 class Section(Element):
     title : str
+
 
 class HtmlInput:
     label : str = None
@@ -31,18 +34,22 @@ class HtmlInput:
             'type': self.type
         }
 
+
 class TitleHtmlInput(HtmlInput):
     name : str = 'title'
     label : str = '标题'
     value : str = '未命名'
 
+
 class DefaultValueHtmlInput(HtmlInput):
     label : str = '默认值'
+
 
 class RequiredHtmlInput(HtmlInput):
     type : str = 'checkbox'
     label : str = '必填项'
     description : str = '将所有字段设为 <a href="">必须填</a> 或 非必须填'
+
 
 class FormFieldTemplate:
     name : str = None
@@ -55,6 +62,7 @@ class FormFieldTemplate:
             'attributes': [x.to_dict() for x in self.attributes],
             'validators': [x.to_dict() for x in self.attributes],
         }
+
 
 class FormInputFieldTemplate(FormFieldTemplate):
 

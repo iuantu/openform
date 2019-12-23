@@ -7,6 +7,8 @@ from flask_appbuilder.security.manager import (
     AUTH_OAUTH,
 )
 
+FAB_API_SWAGGER_UI = True
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Your App secret key

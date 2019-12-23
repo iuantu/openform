@@ -22,7 +22,6 @@ SCHEMAS = {
         }
     },
     "Field": {
-
         "type": "object",
         "discriminator": {
             "propertyName": "discriminator",

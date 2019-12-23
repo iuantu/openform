@@ -29,6 +29,7 @@ STATE_RESPONSE = 2
 STATE_SUCCEEDED = 3
 STATE_FAILDED = 4
 
+
 class RequestContext:
     
     index = 0
@@ -63,6 +64,7 @@ class RequestContext:
         self.state = STATE_FAILDED
 
         self.is_done()
+
 
 class RequestContextList:
 
@@ -146,9 +148,11 @@ class CSVReporter(threading.Thread):
     def quit(self):
         self.quiting = True
 
+
 class ApplicationLifecycle:
     def quit(self):
         pass
+
 
 @implementer(IBodyProducer)
 class BytesProducer(object):
@@ -170,6 +174,7 @@ done = 0
 launched = 0
 request_index = 0
 
+
 def datetime_split(dt):
     responsed_at_date = dt.strftime("%Y-%m-%d")
     responsed_at_time = "%s.%d" % (dt.time().strftime("%H:%M:%S"), 
@@ -177,8 +182,10 @@ def datetime_split(dt):
 
     return (responsed_at_date, responsed_at_time)
 
+
 def load_done(context):
     pass
+
 
 class Context:
     requests = 1
@@ -193,6 +200,7 @@ class Context:
 
 
 agent = Agent(reactor)
+
 
 class ReadBodyProtocol(Protocol):
     request_context = None
@@ -211,13 +219,16 @@ class ReadBodyProtocol(Protocol):
         self.request_context.succeed()
         self.defer.callback(None)
 
+
 def callbackCancel():
     print("cancel")
+
 
 def callbackRequestError(err, request_context):
     logging.debug(err)
     request_context.fail()
     pass
+
 
 def callbackResponseSuccess(response, request_context):
     request_context.responsed_at = datetime.now()
@@ -225,6 +236,7 @@ def callbackResponseSuccess(response, request_context):
     response.deliverBody(ReadBodyProtocol(request_context, d))
 
     return d
+
 
 def request(request_context):
     request_context.connected_at = datetime.now()
@@ -267,6 +279,7 @@ class HttpRequest:
     def do(self, rc: RequestContext):
         pass
 
+
 class MotherShip:
     launched: int = 0
     total: int = 0
@@ -307,6 +320,7 @@ class ReactorTest:
         True
         """
         pass
+
 
 def launch(context):
     context.launched += 1
