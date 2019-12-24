@@ -11,7 +11,7 @@ from mysql.connector.errors import ProgrammingError
 from flask_dotenv import DotEnv
 
 pooling.CNX_POOL_MAXSIZE = 100
-POOL_SIZE=32
+POOL_SIZE = 32
 
 app = Flask(__name__)
 env = DotEnv()
@@ -20,7 +20,7 @@ env.init_app(app, verbose_mode=True)
 database_connect_configuration = dict(
     host=os.getenv('MYSQL_HOST', '127.0.0.1'),
     user=os.getenv('MYSQL_USER', 'root'),
-    passwd=os.getenv('MYSQL_PASSWORD', ''),
+    passwd=os.getenv('MYSQL_PASSWORD', 'root'),
     database=os.getenv('MYSQL_DATABASE', 'formbuilder'),
     auth_plugin='mysql_native_password',
 )
@@ -35,14 +35,17 @@ try:
 except ProgrammingError:
     print('database don\'t exists')
     # sys.exit(1)
+else:
+    assert pool is not None
+
 
 # print(os.getenv('MYSQL_PASSWORD'))
 
 @app.cli.command()
 def setup():
-
     config = database_connect_configuration.copy()
-    del config['database']
+    if config.get('database'):
+        del config['database']
     db = mysql.connector.connect(**config)
 
     cursor = db.cursor()
@@ -89,6 +92,7 @@ def setup():
     ;""")
     db.commit()
 
+
 @app.route('/form/mysql', methods=['POST'])
 def submit():
     conn = pool.get_connection()
@@ -112,9 +116,9 @@ def submit():
         'form_id': form_id,
         'values': json.dumps(form_values),
     }
-    
+
     statement = "INSERT INTO `rows` (form_id, user_id, `values`) VALUES (%(form_id)d, %(user_id)d, '%(values)s');" % parameters
-    
+
     cursor.execute(statement)
     conn.commit()
 
@@ -123,6 +127,7 @@ def submit():
 
     form_values["id"] = cursor.lastrowid
     return form_values
+
 
 @app.route('/form/mysql/<id>/rows', methods=['GET'])
 def fetch(id):
