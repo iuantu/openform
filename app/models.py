@@ -2,6 +2,7 @@ from flask_appbuilder import Model
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 
+
 class Form(Model):
     id = Column(Integer, primary_key=True)
     fields = relationship('Field')
@@ -11,22 +12,38 @@ class Form(Model):
             self.fields.append(field)
     # attributes = None
 
+
 class Field(Model):
     __tablename__ = 'field'
 
     id = Column(Integer, primary_key=True)
     form_id = Column(Integer, ForeignKey('form.id'))
-    name : str = Column(String(255))
+    name: str = Column(String(255))
     discriminator = Column(String(50))
     # validators = None
-    
+
     __mapper_args__ = {
         'polymorphic_identity': 'field',
         'polymorphic_on': discriminator
     }
 
+
+class Rows(Model):
+    __bind_key__ = 'my_sql1'
+    __tablename__ = 'rows'
+
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    form_id = Column(Integer, nullable=False, index=True)
+    user_id = Column(Integer, nullable=False, index=True)
+    values = Column(String(255), nullable=False)
+
+    def __repr__(self):
+        return self.name
+
+
 class MixinMultiple:
     multiple = Column(Boolean, default=False)
+
 
 class TextField(Field, MixinMultiple):
     __tablename__ = 'text_field'
@@ -36,8 +53,9 @@ class TextField(Field, MixinMultiple):
     default = Column(String(1000), nullable=True)
 
     __mapper_args__ = {
-        'polymorphic_identity':'text_field',
+        'polymorphic_identity': 'text_field',
     }
+
 
 class Option(Model):
     id = Column(Integer, primary_key=True)
@@ -45,7 +63,7 @@ class Option(Model):
     label = Column(String(100), nullable=False)
     value = Column(Integer, nullable=False)
 
-    def __init__(self, label : str, value: int):
+    def __init__(self, label: str, value: int):
         self.label = label
         self.value = value
         super().__init__()
@@ -63,5 +81,5 @@ class SelectField(Field, MixinMultiple):
         super().__init__()
 
     __mapper_args__ = {
-        'polymorphic_identity':'select_field',
+        'polymorphic_identity': 'select_field',
     }
