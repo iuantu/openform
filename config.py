@@ -18,7 +18,7 @@ SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "app.db")
 # SQLALCHEMY_DATABASE_URI = 'postgresql://root:password@localhost/myapp'
 
 # Flask-WTF flag for CSRF
-CSRF_ENABLED = True
+CSRF_ENABLED = False
 
 # ------------------------------
 # GLOBALS FOR APP Builder

@@ -5,6 +5,7 @@ from flask_appbuilder import AppBuilder
 from flask_migrate import upgrade
 from flask_migrate import Migrate
 
+import app
 import unittest
 import logging
 logging.getLogger("flask_appbuilder").setLevel(logging.ERROR)
@@ -17,7 +18,7 @@ class OpenFormTestCase(unittest.TestCase):
     
     def setUp(self):
         self.app = Flask(__name__)
-        self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
         self.app.config['CSRF_ENABLED'] = False
         self.app.config['SECRET_KEY'] = 'thisismyscretkey'
         self.app.config['WTF_CSRF_ENABLED'] = False
