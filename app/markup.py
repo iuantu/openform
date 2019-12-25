@@ -102,7 +102,7 @@ class Input(Element):
 
         super().render_attributes(output)
 
-        for attr in ["id", "value", 'name', "type"]:
+        for attr in ["id", "value", 'name', "type", "placeholder"]:
             if hasattr(self, attr):
                 self.render_attribute(attr, getattr(self, attr), output)
 

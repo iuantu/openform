@@ -28,7 +28,7 @@ class FormViewModelAssembler:
     def to_select_field_markup(self, field):
 
         options = [
-            Label(field.title, for_=str(field.id))
+            Label(field.title, for_=str(field.id), class_=["of-form-title"])
         ]
         for opt in field.options:
             logging.info("option value %d" % (opt.value))
