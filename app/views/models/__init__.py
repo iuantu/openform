@@ -21,7 +21,7 @@ class FormViewModelAssembler:
                     name=str(field.id), 
                     placeholder=field.placeholder
                 )],
-                class_=["form-group", "col-md-6"]),
+                class_=["form-group", "col-md-12"]),
             class_=["form-row"]
         )
 
@@ -53,7 +53,7 @@ class FormViewModelAssembler:
 
         return Div(
             Div(*options,
-                class_=["form-group", "col-md-6"]),
+                class_=["form-group", "col-md-12"]),
             class_=["form-row"]
         ) 
 
