@@ -20,7 +20,7 @@ class FormView(BaseView):
 
     @expose('/<form_id>', methods=['POST'])
     def submit(self, form_id):
-        # self.form_service.submit(form_id, request.form)
+        self.form_service.submit(form_id, request.form)
 
         return self.render_template(
             'openform/form_success.html'
