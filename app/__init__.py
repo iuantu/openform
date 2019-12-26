@@ -4,6 +4,8 @@ from flask import Flask
 from flask_appbuilder import AppBuilder, SQLA
 from flask_migrate import Migrate
 from flask_cors import CORS
+from dotenv import load_dotenv
+load_dotenv()
 
 """
  Logging configuration
