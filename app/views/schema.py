@@ -13,7 +13,7 @@ SCHEMAS = {
             },
         }
     },
-    "MixinMultiple": {
+    "MultipleMixin": {
         "type": "object",
         "properties": {
             "multiple": {
@@ -48,7 +48,7 @@ SCHEMAS = {
                 "$ref": "#/components/schemas/Field",
             },
             {
-                "$ref": "#/components/schemas/MixinMultiple",
+                "$ref": "#/components/schemas/MultipleMixin",
             },
             {
                 "type": "object",
@@ -86,7 +86,7 @@ SCHEMAS = {
                 "$ref": "#/components/schemas/Field",
             },
             {
-                "$ref": "#/components/schemas/MixinMultiple",
+                "$ref": "#/components/schemas/MultipleMixin",
             },
             {
                 "type": "object",

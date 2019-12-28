@@ -1,4 +1,4 @@
-from . import appbuilder
+from app import appbuilder
 from flask_appbuilder.api import BaseApi, expose
 from app.views.schema import SCHEMAS
 from app.services import FormService
@@ -28,7 +28,6 @@ class FormApi(BaseApi):
             if hasattr(f, "options"):
                 for o in f.options:
                     j = o
-                    print(j.label)
         return jsonify(form.asdict(follow={'fields': {"follow": {"options": {}}}}))
 
     @expose('/{id}/value', methods=['POST'])

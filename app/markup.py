@@ -1,12 +1,10 @@
-
-from typing import Dict, Sequence, TypeVar, Generic, List
 import logging
+from typing import Dict, Sequence, TypeVar, Generic, List
 from io import StringIO
 
 E = TypeVar('E')
 
 class Element:
-    # children : List[E] = []
     class_ = []
 
     output = StringIO()
@@ -17,10 +15,7 @@ class Element:
         if args:
             for arg in args:
                 self.children.append(arg)
-        
-        print("element init %s" % (self,))
-        print(self.children)
-        print('')
+
         for k, v in kwargs.items():
             setattr(self, k, v)
 
@@ -34,7 +29,7 @@ class Element:
 
     def render_attribute(self, name, value, output):
         value = value and value or ""
-        logging.debug("render attribute %s=%s" % (name, value))
+        # logging.debug("render attribute %s=%s" % (name, value))
         output.write(" ")
         output.write(name)
         output.write("=\"")
@@ -48,7 +43,6 @@ class Element:
             output.write("\"")
 
     def as_html(self, output=None):
-        logging.debug("%s as html" % (self.tag_name))
         output = not output and StringIO() or output
         output.write("<")
         output.write(self.tag_name)
@@ -61,7 +55,7 @@ class Element:
             if isinstance(child, Element):
                 child.as_html(output)
             else:
-                logging.debug(child)
+                # logging.debug(child)
                 if child:
                     output.write(child)
 
@@ -79,6 +73,9 @@ class Element:
 
 class Div(Element):
     class_ = []
+
+class Li(Element):
+    pass
 
 class Label(Element):
     for_ = None
@@ -98,11 +95,11 @@ class Form(Element):
     action : str = ''
 
 class Input(Element):
-    def render_attributes(self, output : StringIO):
+    def render_attributes(self, output: StringIO):
 
         super().render_attributes(output)
 
-        for attr in ["id", "value", 'name', "type", "placeholder"]:
+        for attr in ["id", "value", 'name', "type", "placeholder", "checked"]:
             if hasattr(self, attr):
                 self.render_attribute(attr, getattr(self, attr), output)
 

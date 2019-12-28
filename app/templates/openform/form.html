@@ -1,11 +1,11 @@
-
 {% extends "openform/layout.html" %}
+{% block title %}{{form.title}}{% endblock %}
 {% block body %}
 <div class="container">
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <form class="of-form" method="post">
-            {{form.as_html()|safe}}
+            {{form_view.as_html()|safe}}
             </form>
         </div>
     </div>

@@ -10,6 +10,7 @@ import unittest
 import logging
 logging.getLogger("flask_appbuilder").setLevel(logging.ERROR)
 
+
 class OpenFormTestCase(unittest.TestCase):
 
     app : Flask = None
@@ -26,6 +27,7 @@ class OpenFormTestCase(unittest.TestCase):
         self.app.config['DEBUG'] = True
         
         self.db = SQLA(self.app)
+        app.db = self.db
         Migrate(self.app, self.db)
         self.appbuilder = AppBuilder(self.app, self.db.session)
 

@@ -1,98 +1,124 @@
 import logging
 from app import models
+from flask_appbuilder import Model
+from sqlalchemy import inspect
+from app.utils import to_camel_case
+from datetime import datetime
+from sqlalchemy.orm import class_mapper
 
-# def a(self, model, dto, root=True):
-#     members = inspect.getmembers(model)
+def find_model_for_relation(define, field_name):
+    for pro in class_mapper(define).iterate_properties:
+        if pro.key == field_name:
+            return pro.entity.class_
 
-#     if not dto.id or dto.id == 0:
-#         pass
+def find_primary_key(define, field_name):
+    for pro in class_mapper(define).iterate_properties:
+        if pro.key == field_name:
+            for column in pro.entity.class_.__table__.columns:
+                if column.primary_key:
+                    return column
 
-#     # 如果是更新对象，则更新里面的数据
-#     if not root and update:
-#         for member in members:
-#             setattr(model, member, dto[member])
-#     for member in members:
-#         if isinstance(member, list):
-#             pass
-        
-#         model_collection_map = {}
-#         dto_collection_map = {}
-#         for member_model in getattr(model, member):
-#             model_collection_map[member_model.id] = member_model
+class ModelFactory:
 
-#         # when has dto and not model, insert
-#         # else update
-#         for member_dto in dto[member]:
-#             is_new = ("id" in member_dto and member_dto["id"] < 1) or not ("id" in member_dto)
-            
-#             if is_new:
-#                 ni = instance(**kw)
-#             dto_collection_map[member_dto["id"]] = member_dto
+    def clear_relation_field(self, dto):
+        """ 创建新的对象时，关系对象还未创建模型，返回无关系对象的字典
+        """
+        dto = dto.copy()
+        return dict([
+            (k, v) for k, v in dto.items() if not isinstance(v, (list, ))
+        ])
 
-#             if 
+    def remove_model(self, primary_key, model, dto, dto_field_name):
+        collection = getattr(model, dto_field_name)
 
-#         for member_dto in dto[member]:
-#             if "id" in member_dto:
-#                 if not member_dto["id"] in model_collection_map:
-#                     pass
-#         # 如果对象在模型中并不存在则是新增
-#         # 如果DTO中有，模型中没有是新增
-#         # 如果DTO中没有，模型中有则是删除。
-        
-        
+        dto_hash_map = {}
+        for i in dto[dto_field_name]:
+            if primary_key.name in i:
+                dto_hash_map[i[primary_key.name]] = i
+
+        for i in collection:
+            if not getattr(i, primary_key.name) in dto_hash_map:
+                collection.remove(i)
+
+    def process_one_to_many(self, model, primary_key, dto_field_name, \
+        relations_dto, is_update: bool=False):
+
+        relations = getattr(model, dto_field_name)
+        model_hash_map = dict([
+            (getattr(ins, primary_key.name), ins) for ins in relations
+        ])
+
+        for relation_dto in relations_dto:
+            has_primary = primary_key.name in relation_dto \
+                and relation_dto[primary_key.name] in model_hash_map
+
+            # 有存在的主键id，更新对象
+            if has_primary:
+                primary_value = relation_dto[primary_key.name]
+                update_model = model_hash_map[primary_value]
+                self.create_or_update(update_model, relation_dto, is_update)
+            else:
+            # 无主键id，创建新对象
+                obj = self.create_object(
+                    model, 
+                    self.clear_relation_field(relation_dto), 
+                    dto_field_name
+                )
+                if isinstance(relation_dto, dict):
+                    self.create_or_update(obj, relation_dto, is_update)
+                relations.append(obj)
+
+    def create_or_update(self, model: Model, dto, is_update: bool=False):
+        for dto_field_name, v in dto.items():
+            if isinstance(v, (list,)):
+                relations_dto_field = v
+                primary_key = find_primary_key(model.__class__, dto_field_name)
+
+                self.process_one_to_many(model, primary_key, dto_field_name, \
+                    relations_dto_field, is_update)
+
+                if is_update:# and isinstance(dto, dict):
+                    self.remove_model(primary_key, model, dto, dto_field_name)
+
+            elif getattr(model, dto_field_name) != v:
+                setattr(model, dto_field_name, v)
+
+        return model
+
+    def create_object(self, parent_object, dto, releation_key) -> Model:
+        cls_name = parent_object.__class__.__name__
+
+
+        if "discriminator" in dto:
+            dto = dto.copy()
+            class_name = to_camel_case(dto['discriminator'])
+            class_ = getattr(models, class_name)
+            del dto['discriminator']
+            obj = class_(**dto)
+            return obj
+
+        model = find_model_for_relation(parent_object.__class__, releation_key)
+        return model(**dto)
+    
 
 class FormAssembler:
+    model_factory = ModelFactory()
 
-    def to_model(self, dto):
-        if "id" in dto and dto["id"] > 0:
-            pass
-        else:
-            return self.create_model(dto)
+    def to_model(self, model: Model, dto, is_update: bool=False):
+        return self.model_factory.create_or_update(model, dto, is_update)
 
     def to_value(self, form, values):
         v = {}
-
+        # import pdb; pdb.set_trace()
         for field in form.fields:
             is_list = field.discriminator == "select_field" \
                 and field.type =="checkbox"
-
-            if is_list:
-                v[field.id] = [int(o) for o in values.getlist("%d[]" % field.id)]
-            else:
-                v[field.id] = field.format(values.get("%d" % field.id))
-                    
+            try:
+                if is_list:
+                    v[field.id] = [int(o) for o in values.getlist("%d[]" % field.id)]
+                else:
+                    v[field.id] = field.format(values["%d" % field.id])
+            except Exception:
+                v[field.id] = None
         value = models.Value(form_id=form.id, values=v)
         return value
-
-    def create_model(self, dto):
-        fields = self.create_field_models(dto["fields"])
-        form = models.Form(title=dto["title"], fields=fields)
-        return form
-
-    def create_field_models(self, dto_list):
-        fields = []
-        for field_dto in dto_list:
-            field_class = models.get_field_by_discriminator(field_dto["discriminator"])
-            field_dto_cloned = field_dto.copy()
-
-            if "options" in field_dto_cloned:
-                option_dto_list = field_dto_cloned["options"]
-                del field_dto_cloned["options"]
-                options = self.create_option_models(option_dto_list)
-                field_dto_cloned["options"] = options
-            field = field_class(**field_dto_cloned)
-
-            # if "options" in field_dto_cloned:
-            #     for option in options:
-            #         field.options.append(option)
-
-            fields.append(field)
-        print(fields)
-        return fields
-
-    def create_option_models(self, dto_list):
-        options = [models.Option(**option) for option in dto_list]
-        for i in range(len(options)):
-            options[i].ordering = options[i].value = i
-        
-        return options

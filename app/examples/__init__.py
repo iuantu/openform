@@ -10,15 +10,26 @@ MVP_FORM = json.loads("""{
     "fields": [
         {
             "title": "真实姓名",
+            "name": "name",
             "discriminator": "text_field",
             "multiple": false,
-            "placeholder": "请输入你的真实姓名"
+            "placeholder": "请输入你的真实姓名",
+            "constraints": [
+                {
+                    "discriminator": "required_constraint"
+                }
+            ]
         },
         {
             "title": "如果我们必须要“模仿”一个表单构建器，我们应该模仿谁？",
             "discriminator": "select_field",
             "multiple": false,
             "type": "radio",
+            "constraints": [
+                {
+                    "discriminator": "required_constraint"
+                }
+            ],
             "options": [
                 {
                     "label": "金数据"
@@ -75,6 +86,16 @@ MVP_FORM = json.loads("""{
                 {
                     "label": "Other",
                     "editable": true
+                }
+            ],
+            "constraints": [
+                {
+                    "discriminator": "required_constraint"
+                },
+                {
+                    "discriminator": "range_constraint",
+                    "min": 1,
+                    "max": 3
                 }
             ]
         }

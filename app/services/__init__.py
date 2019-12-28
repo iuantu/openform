@@ -2,24 +2,24 @@ from app import models
 from app import db
 from datetime import datetime
 from app.services.assembler import FormAssembler
+from app.utils import to_camel_case
 
-def to_camel_case(snake_str):
-    components = snake_str.split('_')
-    # We capitalize the first letter of each component except the first one
-    # with the 'title' method and join them together.
-    return ''.join(x.title() for x in components)
 
 class FormService(object):
     form_assembler = FormAssembler()
+    form_repository: models.FormRepository = None
+    field_repository: models.FieldRepository = None
 
     def __init__(self, a_db=None):
         if not a_db:
             self.db = db
         else:
             self.db = a_db
+        self.form_repository = models.FormRepository(self.db)
+        self.field_repository = models.FieldRepository(self.db)
 
-    def add_new_form(self, dto):
-        form = self.form_assembler.to_model(dto)
+    def add_new_form(self, dto) -> models.Form:
+        form = self.form_assembler.to_model(models.Form(), dto)
 
         session = self.db.session
         session.add(form)
@@ -27,11 +27,14 @@ class FormService(object):
 
         return form
 
+    def change_form(self, form_id, dto):
+        form = self.form_repository.find_one(form_id)
+        self.form_assembler.to_model(form, dto, True)
+        self.db.session.add(form)
+        self.db.session.commit()
+
     def fetch_form(self, form_id):
-        #.filter(models.Form.deleted_at != None)\
-        form = db.session.query(models.Form).filter(models.Form.id==form_id)\
-            .first()
-        return form
+        return self.form_repository.find_one(form_id)
 
     def add_new_field(self, field):
         
@@ -46,12 +49,11 @@ class FormService(object):
         return field
 
     def fetch_field(self, field_id):
-
-        return db.session.query(models.Field).filter(models.Field.id==field_id).first()
+        return self.field_repository.find_one(field_id)
 
     def change_field(self, field_id, field):
         session = db.session
-        f = session.query(models.Field).filter(models.Field.id==field_id).first()
+        f = self.field_repository.find_one(field_id)
         for k, v in field.items():
             setattr(f, k, v)
         session.commit()
@@ -60,21 +62,25 @@ class FormService(object):
 
     def remove_field(self, field_id):
         session = db.session
-        field = session.query(models.Field).filter(models.Field.id==field_id).first()
+        field = self.field_repository.find_one(field_id)
         field.deleted_at = datetime.now()
         session.commit()
 
         return field
 
-    def submit(self, form_id : int, values : dict):
+    def submit(self, form: models.Form, values : dict):
         """ 提交表单
         """
-        form = db.session.query(models.Form).filter(models.Form.id==form_id)\
-            .first()
-        session = db.session
         v = self.form_assembler.to_value(form, values)
-        session.add(v)
-        session.commit()
+        form.populate(v)
+        if form.validate(v.values):
+            session = db.session
+            
+            session.add(v)
+            session.commit()
+
+            return v
+        return None
 
     def fetch_values(self, form_id : int, page : int = 0, page_size : int = 50):
         values = db\
