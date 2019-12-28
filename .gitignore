@@ -11,3 +11,5 @@ venv
 *.xlsx
 .env
 .vscode
+dist
+node_modules
