@@ -24,11 +24,14 @@ class FormApi(BaseApi):
                     $ref: '#/components/schemas/Form'
         """
         form = self.form_service.fetch_form(form_id)
-        for f in form.fields:
-            if hasattr(f, "options"):
-                for o in f.options:
-                    j = o
-        return jsonify(form.asdict(follow={'fields': {"follow": {"options": {}}}}))
+        return jsonify(form.asdict(follow={
+            'fields': {
+                "follow": {
+                    "options": {},
+                    "constraints": {},
+                }
+            }
+        }))
 
     @expose('/{id}/value', methods=['POST'])
     def submit(self):

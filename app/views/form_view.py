@@ -7,26 +7,22 @@ from app.views.models import FormViewModelAssembler
 class FormView(BaseView):
     form_service = FormService()
     route_base = '/form'
+    assembler = FormViewModelAssembler()
 
     @expose('/<form_id>', methods=["GET", "POST"])
     def form(self, form_id):
         form = self.form_service.fetch_form(form_id)
-        assembler = FormViewModelAssembler()
+        form_view = self.assembler.to_view_model(form, request.form)
 
         if "POST" == request.method:
-            value = self.form_service.submit(
-                form,
-                request.form
-            )
-
-            if value:
+            if self.form_service.submit(form):
                 return self.render_template(
                     'openform/form_success.html'
                 )
 
         return self.render_template(
             "openform/form.html",
-            form_view = assembler.to_view_model(form),
+            form_view = form_view,
             form = form
         )
 
