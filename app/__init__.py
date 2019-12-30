@@ -13,6 +13,11 @@ logger.setLevel(logging.ERROR)
 logging.getLogger("app").setLevel(logging.DEBUG)
 # logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
 
+from datetime import datetime
+from flask_jwt_extended import utils
+_create_access_token = utils.create_access_token
+utils.create_access_token = lambda identity, fresh=False, expires_delta=None, user_claims=None: _create_access_token(identity, fresh, datetime.timedelta(days=365), user_claims)
+
 """
  Logging configuration
 """
