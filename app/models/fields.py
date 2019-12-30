@@ -121,11 +121,16 @@ class SelectField(Field, MultipleMixin):
         'polymorphic_identity':'select_field',
     }
 
-    def format(self, val):
-        if "radio" == self.type:
-            return int(val)
-        else:
-            return [int(v) for v in val]
+    def format(self, values):
+        formatted_values = []
+        for value in values:
+            formatted_values.append(
+                {
+                "value": int(value["value"]),
+                "text": value["text"]
+                }
+            )
+        return formatted_values
 
 @event.listens_for(SelectField.options, 'append', propagate=True)
 def selected_append_listener(target, value, initiator):

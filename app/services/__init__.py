@@ -68,21 +68,23 @@ class FormService(object):
 
         return field
 
-    def submit(self, form: models.Form, values : dict):
+    def submit(self, form: models.Form):
         """ 提交表单
         """
-        v = self.form_assembler.to_value(form, values)
-        form.populate(v)
-        if form.validate(v.values):
+       
+        if form.validate():
             session = db.session
             
+            v = form.values()
+            form.increase_value_sequence()
+            v.sequence = form.value_sequence
             session.add(v)
             session.commit()
 
             return v
         return None
 
-    def fetch_values(self, form_id : int, page : int = 0, page_size : int = 50):
+    def fetch_values(self, form_id: int, page: int = 0, page_size: int = 50):
         values = db\
             .session\
             .query(models.Value)\

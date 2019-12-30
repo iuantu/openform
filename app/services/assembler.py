@@ -106,19 +106,3 @@ class FormAssembler:
 
     def to_model(self, model: Model, dto, is_update: bool=False):
         return self.model_factory.create_or_update(model, dto, is_update)
-
-    def to_value(self, form, values):
-        v = {}
-        # import pdb; pdb.set_trace()
-        for field in form.fields:
-            is_list = field.discriminator == "select_field" \
-                and field.type =="checkbox"
-            try:
-                if is_list:
-                    v[field.id] = [int(o) for o in values.getlist("%d[]" % field.id)]
-                else:
-                    v[field.id] = field.format(values["%d" % field.id])
-            except Exception:
-                v[field.id] = None
-        value = models.Value(form_id=form.id, values=v)
-        return value

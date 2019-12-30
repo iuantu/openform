@@ -9,6 +9,8 @@ from .mixins import TimeStampMixin
 
 class Value(Model, TimeStampMixin):
     id = Column(Integer, primary_key=True)
+
+    sequence = Column(Integer)
     form_id = Column(Integer)
     user_id = Column(Integer, ForeignKey("ab_user.id"))
     values = Column(JSON)
