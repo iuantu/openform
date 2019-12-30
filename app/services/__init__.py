@@ -36,6 +36,10 @@ class FormService(object):
     def fetch_form(self, form_id):
         return self.form_repository.find_one(form_id)
 
+    def fetch_forms(self, user_id: int, page_request):
+        forms = self.form_repository.find_all(user_id, page_request)
+        return forms
+
     def add_new_field(self, field):
         
         class_name = to_camel_case(field['discriminator'])

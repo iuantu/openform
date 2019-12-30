@@ -105,4 +105,5 @@ class FormAssembler:
     model_factory = ModelFactory()
 
     def to_model(self, model: Model, dto, is_update: bool=False):
+        model.user_id = dto['user_id']
         return self.model_factory.create_or_update(model, dto, is_update)

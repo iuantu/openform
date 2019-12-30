@@ -7,6 +7,7 @@ from flask import (
 )
 from flask_jwt_extended import current_user, jwt_required
 from app.services import FormService
+from app.models import PageRequest
 
 class ControlPanelFormApi(BaseApi):
 
@@ -96,6 +97,7 @@ class ControlPanelFormApi(BaseApi):
         
         return self.response(200, **{})
 
+    @jwt_required
     @expose('/', methods=['GET'])
     def get_list(self):
         """Get form list
@@ -112,8 +114,10 @@ class ControlPanelFormApi(BaseApi):
                     message:
                       type: string
         """
-        
-        return self.response(200, **{})
+        forms = self.form_service.fetch_forms(
+            current_user.id, PageRequest.create(request.args)
+        )
+        return jsonify([form.asdict() for form in forms])
 
     @expose('/{id}', methods=['GET'])
     def get_detail(self):
