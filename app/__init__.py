@@ -1,5 +1,13 @@
 import logging
 
+""" jwt create access monkey patch"""
+import datetime
+import flask_jwt_extended
+_create_access_token = flask_jwt_extended.create_access_token
+def monkey_patch_create_access_token(identity, fresh=False, expires_delta=None, user_claims=None):
+    return _create_access_token(identity, fresh, datetime.timedelta(days=365), user_claims)
+flask_jwt_extended.create_access_token = monkey_patch_create_access_token
+
 from flask import Flask
 from flask_appbuilder import AppBuilder, SQLA
 from flask_migrate import Migrate
@@ -13,10 +21,7 @@ logger.setLevel(logging.ERROR)
 logging.getLogger("app").setLevel(logging.DEBUG)
 # logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
 
-from datetime import datetime
-from flask_jwt_extended import utils
-_create_access_token = utils.create_access_token
-utils.create_access_token = lambda identity, fresh=False, expires_delta=None, user_claims=None: _create_access_token(identity, fresh, datetime.timedelta(days=365), user_claims)
+
 
 """
  Logging configuration
