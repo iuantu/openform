@@ -17,7 +17,8 @@ class FormView(BaseView):
         form_view = self.assembler.to_view_model(form, request.form)
 
         if "POST" == request.method:
-            ua = parse(request.user_agent)
+            ua = parse(request.user_agent.string)
+            
             user_agent = UserAgent(
                 request.remote_addr,
                 ua.browser.family,
