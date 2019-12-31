@@ -42,6 +42,19 @@ class Element:
             output.write(" ".join(self.class_))
             output.write("\"")
 
+        if hasattr(self, "attributes") and self.attributes:
+            try:
+                for attr in self.attributes:
+                    if hasattr(self, attr):
+                        self.render_attribute(attr, getattr(self, attr), output)
+            except TypeError as e:
+                logging.error(e)
+
+    @property
+    def attributes(self):
+        return []
+
+        
     def as_html(self, output=None):
         output = not output and StringIO() or output
         output.write("<")
@@ -77,6 +90,18 @@ class Div(Element):
 class Li(Element):
     pass
 
+class FormInput(Element):
+
+    @property
+    def attributes(self):
+        return ['id', 'name']
+
+class TextArea(FormInput):
+
+    @property
+    def attributes(self):
+        return super().attributes + ['rows', 'cols']
+
 class Label(Element):
     for_ = None
 
@@ -94,14 +119,11 @@ class Section(Element):
 class Form(Element):
     action : str = ''
 
-class Input(Element):
-    def render_attributes(self, output: StringIO):
+class Input(FormInput):
 
-        super().render_attributes(output)
-
-        for attr in ["id", "value", 'name', "type", "placeholder", "checked"]:
-            if hasattr(self, attr):
-                self.render_attribute(attr, getattr(self, attr), output)
+    @property
+    def attributes(self):
+        return super().attributes + ["value", "type", "placeholder", "checked"]
 
 class Button(Element):
     type : str = 'submit'

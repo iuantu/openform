@@ -1,6 +1,14 @@
 import logging
 from app import models
-from app.markup import Div, Form, Label, Input, Button, Li
+from app.markup import (
+    Div,
+    Form,
+    Label,
+    Input,
+    Button,
+    Li,
+    TextArea
+)
 
 class FormView:
     def __init__(self, form: models.Form, request):
@@ -149,16 +157,26 @@ class TextFieldView(FieldView):
         return str(self.field.id)
 
     def as_element(self):
-        
-        children = [
-            Label(self.field.title, for_=self.id),
-            Input(type="text", 
+        if self.field.multiple:
+            input = TextArea(
+                self.value,
                 class_=self.class_, 
                 id=self.id, 
+                name=self.id, 
+                placeholder=self.field.placeholder
+            )
+        else:
+            input = Input(type="text", 
+                class_=self.class_, 
+                id=self.id,
                 name=self.id, 
                 value=self.value,
                 placeholder=self.field.placeholder
             )
+        
+        children = [
+            Label(self.field.title, for_=self.id),
+            input
         ]
 
         if self.field.has_errors:
