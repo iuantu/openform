@@ -16,8 +16,8 @@ from dotenv import load_dotenv
 from app import models
 
 load_dotenv()
-logger = logging.getLogger("flask_appbuilder")
-logger.setLevel(logging.ERROR)
+# logger = logging.getLogger("flask_appbuilder")
+# logger.setLevel(logging.ERROR)
 logging.getLogger("app").setLevel(logging.DEBUG)
 # logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
 

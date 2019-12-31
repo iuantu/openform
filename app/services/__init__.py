@@ -3,7 +3,7 @@ from app import db
 from datetime import datetime
 from app.services.assembler import FormAssembler
 from app.utils import to_camel_case
-
+from app.models.value import UserAgent
 
 class FormService(object):
     form_assembler = FormAssembler()
@@ -72,7 +72,7 @@ class FormService(object):
 
         return field
 
-    def submit(self, form: models.Form):
+    def submit(self, form: models.Form, user_agent: UserAgent):
         """ 提交表单
         """
        
@@ -80,6 +80,15 @@ class FormService(object):
             session = db.session
             
             v = form.values()
+            v.ip = user_agent.ip
+            v.ua_browser = user_agent.browser
+            v.ua_browser_version = user_agent.browser_version
+            v.ua_os = user_agent.os
+            v.ua_os_version = user_agent.os_version
+            v.ua_device = user_agent.device
+            v.ua_device_brand = user_agent.device_brand
+            v.ua_device_model = user_agent.device_model
+
             form.increase_value_sequence()
             v.sequence = form.value_sequence
             session.add(v)
