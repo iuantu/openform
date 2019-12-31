@@ -1,8 +1,66 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <!-- <router-view></router-view> -->
+    <el-container>
+      <el-header>Header</el-header>
+      <el-container>
+        <el-aside v-show="showLeftAside" width="200px" class="openForm-side left">
+          <left-aside></left-aside>
+        </el-aside>
+        <el-main>
+          <router-view v-if="reloadPage"/>
+        </el-main>
+        <el-aside v-show="showRightAside" width="200px" class="openForm-side right">
+          <right-aside></right-aside>
+        </el-aside>
+      </el-container>
+    </el-container>
   </div>
 </template>
 
 <script>
+import LeftAside from './components/leftAside/leftAside'
+import RightAside from './components/rightAside/rightAside'
+export default {
+  name: 'App',
+  data(){
+    return {
+      showLeftAside: true,
+      reloadPage: true,
+      showRightAside: true,
+    }
+  },
+  methods: {
+    // 全页面刷新
+    reload(){
+      this.reloadPage = false
+      this.$nextTick(()=>{
+        this.reloadPage = true
+      })
+    },
+    // 显示/隐藏左侧栏
+    showLA(){
+      this.showLeftAside = !this.showLeftAside
+    },
+    // 显示/隐藏右侧栏
+    showRA(){
+      this.showRightAside = !this.showRightAside
+    }
+  },
+  components: {
+    'left-aside': LeftAside,
+    'right-aside': RightAside,
+  },
+  provide() {
+    return {
+      reload: this.reload,
+      leftAside: this.showLA,
+      rightAside: this.showRA,
+    };
+  },
+}
 </script>
+
+<style lang="scss">
+  @import "./assets/css/index.scss";
+</style>

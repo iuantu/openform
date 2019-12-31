@@ -6,9 +6,7 @@
                 :list="list1"
                 :group="{ name: 'people', pull: 'clone', put: false,  }"
                 :sort="false"
-                ghost-class="ghost"
-                @change="log"
-            >
+                ghost-class="ghost">
                 <div
                 class="list-group-item"
                 v-for="element in list1"
@@ -41,10 +39,6 @@ export default {
     };
   },
   methods: {
-    log(evt) {
-      console.log(evt);
-    }
-    
   },
   mounted() {
   },

@@ -8,7 +8,6 @@
       class="dragArea list-group"
       :list="list"
       group="people"
-      @change="log"
       ghost-class="ghost"
     >
       <div class="list-group-item" v-for="(formItm, formIndex) in list" :key="formIndex + '_form'">
@@ -42,9 +41,6 @@ export default {
     };
   },
   methods: {
-    log(evt) {
-      console.log(evt);
-    }
   },
   mounted() {}
 };

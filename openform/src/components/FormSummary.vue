@@ -3,7 +3,8 @@
         <el-main>
             <el-table :data="values" style="width: 100%;">
                 <el-table-column
-                    v-for="column in columns"
+                    v-for="(column, itmIndex) in columns"
+                    :key='itmIndex'
                     :prop="column.property"
                     :label="column.label"
                     width="180">
