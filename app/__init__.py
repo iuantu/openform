@@ -1,11 +1,18 @@
 import logging
 
+""" jwt create access monkey patch"""
+import datetime
+import flask_jwt_extended
+_create_access_token = flask_jwt_extended.create_access_token
+def monkey_patch_create_access_token(identity, fresh=False, expires_delta=None, user_claims=None):
+    return _create_access_token(identity, fresh, datetime.timedelta(days=365), user_claims)
+flask_jwt_extended.create_access_token = monkey_patch_create_access_token
+
 from flask import Flask
 from flask_appbuilder import AppBuilder, SQLA
 from flask_migrate import Migrate
 from flask_cors import CORS
 from dotenv import load_dotenv
-from app import models
 
 load_dotenv()
 logger = logging.getLogger("flask_appbuilder")
@@ -22,6 +29,7 @@ logging.getLogger().setLevel(logging.DEBUG)
 
 app = Flask(__name__)
 app.config.from_object("config")
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLA(app)
 CORS(app)
 
@@ -42,5 +50,4 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor.close()
 """
 
-from . import views
-from .models import *
+from . import views, models

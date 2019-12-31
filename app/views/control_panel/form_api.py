@@ -2,16 +2,19 @@ from flask_appbuilder.api import BaseApi, expose
 from app import appbuilder
 from flask import (
     request,
-    jsonify
+    jsonify,
+    g,
 )
+from flask_jwt_extended import current_user, jwt_required
 from app.services import FormService
+from app.models import PageRequest
 
 class ControlPanelFormApi(BaseApi):
 
     resource_name = 'cp/form'
-
     form_service = FormService()
-
+  
+    @jwt_required
     @expose('', methods=['POST'])
     def create(self):
         """Create a form
@@ -31,7 +34,9 @@ class ControlPanelFormApi(BaseApi):
                   schema:
                     $ref: '#/components/schemas/Form'
         """
-        form = self.form_service.add_new_form(request.json)
+        form = request.json.copy()
+        form["user_id"] = current_user.id
+        form = self.form_service.add_new_form(form)
         
         return jsonify(form.asdict()), 201
 
@@ -92,6 +97,7 @@ class ControlPanelFormApi(BaseApi):
         
         return self.response(200, **{})
 
+    @jwt_required
     @expose('/', methods=['GET'])
     def get_list(self):
         """Get form list
@@ -108,8 +114,10 @@ class ControlPanelFormApi(BaseApi):
                     message:
                       type: string
         """
-        
-        return self.response(200, **{})
+        forms = self.form_service.fetch_forms(
+            current_user.id, PageRequest.create(request.args)
+        )
+        return jsonify([form.asdict() for form in forms])
 
     @expose('/{id}', methods=['GET'])
     def get_detail(self):

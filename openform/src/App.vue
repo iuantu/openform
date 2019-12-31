@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+<<<<<<< HEAD
     <!-- <router-view></router-view> -->
     <el-container>
       <el-header>Header</el-header>
@@ -15,10 +16,27 @@
         </el-aside>
       </el-container>
     </el-container>
+=======
+    <el-menu :default-active="activeIndex" class="nav" mode="horizontal" @select="onSelect">
+      <el-menu-item index="1">表单</el-menu-item>
+      <el-menu-item index="2">
+        <img src="" />
+      </el-menu-item>
+    </el-menu>
+    <el-row type="flex" justify="center">
+      <el-col :md="18"><router-view></router-view></el-col>
+    </el-row>
+>>>>>>> c02c810230ec8f0d9fafcea9cbad71c0a49b6c60
   </div>
 </template>
+<style scoped>
+  .nav {
+    margin-bottom: 50px;
+  }
+</style>
 
 <script>
+<<<<<<< HEAD
 import LeftAside from './components/leftAside/leftAside'
 import RightAside from './components/rightAside/rightAside'
 export default {
@@ -64,3 +82,19 @@ export default {
 <style lang="scss">
   @import "./assets/css/index.scss";
 </style>
+=======
+export default {
+  data() {
+    return {
+      activeIndex: '1'
+    }
+  },
+
+  methods: {
+    onSelect(/*idx*/) {
+
+    }
+  },
+}
+</script>
+>>>>>>> c02c810230ec8f0d9fafcea9cbad71c0a49b6c60
