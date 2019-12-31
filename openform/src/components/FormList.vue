@@ -14,6 +14,9 @@
             prop="title"
             label="名字"
             width="*">
+            <template slot-scope="scope">
+              <router-link :to="{ name: 'cp_form_summary', params: { id: scope.row.id } }">{{scope.row.title}}</router-link>
+            </template>
           </el-table-column>
           <el-table-column
             prop="name"

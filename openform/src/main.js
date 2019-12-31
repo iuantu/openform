@@ -10,6 +10,7 @@ import './plugins/element.js'
 
 import FormSummary from './components/FormSummary'
 import FormList from './components/FormList'
+import ControlPanel from './components/ControlPanel'
 
 Vue.use(VueRouter)
 Vue.use(VueResource)
@@ -19,10 +20,10 @@ Vue.config.productionTip = false
 
 const routes = [
   {
-    path: '/cp', component: FormList,
+    path: '/cp', component: ControlPanel,
     children: [
+      { path: 'form/:id/', name: "cp_form_summary", component: FormSummary},
       { path: '', component: FormList},
-      // { path: ''}
     ]
   },
   // { path: '/form/:id', component: FormSummary}

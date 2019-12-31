@@ -7,7 +7,7 @@
       </el-menu-item>
     </el-menu>
     <el-row type="flex" justify="center">
-      <el-col :md="10"><router-view></router-view></el-col>
+      <el-col :md="18"><router-view></router-view></el-col>
     </el-row>
   </div>
 </template>
