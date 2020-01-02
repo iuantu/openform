@@ -1,14 +1,13 @@
 <template>
   <div id="app">
-    <!-- <router-view></router-view> -->
-    <el-container>
+    <router-view></router-view>
+    <!-- <el-container>
       <el-header>Header</el-header>
       <el-container>
         <el-aside v-show="showLeftAside" width="200px" class="openForm-side left">
           <left-aside></left-aside>
         </el-aside>
         <el-main>
-          <!-- <router-view v-if="reloadPage"/> -->
           <el-menu :default-active="activeIndex" class="nav" mode="horizontal" @select="onSelect">
             <el-menu-item index="1">表单</el-menu-item>
             <el-menu-item index="2">
@@ -23,7 +22,7 @@
           <right-aside></right-aside>
         </el-aside>
       </el-container>
-    </el-container>
+    </el-container> -->
 
   </div>
 </template>
