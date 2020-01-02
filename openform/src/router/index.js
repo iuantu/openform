@@ -10,6 +10,8 @@ import ControlPanel from './../components/ControlPanel'
 import Register from '../components/Register'
 import Login from '../components/Login'
 
+import OpenFormSetting from './../components/openform/openForm'
+
 Vue.use(Router)
 
 export default new Router({
@@ -40,8 +42,15 @@ export default new Router({
     },{
       path: '/openform',
       name: 'OpenForm',
+<<<<<<< HEAD
       component: OpenForm
 >>>>>>> 分割页面
+=======
+      component: OpenForm,
+      children: [
+        { path: '/', component: OpenFormSetting},
+      ]
+>>>>>>> 提取通用项
     },
     {
       path: '/cp', component: ControlPanel,

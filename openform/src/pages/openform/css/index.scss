@@ -2,21 +2,8 @@
 .open-form {
     width: 100vw;
     height: 100vh;
-    width: 680px;
-    .list-group{
-      padding: 15px;
-      box-sizing: border-box;
-      min-height: 60px;
-      border: 1px dashed #dddddd;
-    }
-    .list-group-item{
-      width: 680px;
-      padding: 15px;
-      .components-setting-btn{
-        
-      }
-    }
-    .ghost{
-      background: #f7f8f9;
+    .el-container{
+      height: 100%;
+      width: 100%;
     }
   }
