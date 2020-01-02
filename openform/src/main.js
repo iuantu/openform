@@ -9,6 +9,7 @@ import App from './App.vue'
 // import './plugins/element.js'
 
 
+
 Vue.use(VueRouter)
 Vue.use(VueResource)
 Vue.use(ElementUI)

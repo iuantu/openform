@@ -1,20 +1,32 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import OpenForm from './../pages/openform/openForm'
+// import OpenForm from './../pages/openform/openForm'
 import FormSummary from './../components/FormSummary'
 
 
 import FormList from './../components/FormList'
 import ControlPanel from './../components/ControlPanel'
+import Register from '../components/Register'
+import Login from '../components/Login'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    // {
+    //   path: '/',
+    //   name: 'OpenForm',
+    //   component: OpenForm
+    // },
     {
-      path: '/',
-      name: 'OpenForm',
-      component: OpenForm
+      path: '/login',
+      name: 'login',
+      component: Login,
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: Register,
     },
     {
       path: '/cp', component: ControlPanel,
