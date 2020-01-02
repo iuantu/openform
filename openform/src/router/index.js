@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 // import OpenForm from './../pages/openform/openForm'
 import FormSummary from './../components/FormSummary'
+import OpenFormView from './../pages/openformView/openformView'
 
 
 import FormList from './../components/FormList'
@@ -19,6 +20,7 @@ export default new Router({
     //   component: OpenForm
     // },
     {
+<<<<<<< HEAD
       path: '/login',
       name: 'login',
       component: Login,
@@ -27,6 +29,19 @@ export default new Router({
       path: '/register',
       name: 'register',
       component: Register,
+=======
+      path: '/',
+      name: 'OpenFormView',
+      component: OpenFormView,
+      children: [
+        { path: '/form/:id/', name: "cp_form_summary", component: FormSummary},
+        { path: '/', component: FormList},
+      ]
+    },{
+      path: '/openform',
+      name: 'OpenForm',
+      component: OpenForm
+>>>>>>> 分割页面
     },
     {
       path: '/cp', component: ControlPanel,
