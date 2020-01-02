@@ -8,6 +8,8 @@ import OpenFormView from './../pages/openformView/openformView'
 import FormList from './../components/FormList'
 import ControlPanel from './../components/ControlPanel'
 
+import OpenFormSetting from './../components/openform/openForm'
+
 Vue.use(Router)
 
 export default new Router({
@@ -23,7 +25,10 @@ export default new Router({
     },{
       path: '/openform',
       name: 'OpenForm',
-      component: OpenForm
+      component: OpenForm,
+      children: [
+        { path: '/', component: OpenFormSetting},
+      ]
     },
     {
       path: '/cp', component: ControlPanel,

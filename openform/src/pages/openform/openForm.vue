@@ -1,48 +1,64 @@
 <template>
   <div class="open-form">
-    <el-button type="primary" @click="leftAside">左侧</el-button>
-    <el-button type="primary" @click="rightAside">右侧</el-button>
-    <div class="form-title">{{title}}</div>
-    <div class="form-sub-title">{{subtitle}}</div>
-    <draggable
-      class="dragArea list-group"
-      :list="list"
-      group="people"
-      ghost-class="ghost"
-    >
-      <div class="list-group-item" v-for="(formItm, formIndex) in list" :key="formIndex + '_form'">
-        <form-components :formType="formItm.type" :formIndex="formIndex"></form-components>
-        <div class="components-setting-btn">
-          <el-button type="primary">设置</el-button>  
-          <el-button type="danger">删除</el-button>
-        </div>
-      </div>
-    </draggable>
+    <el-container>
+      <el-container>
+        <el-aside v-show="showLeftAside" width="200px" class="openForm-side left">
+          <left-aside></left-aside>
+        </el-aside>
+        <el-main>
+          <router-view v-if="reloadPage"></router-view>
+        </el-main>
+        <el-aside v-show="showRightAside" width="200px" class="openForm-side right">
+          <right-aside></right-aside>
+        </el-aside>
+      </el-container>
+    </el-container>
   </div>
 </template>
 
 <script>
-import draggable from "vuedraggable";
 
-import formComponents from "./../../components/formComponent/formComponet";
+import LeftAside from './../../components/leftAside/leftAside'
+import RightAside from './../../components/rightAside/rightAside'
 
 export default {
-  name: "clone",
-  inject: ["reload", "leftAside", "rightAside"],
+  name: "openFormSetting",
   components: {
-    draggable,
-    "form-components": formComponents
+    'left-aside': LeftAside,
+    'right-aside': RightAside,
   },
   data() {
     return {
-      title: '标题',
-      subtitle: '副标题',
-      list: []
+      showLeftAside: true,
+      reloadPage: true,
+      showRightAside: true,
     };
   },
   methods: {
+    // 全页面刷新
+    reload(){
+      this.reloadPage = false
+      this.$nextTick(()=>{
+        this.reloadPage = true
+      })
+    },
+    // 显示/隐藏左侧栏
+    showLA(){
+      this.showLeftAside = !this.showLeftAside
+    },
+    // 显示/隐藏右侧栏
+    showRA(){
+      this.showRightAside = !this.showRightAside
+    },
   },
-  mounted() {}
+  mounted() {},
+  provide() {
+    return {
+      reload: this.reload,
+      leftAside: this.showLA,
+      rightAside: this.showRA,
+    };
+  },
 };
 </script>
 
