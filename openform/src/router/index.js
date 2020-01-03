@@ -31,8 +31,9 @@ export default new Router({
     {
       path: '/cp', component: ControlPanel,
       children: [
+        { path: 'form/', name: 'cp_form_list', component: FormList},
         { path: 'form/:id/', name: "cp_form_summary", component: FormSummary},
-        { path: '', component: FormList},
+        
       ]
     },
   ]

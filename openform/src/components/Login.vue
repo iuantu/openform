@@ -93,6 +93,8 @@ export default {
           .then((uiLogin) => {
             if (!uiLogin.isSuccess) {
               this.$message(uiLogin.message);
+            } else {
+              this.$router.replace({name: "cp_form_list"});
             }
           })
         } else {
