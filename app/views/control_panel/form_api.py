@@ -117,7 +117,7 @@ class ControlPanelFormApi(BaseApi):
         forms = self.form_service.fetch_forms(
             current_user.id, PageRequest.create(request.args)
         )
-        return jsonify([form.asdict() for form in forms])
+        return jsonify(forms.asdict())
 
     @expose('/{id}', methods=['GET'])
     def get_detail(self):

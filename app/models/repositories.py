@@ -1,4 +1,5 @@
 from app.models import (Form, Field,)
+from sqlalchemy import func
 
 class BaseRepository:
     def __init__(self, db):
@@ -36,6 +37,14 @@ class FormRepository(BaseRepository):
             Form
         )\
             .all()
+
+    def count_all(self, user_id: int):
+        count = self.db\
+            .session\
+            .query(func.count(Form.id).label("count"))\
+            .filter(Form.user_id==user_id)\
+            .first()
+        return count[0]
 
 class FieldRepository:
     def __init__(self, db):

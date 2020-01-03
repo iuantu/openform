@@ -4,6 +4,7 @@ from datetime import datetime
 from app.services.assembler import FormAssembler
 from app.utils import to_camel_case
 from app.models.value import UserAgent
+from app.models import Pageable
 
 class FormService(object):
     form_assembler = FormAssembler()
@@ -38,7 +39,8 @@ class FormService(object):
 
     def fetch_forms(self, user_id: int, page_request):
         forms = self.form_repository.find_all(user_id, page_request)
-        return forms
+        count = self.form_repository.count_all(user_id)
+        return Pageable(forms, page_request.create_result(count))
 
     def add_new_field(self, field):
         
