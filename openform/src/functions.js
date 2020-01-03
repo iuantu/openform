@@ -1,4 +1,9 @@
-const baseURL = "http://localhost:5000"
+let baseURL;
+if (process.env.NODE_ENV === 'development') {
+    baseURL = "http://localhost:5000";
+} else {
+    baseURL = "";
+}
 
 class UIBase {
     constructor(json) {

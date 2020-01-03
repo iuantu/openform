@@ -81,7 +81,7 @@ export default {
     this.load();
   },
   methods: {
-    async onDeleteClick(id) {
+    async onDeleteClick(/*id*/) {
       this.$confirm('此操作将永久删除记录， 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

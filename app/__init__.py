@@ -1,3 +1,4 @@
+import os
 import logging
 
 """ jwt create access monkey patch"""
@@ -8,8 +9,10 @@ def monkey_patch_create_access_token(identity, fresh=False, expires_delta=None, 
     return _create_access_token(identity, fresh, datetime.timedelta(days=365), user_claims)
 flask_jwt_extended.create_access_token = monkey_patch_create_access_token
 
-from flask import Flask
+from flask import Flask, make_response
 from flask_appbuilder import AppBuilder, SQLA
+from flask_appbuilder.views import IndexView
+from flask_appbuilder.baseviews import expose
 from flask_migrate import Migrate
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -33,8 +36,21 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLA(app)
 CORS(app)
 
+APP_DIR = os.path.abspath(os.path.dirname(__file__))
+INDEX_FILE = os.path.join(APP_DIR, "../openform/dist/static/index.html")
+
+class HomeView(IndexView):
+    
+    @expose("/")
+    def index(self):
+        print(INDEX_FILE)
+        fd = open(INDEX_FILE, "r")
+        index = fd.read()
+        fd.close()
+        return make_response(index)
+
 migrate = Migrate(app, db)
-appbuilder = AppBuilder(app, db.session)
+appbuilder = AppBuilder(app, db.session, indexview=HomeView)
 
 
 """
