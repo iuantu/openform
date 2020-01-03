@@ -20,7 +20,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="form_count"
+              prop="record_count"
               label="数据"
               width="50">
             </el-table-column>
@@ -32,7 +32,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="moment(created_at"
+              prop="created_at"
               width="100"
               label="创建时间">
             </el-table-column>
@@ -66,7 +66,7 @@
 </style>
 <script>
 import { ofFetch } from '../functions'
-import { moment } from 'moment'
+import * as moment from 'moment'
 export default {
   data() {
     return {
@@ -107,9 +107,10 @@ export default {
         return {
           id: form.id,
           title: form.title,
-          created_at: form.created_at,
-          published: true,
-          form_count: 10
+          created_at: moment(form.created_at).fromNow(),
+          published: form.published_at != null,
+          record_count: form.record_count,
+
         }
       })
       const pr = forms.page_result;
