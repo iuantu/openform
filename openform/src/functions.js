@@ -1,20 +1,39 @@
 const baseURL = "http://localhost:5000"
 
-class UILogin {
+class UIBase {
     constructor(json) {
         if (json.hasOwnProperty("message")) {
             this.isSuccess = false;
             this.message = json.message;
         } else {
             this.isSuccess = true;
-
-            localStorage.setItem('access_token', json.access_token);
-            localStorage.setItem('refresh_token', json.refresh_token);
         }
     }
 
     isSuccess() {
         return this.isSuccess;
+    }
+}
+
+class UILogin extends UIBase {
+    constructor(json) {
+        super(json);
+
+        if (super.isSuccess) {
+            localStorage.setItem('access_token', json.access_token);
+            localStorage.setItem('refresh_token', json.refresh_token);
+        }
+    }
+}
+
+class UIRegister extends UIBase {
+    constructor(json) {
+        super(json);
+        
+        if (this.isSuccess) {
+            localStorage.setItem('access_token', json.jwt.access_token);
+            localStorage.setItem('refresh_token', json.jwt.refresh_token);
+        }
     }
 }
 
@@ -35,15 +54,31 @@ export class SecurityService {
             {
                 method: 'POST',
                 body: JSON.stringify({
-                "password": password,
-                "provider": "db",
-                "refresh": true,
-                "username": username,
+                    "password": password,
+                    "provider": "db",
+                    "refresh": true,
+                    "username": username,
                 })
             }
         );
         const json = await response.json();
         return new UILogin(json);
+    }
+
+    async register(username, email, password) {
+        const response = await this.client.request(
+            '/api/v1/user/',
+            {
+                method: 'POST',
+                body: JSON.stringify({
+                    "password": password,
+                    "email": email,
+                    "username": username,
+                })
+            }
+        );
+        const json = await response.json();
+        return new UIRegister(json);
     }
 }
 

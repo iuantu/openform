@@ -25,7 +25,7 @@
             <el-col :offset="2">
               <div class="bottom">
                 <span>首次使用OpenForm吗？</span>
-                <a href="">现在注册</a>
+                <router-link :to="{ name: 'register' }">现在注册</router-link>
               </div>
             </el-col>
           </el-row>
@@ -70,8 +70,8 @@ export default {
   data() {
     return {
       login: {
-        username: 'cj',
-        password: '111111',
+        username: '',
+        password: '',
       },
       constraints: {
         username: [
@@ -79,7 +79,7 @@ export default {
           { min: 2, max: 50, trigger: 'blur', message: '电子邮件、用户名或手机号码长度在2到50个字符之间' }
         ],
         password: [
-          { required: true, trigger: 'blur', message: '请输入电子邮件、用户名或手机号码'},
+          { required: true, trigger: 'blur', message: '请输入密码'},
           { min: 2, max: 50, trigger: 'blur', message: '密码长度在2到50个字符之间' }
         ]
       }

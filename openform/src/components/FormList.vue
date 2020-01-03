@@ -32,7 +32,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="created_at"
+              prop="moment(created_at"
               width="100"
               label="创建时间">
             </el-table-column>
@@ -66,6 +66,7 @@
 </style>
 <script>
 import { ofFetch } from '../functions'
+import { moment } from 'moment'
 export default {
   data() {
     return {
