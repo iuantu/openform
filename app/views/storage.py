@@ -5,6 +5,7 @@ import os
 import json
 import hashlib
 import datetime
+import random
 import base64
 import hmac
 from optparse import OptionParser
@@ -15,9 +16,9 @@ def convert_base64(input):
     return base64.b64encode(input.encode("utf-8"))
 
 def get_sign_policy(key, policy):
-    hash_object = hmac.new(key.encode("utf-8"), policy, hashlib.sha1)
+    hash_object = hmac.new(key.encode(), policy, hashlib.sha1)
     hash_value = hash_object.digest()
-    return str(base64.b64encode(hash_value))
+    return base64.b64encode(hash_value).decode("utf-8")
 
 class StorageAPI(BaseApi):
 
@@ -27,23 +28,25 @@ class StorageAPI(BaseApi):
     def signature(self):
         # TODO: generate key by file name
         now = datetime.datetime.now()
-        key = "/usr/%s/%d/" % (now.strftime("%Y-%m-%d"), 1)
+        key = "usr/%s/%d/%f" % (now.strftime("%Y-%m-%d"), 1, random.random())
         expiration = now + datetime.timedelta(days=7)
         policy = {
-            "expiration": expiration.strftime("%Y-%m-%dT%H:%M:%S%Z"),
+            "expiration": expiration.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "conditions": [
                 {
                     "bucket": os.getenv("OSS_BUCKET"),
-                    "key": key
+                #     "key": key
                 },
                 ["content-length-range", 0, 1048576],
             ]
         }
-
-        base64policy = convert_base64(json.dumps(policy))
+        policy_string = json.dumps(policy)
+        base64policy = convert_base64(policy_string)
         signature = get_sign_policy(OSS_ACCESS_KEY_SECRET, base64policy)
 
         return jsonify({
+            "key": key,
+            "policy": base64policy.decode("utf-8"),
             "signature": signature
         })
 
