@@ -1,19 +1,4 @@
 <template>
-<<<<<<< HEAD
-    <el-container>
-        <el-main>
-            <el-table :data="values" style="width: 100%;">
-                <el-table-column
-                    v-for="(column, itmIndex) in columns"
-                    :key='itmIndex'
-                    :prop="column.property"
-                    :label="column.label"
-                    width="180">
-                </el-table-column>
-            </el-table>
-        </el-main>
-    </el-container>
-=======
     <el-table :data="values" style="width: 100%;">
         <el-table-column
             v-for="(column, key) in columns"
@@ -31,7 +16,6 @@
             </template>
         </el-table-column>
     </el-table>
->>>>>>> c02c810230ec8f0d9fafcea9cbad71c0a49b6c60
 </template>
 <script>
 export default {
@@ -70,9 +54,7 @@ export default {
                 row[field.id] = this.fieldValue(field, fieldValue)
             }
             return row;
-        })
-
-        console.debug("Form summary created");
+        });
     },
 
     methods: {

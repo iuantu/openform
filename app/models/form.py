@@ -1,4 +1,5 @@
 from flask_appbuilder import Model
+from sqlalchemy import text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy import (
@@ -16,6 +17,9 @@ class Form(Model, SoftDeleteableMixin, TimeStampMixin):
     user_id = Column(Integer, ForeignKey("ab_user.id"))
     title = Column(String(500), nullable=False)
     fields = relationship('Field')
+
+    published_at = Column(DateTime, nullable=True, default=None)
+    record_count = Column(Integer, server_default=text("0"))
 
     version = Column(Integer, default=0)
     value_sequence = Column(Integer, default=0)

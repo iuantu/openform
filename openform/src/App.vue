@@ -1,23 +1,28 @@
 <template>
-  <div id="app">
-    <el-container>
-      <el-header>Header</el-header>
-    </el-container>
-    <el-container>
-      <router-view class="main-container"></router-view>
-    </el-container>
-
-  </div>
+    <div id="app">
+      <Navigation></Navigation>
+      <router-view></router-view>
+    </div>
 </template>
+<style scoped>
+body {
+  font-size: 14px;
+}
+</style>
 
 <script>
+
+import Navigation from './components/Navigation'
 export default {
-  name: 'App',
   data(){
-    return {}
+    return {
+    }
   },
-  methods: {},
-  components: {}
+  methods: {
+  },
+  components: {
+    Navigation: Navigation,
+  }
 }
 </script>
 
