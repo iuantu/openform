@@ -1,5 +1,5 @@
 from flask_appbuilder.api import BaseApi, expose
-from app import appbuilder
+from app import appbuilder, db
 from flask import (
     request,
     jsonify,
@@ -7,12 +7,19 @@ from flask import (
 )
 from flask_jwt_extended import current_user, jwt_required
 from app.services import FormService
-from app.models import PageRequest
+from app.models import EventType, PageRequest, EventRepository, ValueRepository, FormRepository
 
 class ControlPanelFormApi(BaseApi):
 
     resource_name = 'cp/form'
     form_service = FormService()
+
+    def __init__(self):
+        super().__init__()
+
+        self.event_repository = EventRepository(db)
+        self.value_repository = ValueRepository(db)
+        self.form_repository = FormRepository(db)
   
     @jwt_required
     @expose('', methods=['POST'])
@@ -137,5 +144,24 @@ class ControlPanelFormApi(BaseApi):
         """
         
         return self.response(200, **{})
+
+    @jwt_required
+    @expose("/<form_id>/summary", methods=["GET"])
+    def summary(self, form_id):
+        user = current_user
+        submit_count_by_days = self.value_repository.count_by_8_days(user.id, form_id)
+        form = self.form_repository.find_one(form_id)
+
+        return jsonify({
+            "submit_count": self.value_repository.count_all(user.id, form_id),
+            "submit_count_today": self.value_repository.count_today(
+                user.id, form_id),
+            "reads_today": self.event_repository.count(form_id, EventType.VIEW_FORM),
+            "submit_count_by_days": submit_count_by_days,
+            "read_count_by_days": self.event_repository.count_by_8_days(form_id, EventType.VIEW_FORM),
+            "submit_count_by_mintes": self.value_repository.count_by_24_minute(
+                user.id, form_id),
+            "form": form.asdict(),
+        })
 
 appbuilder.add_api(ControlPanelFormApi)

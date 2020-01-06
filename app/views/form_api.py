@@ -1,8 +1,10 @@
 from app import appbuilder
 from flask_appbuilder.api import BaseApi, expose
 from app.views.schema import SCHEMAS
+from app.views.utils import to_user_agent
 from app.services import FormService
-from flask import jsonify
+from flask import jsonify, request
+from flask_jwt_extended import current_user
 
 class FormApi(BaseApi):
     resource_name = 'form'
@@ -23,7 +25,8 @@ class FormApi(BaseApi):
                   schema:
                     $ref: '#/components/schemas/Form'
         """
-        form = self.form_service.fetch_form(form_id)
+        user_agent = to_user_agent(request)
+        form = self.form_service.fetch_form(form_id, current_user, user_agent)
         return jsonify(form.asdict(follow={
             'fields': {
                 "follow": {

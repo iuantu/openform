@@ -3,8 +3,7 @@ from app import db
 from datetime import datetime
 from app.services.assembler import FormAssembler
 from app.utils import to_camel_case
-from app.models.value import UserAgent
-from app.models import Pageable
+from app.models import Pageable, UserAgent, Event, EventType
 
 class FormService(object):
     form_assembler = FormAssembler()
@@ -34,9 +33,13 @@ class FormService(object):
         self.db.session.add(form)
         self.db.session.commit()
 
-    def fetch_form(self, form_id) -> models.Form:
+    def fetch_form(self, form_id, user, user_agent) -> models.Form:
         form = self.form_repository.find_one(form_id)
         form.record_count += 1
+
+        event = Event(type=EventType.VIEW_FORM, user_id=user and user.id or None, form_id=form_id)
+        event.assemble_from_user_agent(user_agent)
+        db.session.add(event)
         db.session.commit()
 
         return form
@@ -86,14 +89,7 @@ class FormService(object):
             session = db.session
             
             v = form.values()
-            v.ip = user_agent.ip
-            v.ua_browser = user_agent.browser
-            v.ua_browser_version = user_agent.browser_version
-            v.ua_os = user_agent.os
-            v.ua_os_version = user_agent.os_version
-            v.ua_device = user_agent.device
-            v.ua_device_brand = user_agent.device_brand
-            v.ua_device_model = user_agent.device_model
+            v.assemble_from_user_agent(user_agent)
 
             form.increase_value_sequence()
             v.sequence = form.value_sequence
