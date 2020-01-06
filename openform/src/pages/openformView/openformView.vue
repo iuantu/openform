@@ -5,9 +5,11 @@
         </el-aside>
         <el-main>
           <el-menu :default-active="activeIndex" class="nav" mode="horizontal" @select="onSelect">
-            <el-menu-item index="1">表单</el-menu-item>
+            <el-menu-item index="1">
+              <router-link :to="{ path: '/' }">表单</router-link>
+            </el-menu-item>
             <el-menu-item index="2">
-              <img src="" />
+              <router-link :to="'FormData'">数据</router-link>
             </el-menu-item>
           </el-menu>
           <el-row type="flex" justify="center">

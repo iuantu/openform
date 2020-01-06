@@ -15,6 +15,8 @@ import Login from './../components/Login'
 
 import OpenForm from './../pages/openform/openForm'
 
+import FormData from '../components/formData/FormData'
+
 Vue.use(Router)
 
 export default new Router({
@@ -40,6 +42,7 @@ export default new Router({
       children: [
         { path: '/form/:id/', name: "cp_form_summary", component: FormSummary},
         { path: '/', component: FormList},
+        { path: '/formData', name: "FormData", component: FormData},
       ]
     },{
       path: '/openform',
@@ -54,7 +57,7 @@ export default new Router({
       children: [
         { path: 'form/', name: 'cp_form_list', component: FormList},
         { path: 'form/:id/', name: "cp_form_summary", component: FormSummary},
-        
+
       ]
     },
   ]
