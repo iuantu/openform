@@ -34,8 +34,12 @@ class FormService(object):
         self.db.session.add(form)
         self.db.session.commit()
 
-    def fetch_form(self, form_id):
-        return self.form_repository.find_one(form_id)
+    def fetch_form(self, form_id) -> models.Form:
+        form = self.form_repository.find_one(form_id)
+        form.record_count += 1
+        db.session.commit()
+
+        return form
 
     def fetch_forms(self, user_id: int, page_request):
         forms = self.form_repository.find_all(user_id, page_request)
