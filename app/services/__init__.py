@@ -3,7 +3,8 @@ from app import db
 from datetime import datetime
 from app.services.assembler import FormAssembler
 from app.utils import to_camel_case
-from app.models import Pageable, UserAgent, Event, EventType
+from app.models import UserAgent, Event, EventType
+from app.models.page import Pageable
 
 class FormService(object):
     form_assembler = FormAssembler()

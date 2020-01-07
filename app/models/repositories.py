@@ -1,5 +1,5 @@
 import logging
-from app.models import (Form, Field, Value, Event)
+from . import (Form, Field, Value, Event, PageRequest)
 from sqlalchemy import func, Date, cast
 from datetime import date, timedelta
 from typing import List
@@ -9,9 +9,9 @@ class BaseRepository:
         self.db = db
 
     def order_by(self, query, page_request, model):
-
-        for k, v in page_request.order_by.items():
-            query = query.order_by(getattr(getattr(model, k), v)())
+        if page_request.order_by:
+            for k, v in page_request.order_by.items():
+                query = query.order_by(getattr(getattr(model, k), v)())
 
         return query.limit(page_request.page_size)\
             .offset((page_request.page - 1) * page_request.page_size)
@@ -95,6 +95,25 @@ class EventRepository(BaseRepository):
             .count()
 
 class ValueRepository(BaseRepository):
+
+    def find(self, form_id, page_request: PageRequest):
+        return self.order_by(
+            self.db\
+            .session\
+            .query(Value)\
+            .filter(Value.form_id==form_id),
+
+            page_request,
+            Value
+        )\
+            .all()
+
+    def count(self, form_id):
+        return  self.db\
+            .session\
+            .query(Value)\
+            .filter(Value.form_id==form_id)\
+            .count()
 
     def count_by_24_minute(self, user_id, form_id) -> int:
         c = self.db.session\

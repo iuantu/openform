@@ -1,13 +1,23 @@
+import csv
+import io
 from flask_appbuilder.api import BaseApi, expose
 from app import appbuilder, db
 from flask import (
     request,
     jsonify,
     g,
+    stream_with_context,
+    Response
 )
 from flask_jwt_extended import current_user, jwt_required
 from app.services import FormService
-from app.models import EventType, PageRequest, EventRepository, ValueRepository, FormRepository
+from app.models import (
+    EventType,
+    PageRequest,
+    EventRepository,
+    ValueRepository,
+    FormRepository
+)
 
 class ControlPanelFormApi(BaseApi):
 
@@ -164,4 +174,39 @@ class ControlPanelFormApi(BaseApi):
             "form": form.asdict(),
         })
 
+    @jwt_required
+    @expose("/<form_id>/export", methods=["GET"])
+    def export(self, form_id):
+        # TODO: 根据 Request Content Type 来导出返回的内容，例如JSON
+        form_id = int(form_id)
+        count = self.value_repository.count(form_id)
+        
+        def generate():
+            args = [int(form_id), PageRequest.create(request.args)]
+            i = 0
+            position = 0
+            while i < count:
+                args[1].page = i + 1
+                values = self.value_repository.find(*args)
+                if i == 0:
+                    iostream = io.StringIO()
+                    first = values[0]
+                    keys = first.asdict().keys()
+                    csv_writer = csv.DictWriter(iostream, fieldnames=keys)
+                    csv_writer.writeheader()
+
+                for value in values:
+                    csv_writer.writerow(value.asdict())
+                
+                iostream.seek(position)
+                for line in iostream.readline():
+                    print(line)
+                    yield line
+                position = iostream.tell()
+                i += 1
+
+        response = Response(stream_with_context(generate()))
+        response.headers["Content-Type"] = "text/csv"
+
+        return response
 appbuilder.add_api(ControlPanelFormApi)
