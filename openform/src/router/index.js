@@ -16,6 +16,9 @@ import Login from './../components/Login'
 import OpenForm from './../pages/openform/openForm'
 
 import FormData from '../components/formData/FormData'
+import ReportForm from '../components/reportForm/ReportForm'
+import Collaborator from '../components/Collaborator/collaborator'
+import Publish from '../components/Publish'
 
 Vue.use(Router)
 
@@ -43,6 +46,9 @@ export default new Router({
         { path: '/form/:id/', name: "cp_form_summary", component: FormSummary},
         { path: '/', component: FormList},
         { path: '/formData', name: "FormData", component: FormData},
+        { path: '/reportForm', name: "ReportForm", component: ReportForm},
+        { path: '/publish', name: "Publish", component: Publish},
+        { path: '/collaborator', name: "Collaborator", component: Collaborator},
       ]
     },{
       path: '/openform',
