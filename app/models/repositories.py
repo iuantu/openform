@@ -85,6 +85,16 @@ class EventRepository(BaseRepository):
 
         return [c._asdict() for c in c]
 
+    def count_today(self, form_id, type) -> int:
+        return self.db.session\
+            .query(Event)\
+            .filter(
+                Event.form_id == form_id,
+                Event.type == type,
+                Event.created_at >= date.today().strftime("%Y-%m-%d")
+            )\
+            .count()
+
     def count(self, form_id, type) -> int:
         return self.db.session\
             .query(Event)\

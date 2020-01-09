@@ -84,6 +84,9 @@ class Field(Model, SoftDeleteableMixin):
             logger.debug("%s has %d errors", self.title, len(self.errors))
         return 0 == len(self.errors)
 
+    def to_text_value(self, val):
+        return str(val)
+
 class TextField(Field, MultipleMixin):
     __tablename__ = 'text_field'
 
@@ -94,6 +97,9 @@ class TextField(Field, MultipleMixin):
     __mapper_args__ = {
         'polymorphic_identity':'text_field',
     }
+
+    def to_text_value(self, val):
+        return val
 
 class Option(Model):
     id = Column(Integer, primary_key=True)
@@ -131,6 +137,27 @@ class SelectField(Field, MultipleMixin):
                 }
             )
         return formatted_values
+
+    def to_text_value(self, val):
+        options_map = {}
+        for opt in self.options:
+            options_map[opt.value] = opt
+
+        value = []
+        for v in val:
+            opt = options_map[v['value']]
+            print(opt.editable)
+            if opt.editable:
+                print('edit')
+                print(v)
+                value.append(v['text'])
+            else:
+                value.append(opt.label)
+
+        if "radio" == self.type:
+            return value[0]
+
+        return "，".join(value)
 
 @event.listens_for(SelectField.options, 'append', propagate=True)
 def selected_append_listener(target, value, initiator):

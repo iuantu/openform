@@ -1,3 +1,5 @@
+import math
+
 class PageRequest:
     def __init__(self, page: int, page_size: int=50, order_by: dict={}):
         self.page = page
