@@ -132,7 +132,6 @@ class ValueRepository(BaseRepository):
                 func.minute(Value.created_at).label("minute"),
             )\
             .filter(
-                Value.user_id == user_id,
                 Value.form_id == form_id,
                 Value.created_at >= timedelta(minutes=24)
             )\
