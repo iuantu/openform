@@ -177,12 +177,15 @@ export default {
       }
     });
 
-    const systemColumns = [
+    const sequenceColumns = [
       {
         property: 'sequence',
         label: '序号',
         width: '10',
       },
+    ];
+
+    const datetimeColumns = [
       {
         property: 'created_at',
         label: '创建时间',
@@ -194,7 +197,8 @@ export default {
         width: '100',
       },
     ];
-    this.columns = [...systemColumns, ...valueColumns];
+
+    this.columns = [...sequenceColumns, ...valueColumns, ...datetimeColumns];
 
     const fieldsMapping = {}
     data.fields.forEach((field) => {
