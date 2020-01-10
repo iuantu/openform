@@ -146,10 +146,7 @@ class SelectField(Field, MultipleMixin):
         value = []
         for v in val:
             opt = options_map[v['value']]
-            print(opt.editable)
             if opt.editable:
-                print('edit')
-                print(v)
                 value.append(v['text'])
             else:
                 value.append(opt.label)

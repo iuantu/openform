@@ -1,8 +1,10 @@
-let baseURL;
+export let baseURL;
+
 if (process.env.NODE_ENV === 'development') {
     baseURL = "http://localhost:5000";
 } else {
-    baseURL = "";
+    baseURL = "http://localhost:5000";
+    // baseURL = "";
 }
 
 class UIBase {
@@ -88,6 +90,7 @@ export class SecurityService {
 }
 
 export async function ofFetch(path = '', options = {}) {
+
     if (!path.substr(0, 1) == '/') {
         path = '/' + path
     }

@@ -147,8 +147,8 @@ import { ofFetch, baseURL } from '../functions'
 export default {
   data() {
     return {
-      "values": [],
-      "columns": [],
+      values: [],
+      columns: [],
       form: {},
       read_count_by_days: [],
       reads_today: 0,
@@ -169,13 +169,32 @@ export default {
     let val_res = await ofFetch(`/api/v1/cp/value/${this.$route.params.id}`);
     let val = await val_res.json();
 
-    this.columns = data.fields.map((column) => {
+    const valueColumns = data.fields.map((column) => {
       return {
         property: new String(column.id),
         label: column.title,
         width: "*",
       }
-    })
+    });
+
+    const systemColumns = [
+      {
+        property: 'sequence',
+        label: '序号',
+        width: '10',
+      },
+      {
+        property: 'created_at',
+        label: '创建时间',
+        width: '100',
+      },
+      {
+        property: 'updated_at',
+        label: '更新时间',
+        width: '100',
+      },
+    ];
+    this.columns = [...systemColumns, ...valueColumns];
 
     const fieldsMapping = {}
     data.fields.forEach((field) => {
@@ -186,12 +205,15 @@ export default {
       const row = {};
       for (const field of data.fields) {
         const fieldValue = v.values[field.id];
-        // const field = fieldsMapping[fieldValue.field_id];
         
         row[field.id] = this.fieldValue(field, fieldValue)
+        row.sequence = v.sequence;
+        row.created_at = v.created_at;
+        row.updated_at = v.updated_at;
       }
       return row;
     });
+    
 
     let summary_response = await ofFetch(`/api/v1/cp/form/${this.$route.params.id}/summary`)
     let summary = await summary_response.json();
@@ -202,7 +224,6 @@ export default {
     this.submit_count_by_days = this.createCountByDays(summary.submit_count_by_days);
     this.submit_count_by_mintes = this.createCountByMinutes(summary.submit_count_by_mintes);
     this.submit_count_today = summary.submit_count_today;
-    // debugger;
 
     this.isFetched = true;
     setTimeout(() => {
@@ -406,8 +427,7 @@ export default {
         const m = start.add(1, 'minutes');
         const key = m.format("m");
         labels.push(m.format("m"));
-        // console.log(m);
-        // console.log(key);
+
         if (map.has(key)) {
           submit.push(map.get(key).count);
         } else {
