@@ -1,14 +1,17 @@
-from app.models import (Form, Field,)
-from sqlalchemy import func
+import logging
+from . import (Form, Field, Value, Event, PageRequest)
+from sqlalchemy import func, Date, cast
+from datetime import date, timedelta
+from typing import List
 
 class BaseRepository:
     def __init__(self, db):
         self.db = db
 
     def order_by(self, query, page_request, model):
-
-        for k, v in page_request.order_by.items():
-            query = query.order_by(getattr(getattr(model, k), v)())
+        if page_request.order_by:
+            for k, v in page_request.order_by.items():
+                query = query.order_by(getattr(getattr(model, k), v)())
 
         return query.limit(page_request.page_size)\
             .offset((page_request.page - 1) * page_request.page_size)
@@ -56,3 +59,127 @@ class FieldRepository:
             .query(Field)\
             .filter(Field.id==field_id)\
             .first()
+
+class EventRepository(BaseRepository):
+    def count_by_8_days(self, form_id, type) -> int:
+        c = self.db.session\
+            .query(
+                func.count(Event.created_at).label("count"),
+                func.year(Event.created_at).label("year"),
+                func.month(Event.created_at).label("month"),
+                func.day(Event.created_at).label("day"),
+            )\
+            .filter(
+                Event.form_id == form_id,
+                Event.created_at >= timedelta(days=8)
+            )\
+            .order_by(func.max(Event.created_at).desc())\
+            .group_by(
+                func.year(Event.created_at),
+                func.month(Event.created_at),
+                func.day(Event.created_at)
+            )\
+            .all()
+
+        logging.debug("count_by_8_days")
+
+        return [c._asdict() for c in c]
+
+    def count_today(self, form_id, type) -> int:
+        return self.db.session\
+            .query(Event)\
+            .filter(
+                Event.form_id == form_id,
+                Event.type == type,
+                Event.created_at >= date.today().strftime("%Y-%m-%d")
+            )\
+            .count()
+
+    def count(self, form_id, type) -> int:
+        return self.db.session\
+            .query(Event)\
+            .filter(
+                Event.form_id == form_id,
+                Event.type == type
+            )\
+            .count()
+
+class ValueRepository(BaseRepository):
+
+    def find(self, form_id, page_request: PageRequest):
+        return self.order_by(
+            self.db\
+            .session\
+            .query(Value)\
+            .filter(Value.form_id==form_id),
+
+            page_request,
+            Value
+        )\
+            .all()
+
+    def count(self, form_id):
+        return  self.db\
+            .session\
+            .query(Value)\
+            .filter(Value.form_id==form_id)\
+            .count()
+
+    def count_by_24_minute(self, user_id, form_id) -> int:
+        c = self.db.session\
+            .query(
+                func.count(Value.id).label("count"),
+                func.minute(Value.created_at).label("minute"),
+            )\
+            .filter(
+                Value.form_id == form_id,
+                Value.created_at >= timedelta(minutes=24)
+            )\
+            .order_by(func.max(Value.id).desc())\
+            .group_by(
+                func.minute(Value.created_at),
+            )\
+            .all()
+
+        return [c._asdict() for c in c]
+
+    def count_by_8_days(self, user_id, form_id):
+        c = self.db.session\
+            .query(
+                func.count(Value.id).label("count"),
+                func.year(Value.created_at).label("year"),
+                func.month(Value.created_at).label("month"),
+                func.day(Value.created_at).label("day"),
+            )\
+            .filter(
+                Value.user_id == user_id,
+                Value.form_id == form_id,
+                Value.created_at >= timedelta(days=8)
+            )\
+            .order_by(func.max(Value.created_at).desc())\
+            .group_by(
+                func.year(Value.created_at),
+                func.month(Value.created_at),
+                func.day(Value.created_at)
+            )\
+            .all()
+
+        return [c._asdict() for c in c]
+
+    def count_all(self, user_id, form_id) -> int:
+        return self.db.session\
+            .query(Value)\
+            .filter(
+                Value.user_id==user_id,
+                Value.form_id==form_id
+            )\
+            .count()
+
+    def count_today(self, user_id, form_id) -> int:
+        return self.db.session\
+            .query(Value)\
+            .filter(Value.created_at >= date.today().strftime("%Y-%m-%d"),
+                Value.user_id==user_id,
+                Value.form_id==form_id,
+            )\
+            .count()

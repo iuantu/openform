@@ -7,8 +7,9 @@ from sqlalchemy import (
     JSON,
 )
 from .mixins import TimeStampMixin
+from .user_agent import UserAgentMixin
 
-class Value(Model, TimeStampMixin):
+class Value(Model, TimeStampMixin, UserAgentMixin):
     id = Column(Integer, primary_key=True)
 
     sequence = Column(Integer)
@@ -29,16 +30,3 @@ class Value(Model, TimeStampMixin):
         super().__init__()
         for k, v in kwargs.items():
             setattr(self, k, v)
-
-class UserAgent:
-    def __init__(self, ip, browser, browser_version, os, os_version, device,
-        device_brand, device_model):
-
-        self.ip = ip
-        self.browser = browser
-        self.browser_version = browser_version
-        self.os = os
-        self.os_version = os_version
-        self.device = device
-        self.device_brand = device_brand
-        self.device_model = device_model

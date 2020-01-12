@@ -1,0 +1,5 @@
+SQLALCHEMY_DATABASE_URI=mysql+mysqlconnector://root:@localhost:3306/openform
+OSS_ACCESS_KEY_ID=
+OSS_ACCESS_KEY_SECRET=
+OSS_BUCKET=
+OSS_ENDPOINT=

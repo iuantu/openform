@@ -9,7 +9,7 @@
               <router-link :to="{ path: '/' }">表单</router-link>
             </el-menu-item>
             <el-menu-item index="2">
-              <router-link :to="'FormData'">数据</router-link>
+              <router-link :to="'DataForm'">数据</router-link>
             </el-menu-item>
             <el-menu-item index="3">
               <router-link :to="'ReportForm'">报表</router-link>
