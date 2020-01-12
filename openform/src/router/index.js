@@ -30,18 +30,16 @@ export default new Router({
       name: 'register',
       component: Register,
     },{
-      path: '/',
+      path: '/openFormView',
       name: 'OpenFormView',
       component: OpenFormView,
       children: [
         { path: '/form/:id/', name: "cp_form_summary", component: FormSummary},
-        { path: '/', component: FormList},
         { path: '/dataForm', name: "DataForm", component: DataForm},
         { path: '/reportForm', name: "ReportForm", component: ReportForm},
         { path: '/publish', name: "Publish", component: Publish},
         { path: '/collaborator', name: "Collaborator", component: Collaborator},
       ]
-    },{
     },
     {
       path: '/openform',

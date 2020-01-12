@@ -5,9 +5,9 @@
         </el-aside>
         <el-main>
           <el-menu :default-active="activeIndex" class="nav" mode="horizontal" @select="onSelect">
-            <el-menu-item index="1">
-              <router-link :to="{ path: '/' }">表单</router-link>
-            </el-menu-item>
+<!--            <el-menu-item index="1">-->
+<!--              <router-link :to="{ path: '/' }">表单</router-link>-->
+<!--            </el-menu-item>-->
             <el-menu-item index="2">
               <router-link :to="'DataForm'">数据</router-link>
             </el-menu-item>
@@ -33,7 +33,7 @@
 
 <script>
 export default {
-  name: "openFormView",
+  name: "OpenFormView",
   components: {
   },
   data() {
