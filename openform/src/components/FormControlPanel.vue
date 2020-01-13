@@ -38,19 +38,19 @@ export default {
         },
         {
           label: "数据",
-          name: "cp_form_data"
+          name: "cp_data_form"
         },
         {
           label: "报表",
-          name: "cp_form_reporter"
+          name: "cp_report_form"
         },
         {
           label: "发布",
-          name: "cp_form_publish"
+          name: "cp_publish_form"
         },
         {
           label: "协作",
-          name: "cp_form_collabration"
+          name: "cp_collaborator_form"
         }
       ]
     }

@@ -29,18 +29,19 @@ export default new Router({
       path: '/register',
       name: 'register',
       component: Register,
-    },{
+    },
+    /*{
       path: '/openFormView',
       name: 'OpenFormView',
+      redirect: '/dataForm',
       component: OpenFormView,
       children: [
-        { path: '/form/:id/', name: "cp_form_summary", component: FormSummary},
         { path: '/dataForm', name: "DataForm", component: DataForm},
         { path: '/reportForm', name: "ReportForm", component: ReportForm},
         { path: '/publish', name: "Publish", component: Publish},
         { path: '/collaborator', name: "Collaborator", component: Collaborator},
       ]
-    },
+    },*/
     {
       path: '/openform',
       name: 'OpenForm',
@@ -55,8 +56,13 @@ export default new Router({
       children: [
         { path: 'form/', name: 'cp_form_list', component: FormList},
         { path: 'form/:id/', name: "cp_form_summary", component: FormSummary},
-        { path: 'data', name: "cp_form_data", component: FormData},
+        // { path: 'data', name: "cp_form_data", component: FormData},
         { path: 'summary', name: "cp_form_summary", component: FormSummary},
+        
+        { path: 'data', name: "cp_data_form", component: DataForm},
+        { path: 'report', name: "cp_report_form", component: ReportForm},
+        { path: 'publish', name: "cp_publish_form", component: Publish},
+        { path: 'collaborator', name: "cp_collaborator_form", component: Collaborator},
       ]
     },
   ]
