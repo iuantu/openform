@@ -5,6 +5,7 @@ from app.services.assembler import FormAssembler
 from app.utils import to_camel_case
 from app.models import UserAgent, Event, EventType
 from app.models.page import Pageable
+from typing import List
 
 class FormService(object):
     form_assembler = FormAssembler()
@@ -100,7 +101,9 @@ class FormService(object):
             return v
         return None
 
-    def fetch_values(self, form_id: int, page: int = 0, page_size: int = 50):
+    def fetch_values(self, form_id: int, page: int = 0, 
+        page_size: int = 50) -> List[models.Value]:
+
         values = db\
             .session\
             .query(models.Value)\

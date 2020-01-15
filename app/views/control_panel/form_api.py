@@ -37,6 +37,8 @@ class ControlPanelFormApi(BaseApi):
         """Create a form
         ---
         post:
+          summary: 创建表单
+          description: 创建表单
           requestBody:
             required: true
             content:
@@ -62,6 +64,7 @@ class ControlPanelFormApi(BaseApi):
         """Create a form
         ---
         put:
+          summary: 更新表单
           requestBody:
             required: true
             content:
@@ -79,14 +82,14 @@ class ControlPanelFormApi(BaseApi):
         
         return self.response(200, **{})
 
-    @expose('/{id}/publish', methods=['DELETE'])
+    @expose('/{id}/publish', methods=['POST'])
     def publish(self):
         """Publish a form
         ---
-        delete:
+        post:
+          summary: 发布表单
           responses:
             200:
-              description: Publish a form
               content:
                 application/json:
                   schema:
@@ -100,6 +103,7 @@ class ControlPanelFormApi(BaseApi):
         """Delete a form
         ---
         delete:
+          summary: 取消表单发布
           responses:
             200:
               description: Delete a form
@@ -120,16 +124,15 @@ class ControlPanelFormApi(BaseApi):
         """Get form list
         ---
         get:
+          summary: 查询表单列表
           responses:
             200:
-              description: Get form list
               content:
                 application/json:
-                schema:
-                  type: object
-                  properties:
-                    message:
-                      type: string
+                  schema:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Form"
         """
         forms = self.form_service.fetch_forms(
             current_user.id, PageRequest.create(request.args)
@@ -146,11 +149,8 @@ class ControlPanelFormApi(BaseApi):
               description: Get a form
               content:
                 application/json:
-                schema:
-                  type: object
-                  properties:
-                    message:
-                      type: string
+                  schema:
+                    $ref: "#/components/schemas/Form"
         """
         
         return self.response(200, **{})
@@ -177,6 +177,17 @@ class ControlPanelFormApi(BaseApi):
     @jwt_required
     @expose("/<form_id>/export", methods=["GET"])
     def export(self, form_id):
+        """
+        ---
+        get:
+          description: "导出CSV文件"
+          responses:
+            200:
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Form"
+        """
         # TODO: 根据 Request Content Type 来导出返回的内容，例如JSON
         form_id = int(form_id)
         count = self.value_repository.count(form_id)
