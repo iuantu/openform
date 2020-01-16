@@ -17,6 +17,12 @@ class FormApi(BaseApi):
         """Get a form 
         ---
         get:
+          parameters:
+          - name: form_id
+            description: "表单ID"
+            required: true
+            type: integer
+            format: int64
           responses:
             '200':
               description: Get a form
@@ -41,16 +47,13 @@ class FormApi(BaseApi):
         """Submit a form 
         ---
         post:
+          description: "提交表单数据"
           responses:
             200:
-              description: Submit form list
               content:
                 application/json:
-                schema:
-                  type: object
-                  properties:
-                    message:
-                      type: string
+                  schema:
+                    $ref: "#/components/schemas/Value"
         """
         pass
 

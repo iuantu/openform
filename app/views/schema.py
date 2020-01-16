@@ -246,10 +246,38 @@ SCHEMAS = {
                 "format": "int64",
                 "description": "表单外键ID",
             },
-            "field_id": {
+            "values": {
+                "type": "object",
+                "description": "JSON数据"
+            },
+            "user_id": {
                 "type": "integer",
                 "format": "int64",
-                "description": "字段外键ID",
+                "description": "用户外键ID，可以是null",
+            },
+            "ip": {
+                "type": "string",
+                "description": "提交用户的IP地址",
+            },
+            "ua_browser": {
+                "type": "string",
+                "description": "用户浏览器",
+            },
+            "ua_browser_version": {
+                "type": "string",
+                "description": "用户浏览器版本",
+            },
+            "ua_device": {
+                "type": "string",
+                "description": "用户设备",
+            },
+            "ua_device_brand": {
+                "type": "string",
+                "description": "用户设备品牌",
+            },
+            "ua_device_model": {
+                "type": "string",
+                "description": "用户设备型号",
             },
             "created_at": {
                 "type": "string",
@@ -259,6 +287,52 @@ SCHEMAS = {
                 "type": "string",
                 "format": "date-time"
             }
+        }
+    },
+    "User": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer",
+                "format": "int64",
+                "description": "用户主键ID"
+            }
+        }
+    },
+    "JWT": {
+        "type": "object",
+        "properties": {
+            "access_token": {
+                "type": "string"
+            },
+            "refresh_token": {
+                "type": "string"
+            }
+        }
+    },
+    "Signature": {
+        "type": "object",
+        "properties": {
+            "access_key_id": {
+                "type": "string",
+                "description": "阿里云Access Key ID"
+            },
+            "policy": {
+                "type": "string",
+                "description": "阿里云上传策略, base64"
+            },
+            "signature": {
+                "type": "string",
+                "description": "阿里云上传签名"
+            },
+            "key": {
+                "type": "string",
+                "description": "上传使用的Key"
+            },
+            "endpoint": {
+                "type": "string",
+                "description": "阿里云上传的域名"
+            },
         }
     },
     "Constraint": {

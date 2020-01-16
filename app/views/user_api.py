@@ -14,19 +14,21 @@ class UserApi(BaseApi):
 
     @expose('/', methods=['POST'])
     def register(self):
-        """Create a form
+        """注册用户
         ---
         post:
+          description: "注册用户"
           responses:
             200:
-              description: Create a form
               content:
                 application/json:
-                schema:
-                  type: object
-                  properties:
-                    message:
-                      type: string
+                  schema:
+                    type: object
+                    properties:
+                      jwt:
+                        $ref: "#/components/schemas/JWT"
+                      user:
+                        $ref: "#/components/schemas/User"
         """
         registration = request.json
         username = registration["username"]
@@ -68,11 +70,8 @@ class UserApi(BaseApi):
               description: Get user
               content:
                 application/json:
-                schema:
-                  type: object
-                  properties:
-                    message:
-                      type: string
+                  schema:
+                    $ref: "#/components/schemas/User"
         """
         user = self.appbuilder.sm.find_user(username=current_user.username)
         dto = user.asdict()

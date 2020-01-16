@@ -58,8 +58,29 @@ class StorageAPI(BaseApi):
 
     resource_name = 'storage'
 
-    @expose("signature", methods=["POST"])
+    @expose("/signature", methods=["POST"])
     def signature(self):
+        """
+        get:
+          parameters:
+          - name: "key"
+            in: "formData"
+            description: "创建阿里云上传的签名"
+            required: true
+            type: array
+              description: "文件名的数组"
+              items:
+                type: "string"
+          responses:
+            200:
+              description: Get a form
+              content:
+                application/json:
+                  schema:
+                    type: array
+                      items:
+                        $ref: "#/components/schemas/Signature"
+        """
         keys = request.form.getlist("key[]")
         signatures = [(Signature(key, OSS_ACCESS_KEY_SECRET)).asdict() for key in keys]
         return jsonify(signatures)
