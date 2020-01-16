@@ -166,7 +166,7 @@ export default {
     let data = await response.json();
     this.form = data;
 
-    let val_res = await ofFetch(`/api/v1/cp/value/${this.$route.params.id}`);
+    let val_res = await ofFetch(`/api/v1/cp/form/${this.$route.params.id}/value`);
     let val = await val_res.json();
 
     const valueColumns = data.fields.map((column) => {
