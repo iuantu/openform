@@ -174,6 +174,14 @@ class ControlPanelFormApi(BaseApi):
             "form": form.asdict(),
         })
 
+    @expose('/<form_id>/value', methods=['GET'])
+    def value(self, form_id):
+        page_request = PageRequest.create(request.args)
+        value = self.form_service.fetch_values(
+            form_id, page_request
+        )
+        return jsonify(value.asdict())
+
     @jwt_required
     @expose("/<form_id>/export", methods=["GET"])
     def export(self, form_id):
@@ -210,10 +218,12 @@ class ControlPanelFormApi(BaseApi):
             return ex
         
         def generate():
-            args = [int(form_id), PageRequest.create(request.args)]
+            paginator = PageRequest.create(request.args)
+            args = [int(form_id), paginator]
             i = 0
             position = 0
-            while i < count:
+            while i < paginator.page_size:
+                print(i)
                 args[1].page = i + 1
                 values = self.value_repository.find(*args)
                 if i == 0:
@@ -228,7 +238,6 @@ class ControlPanelFormApi(BaseApi):
                 
                 iostream.seek(position)
                 for line in iostream.readline():
-                    print(line)
                     yield line
                 position = iostream.tell()
                 i += 1

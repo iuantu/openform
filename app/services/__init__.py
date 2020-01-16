@@ -19,6 +19,7 @@ class FormService(object):
             self.db = a_db
         self.form_repository = models.FormRepository(self.db)
         self.field_repository = models.FieldRepository(self.db)
+        self.value_repository = models.ValueRepository(self.db)
 
     def add_new_form(self, dto) -> models.Form:
         form = self.form_assembler.to_model(models.Form(), dto)
@@ -103,19 +104,8 @@ class FormService(object):
             return v
         return None
 
-    def fetch_values(self, form_id: int, page: int = 0, 
-        page_size: int = 50) -> List[models.Value]:
+    def fetch_values(self, form_id: int, page_request) -> Pageable:
+        values = self.value_repository.find(form_id, page_request)
+        count = self.value_repository.count(form_id)
 
-        values = db\
-            .session\
-            .query(models.Value)\
-            .order_by(models.Value.id.desc())\
-            .filter(models.Value.form_id==form_id)\
-            .limit(page_size)\
-            .offset((page - 1) * page_size)\
-            .all()
-
-        return {
-            "data": [v.asdict() for v in values],
-            "count": 0
-        }
+        return Pageable(values, page_request.create_result(count))

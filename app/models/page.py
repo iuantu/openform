@@ -21,9 +21,9 @@ class PageRequest:
             order_by
         )
 
-    def create_result(self, count):
-        pages = math.ceil(count / self.page_size)
-        result = PageResult(self.page, pages, count, self.page_size)
+    def create_result(self, total):
+        pages = math.ceil(total / self.page_size)
+        result = PageResult(self.page, pages, total, self.page_size)
         return result
 
 class PageResult:
