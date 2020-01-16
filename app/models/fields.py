@@ -1,3 +1,4 @@
+import re
 import logging
 from flask_appbuilder import Model
 from sqlalchemy.orm import relationship
@@ -73,15 +74,13 @@ class Field(Model, SoftDeleteableMixin):
 
     def validate(self):
         self.errors = []
-        logger.debug("validate %s" % self.title)
+
         for constraint in self.constraints:
             try:
                 constraint.validate(self.value)
             except ValidationError as e:
                 self.errors.append(e)
 
-        if len(self.errors) > 0:
-            logger.debug("%s has %d errors", self.title, len(self.errors))
         return 0 == len(self.errors)
 
     def to_text_value(self, val):
@@ -106,6 +105,16 @@ class TextField(Field, TextFieldMixin):
 class PhoneField(Field, TextFieldMixin):
     vertify = Column(Boolean, default=False)
     from_wechat = Column(Boolean, default=False)
+
+    def validate(self):
+        validated = super().validate()
+        matched = re.match(r"^1[35678]\d{9}$", self.value)
+
+        if not matched:
+            self.errors.append(ValidationError("请输入正确的手机号码"))
+            return False
+        
+        return validated
 
     __tablename__ = 'text_field'
     __mapper_args__ = {
