@@ -6,7 +6,7 @@ from .form import Form
 from .value import Value
 from .user_agent import UserAgent
 from .event import Event, EventType
-from .fields import Field, TextField, SelectField
+from .fields import Field, TextField, SelectField, PhoneField
 from .mixins import SoftDeleteableMixin, TimeStampMixin, MultipleMixin
 from .constraints import RequiredConstraint, RangeConstraint, MinConstraint, MaxConstraint
 from .page import PageRequest, PageResult

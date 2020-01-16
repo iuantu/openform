@@ -38,8 +38,7 @@ class FormService(object):
     def fetch_form(self, form_id, user, user_agent) -> models.Form:
         form = self.form_repository.find_one(form_id)
         form.record_count += 1
-        print(user.is_anonymous)
-        user_id = not user.is_anonymous and user.id or None
+        user_id = (user and not user.is_anonymous) and user.id or None
         event = Event(type=EventType.VIEW_FORM, user_id=user_id or None, form_id=form_id)
         event.assemble_from_user_agent(user_agent)
         db.session.add(event)
@@ -84,7 +83,7 @@ class FormService(object):
 
         return field
 
-    def submit(self, form: models.Form, user_agent: UserAgent):
+    def submit(self, form: models.Form, user, user_agent: UserAgent):
         """ 提交表单
         """
        
@@ -93,7 +92,7 @@ class FormService(object):
             
             v = form.values()
             v.assemble_from_user_agent(user_agent)
-            user_id = not user.is_anonymous and user.id or None
+            user_id = (user and not user.is_anonymous) and user.id or None
             v.user_id = user_id
 
             form.increase_value_sequence()

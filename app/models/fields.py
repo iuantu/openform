@@ -87,19 +87,30 @@ class Field(Model, SoftDeleteableMixin):
     def to_text_value(self, val):
         return str(val)
 
-class TextField(Field, MultipleMixin):
-    __tablename__ = 'text_field'
-
-    id = Column(Integer, ForeignKey('field.id'), primary_key=True)
+class TextFieldMixin(MultipleMixin):
     placeholder = Column(String(1000), nullable=True)
     default = Column(String(1000), nullable=True)
 
+    def to_text_value(self, val):
+        return val
+
+class TextField(Field, TextFieldMixin):
+    id = Column(Integer, ForeignKey('field.id'), primary_key=True)
+
+    __tablename__ = 'text_field'
     __mapper_args__ = {
         'polymorphic_identity':'text_field',
     }
 
-    def to_text_value(self, val):
-        return val
+
+class PhoneField(Field, TextFieldMixin):
+    vertify = Column(Boolean, default=False)
+    from_wechat = Column(Boolean, default=False)
+
+    __tablename__ = 'text_field'
+    __mapper_args__ = {
+        'polymorphic_identity':'phone_field',
+    }
 
 class Option(Model):
     id = Column(Integer, primary_key=True)
