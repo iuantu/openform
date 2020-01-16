@@ -1,9 +1,9 @@
 export let baseURL;
 
 if (process.env.NODE_ENV === 'development') {
-    baseURL = "http://localhost:5000";
+    baseURL = `${document.location.protocol}//${document.location.hostname}:5000`;
 } else {
-    baseURL = "";
+    baseURL = `${document.location.protocol}//${document.location.host}`;
 }
 
 class UIBase {
