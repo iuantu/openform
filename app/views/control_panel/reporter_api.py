@@ -8,8 +8,18 @@ from flask import (
 class ControlPanelReporterApi(BaseApi):
     resource_name = "cp/form/<form_id>/reporter"
 
-    @expose('')
+    @expose('/')
     def get(self, form_id):
+        """
+        get:
+          description: "查询报表"
+          responses:
+            200:
+              content:
+                application/json:
+                  schema:
+                    type: "string"
+        """
         data = {}
         return jsonify(data)
 
