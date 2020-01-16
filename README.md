@@ -4,6 +4,8 @@ Open Form 是一个开源、易用的表单构建器。可以帮助你轻松的�
 
 [在线使用](https://oform.cn)
 
+![预览](https://github.com/iuantu/openform/raw/master/doc/assets/preview.png)
+
 # 特性
 
 - 表单设计
