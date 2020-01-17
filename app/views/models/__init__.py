@@ -144,7 +144,6 @@ class TextFieldView(FieldView):
 
     @property
     def value(self):
-        
         if self.field.bind_parameter:
             v = self.request.get(self.field.bind_parameter)
         else:

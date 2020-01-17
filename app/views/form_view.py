@@ -6,6 +6,32 @@ from app.services import FormService
 from app.views.models import FormViewModelAssembler
 from app.views.utils import to_user_agent
 
+class ParameterContainer:
+    def __init__(self):
+        pass
+
+    def get(self, name):
+        query_string = request.args.get(name, None)
+        if query_string:
+            return query_string
+        
+        form = request.form.get(name, None)
+        if form:
+            return form
+        
+        return None
+
+    def getlist(self, name):
+        query_string = request.args.getlist(name, None)
+        if query_string:
+            return query_string
+        
+        form = request.form.getlist(name, None)
+        if form:
+            return form
+        
+        return []
+
 class FormView(BaseView):
     form_service = FormService()
     route_base = '/form'
@@ -15,7 +41,7 @@ class FormView(BaseView):
     def form(self, form_id):
         user_agent = to_user_agent(request)
         form = self.form_service.fetch_form(form_id, g.user, user_agent)
-        form_view = self.assembler.to_view_model(form, request.args)
+        form_view = self.assembler.to_view_model(form, ParameterContainer())
 
         if "POST" == request.method:
             

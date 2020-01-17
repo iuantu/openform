@@ -54,5 +54,5 @@ class Form(Model, SoftDeleteableMixin, TimeStampMixin):
 
     def increase_value_sequence(self):
         if not self.value_sequence:
-            self.value_sequence = 1
+            self.value_sequence = 0
         self.value_sequence += 1
