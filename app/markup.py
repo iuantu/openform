@@ -94,7 +94,7 @@ class FormInput(Element):
 
     @property
     def attributes(self):
-        return ['id', 'name']
+        return ['id', 'name', "disabled"]
 
 class TextArea(FormInput):
 

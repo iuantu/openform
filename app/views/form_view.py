@@ -15,7 +15,7 @@ class FormView(BaseView):
     def form(self, form_id):
         user_agent = to_user_agent(request)
         form = self.form_service.fetch_form(form_id, g.user, user_agent)
-        form_view = self.assembler.to_view_model(form, request.form)
+        form_view = self.assembler.to_view_model(form, request.args)
 
         if "POST" == request.method:
             

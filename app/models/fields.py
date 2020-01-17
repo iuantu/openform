@@ -28,6 +28,7 @@ class Field(Model, SoftDeleteableMixin):
     title = Column(String(500))
     discriminator = Column(String(50))
     constraints = relationship('Constraint')
+    readonly = Column(Boolean, default=False)
 
     layout_row_index = Column(Integer)
     layout_column_index = Column(Integer)
@@ -89,6 +90,7 @@ class Field(Model, SoftDeleteableMixin):
 class TextFieldMixin(MultipleMixin):
     placeholder = Column(String(1000), nullable=True)
     default = Column(String(1000), nullable=True)
+    bind_parameter = Column(String(255), nullable=True)
 
     def to_text_value(self, val):
         return val
