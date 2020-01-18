@@ -1,8 +1,9 @@
 import logging
-from . import (Form, Field, Value, Event, PageRequest)
+from . import (Form, Field, Value, Event, PageRequest, SelectField)
 from sqlalchemy import func, Date, cast
 from datetime import date, timedelta
 from typing import List
+from sqlalchemy import distinct, and_
 
 class BaseRepository:
     def __init__(self, db):
@@ -49,12 +50,17 @@ class FormRepository(BaseRepository):
             .first()
         return count[0]
 
-class FieldRepository:
-    def __init__(self, db):
-        self.db = db
+    
+    
+    def find_all_all(self, user_id):
+         return self.db.session.query(Form).filter(Form.user_id == user_id).all()
+        
+class FieldRepository(BaseRepository):
+#     def __init__(self, db):
+#         self.db = db
 
     def find_one(self, field_id: int):
-        return db\
+        return self.db\
             .session\
             .query(Field)\
             .filter(Field.id==field_id)\
@@ -183,3 +189,42 @@ class ValueRepository(BaseRepository):
                 Value.form_id==form_id,
             )\
             .count()
+        def count(self):
+        return self.db.session.query(func.count(Field.id)).scalar()
+
+    def find_by_form_id_and_datetime(self, form_id, datetime: str):
+        return self.db\
+            .session\
+            .query(Field)\
+            .filter(and_(Field.form_id == form_id, Field.created_at >= datetime))\
+            .all()
+
+    def find_all(self, form_id, page_request):
+
+        if not "id" in page_request.order_by:
+            page_request.order_by["id"] = "desc"
+
+        return self.order_by(
+            self.db\
+                .session\
+                .query(Field)\
+                .filter(Field.form_id == form_id),
+
+            page_request,
+            Field
+        ) \
+            .all()
+
+    def count_all(self, form_id):
+        count = self.db\
+            .session\
+            .query(func.count(Field.id).label("count"))\
+            .filter(Field.form_id == form_id)\
+            .first()
+        return count[0]
+
+class SelectFieldRepository(BaseRepository):
+
+    def count(self):
+        return self.db.session.query(func.count(distinct(SelectField.id))).scalar()
+    
