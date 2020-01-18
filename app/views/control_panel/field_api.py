@@ -1,5 +1,6 @@
 from flask_appbuilder.api import BaseApi, expose
 from app import appbuilder
+from app.models import PageRequest
 from flask import (
     request,
     jsonify
@@ -63,4 +64,26 @@ class ControlPanelFieldApi(BaseApi):
         field = self.form_service.fetch_field(field_id)
         return jsonify(field.asdict())
 
+    @expose('/list_by_form_id/<from_id>', methods=['GET'])
+    def get_list(self, form_id):
+        """
+            表单数据查询接口，包括排序
+        :param form_id:
+        :return:
+        """
+
+        fields = self.form_service.fetch_fields(form_id, PageRequest.create(request.args))
+        return jsonify(fields.asdict())
+
+    @expose('/add_by_form_id/<from_id>', methods=['POST'])
+    def add_by_form_id(self, form_id):
+        """
+            插入提条数据到表单
+        :param form_id:
+        :return:
+        """
+        field = request.json.copy()
+        field["form_id"] = form_id
+        form = self.form_service.add_new_field(field)
+        return jsonify(form.asdict()), 200
 appbuilder.add_api(ControlPanelFieldApi)
