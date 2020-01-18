@@ -10,6 +10,12 @@ import OpenFormSetting from './../components/openform/openForm'
 import Login from './../components/Login'
 import OpenForm from './../pages/openform/openForm'
 
+import OpenFormView from '../pages/openformView/openformView'
+import DataForm from '../components/dataForm/DataForm'
+import ReportForm from '../components/reportForm/ReportForm'
+import Collaborator from '../components/Collaborator/collaborator'
+import Publish from '../components/Publish'
+
 Vue.use(Router)
 
 export default new Router({
@@ -24,6 +30,18 @@ export default new Router({
       name: 'register',
       component: Register,
     },
+    /*{
+      path: '/openFormView',
+      name: 'OpenFormView',
+      redirect: '/dataForm',
+      component: OpenFormView,
+      children: [
+        { path: '/dataForm', name: "DataForm", component: DataForm},
+        { path: '/reportForm', name: "ReportForm", component: ReportForm},
+        { path: '/publish', name: "Publish", component: Publish},
+        { path: '/collaborator', name: "Collaborator", component: Collaborator},
+      ]
+    },*/
     {
       path: '/openform',
       name: 'OpenForm',
@@ -36,9 +54,15 @@ export default new Router({
     {
       path: '/cp/form/:id', component: FormControlPanel,
       children: [
-        { path: 'data', name: "cp_form_data", component: FormData},
+        { path: 'form/', name: 'cp_form_list', component: FormList},
+        { path: 'form/:id/', name: "cp_form_summary", component: FormSummary},
+        // { path: 'data', name: "cp_form_data", component: FormData},
         { path: 'summary', name: "cp_form_summary", component: FormSummary},
         
+        { path: 'data', name: "cp_data_form", component: DataForm},
+        { path: 'report', name: "cp_report_form", component: ReportForm},
+        { path: 'publish', name: "cp_publish_form", component: Publish},
+        { path: 'collaborator', name: "cp_collaborator_form", component: Collaborator},
       ]
     },
   ]
