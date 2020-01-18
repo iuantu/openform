@@ -9,7 +9,7 @@ export async function loadForFormSummary(formId) {
   const valueResponse = await ofFetch(`/api/v1/cp/form/${formId}/value`);
   const value = await valueResponse.json();
 
-  const { columns, values } = assembleToDataTable(form, value.data);
+  const { columns, values } = assembleToDataTable(form, value);
 
 
   return {
