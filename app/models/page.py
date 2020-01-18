@@ -6,6 +6,12 @@ class PageRequest:
         self.page_size = page_size
         self.order_by = order_by
 
+    def order(self, field, direction):
+        field_key = "%s" % (field,)
+
+        if not field_key in self.order_by:
+            self.order_by[field_key] = direction
+
     @staticmethod
     def create(request):
         order_by = {}

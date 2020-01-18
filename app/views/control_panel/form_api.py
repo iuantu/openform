@@ -177,6 +177,8 @@ class ControlPanelFormApi(BaseApi):
     @expose('/<form_id>/value', methods=['GET'])
     def value(self, form_id):
         page_request = PageRequest.create(request.args)
+        page_request.order("created_at", "desc")
+
         value = self.form_service.fetch_values(
             form_id, page_request
         )
