@@ -32,26 +32,26 @@ export default {
           label: '概述',
           name: 'cp_form_summary'
         },
-        {
-          label: "编辑",
-          name: "cp_form_edit"
-        },
+        // {
+        //   label: "编辑",
+        //   name: "cp_form_edit"
+        // },
         {
           label: "数据",
           name: "cp_form_data"
         },
-        {
-          label: "报表",
-          name: "cp_form_reporter"
-        },
-        {
-          label: "发布",
-          name: "cp_form_publish"
-        },
-        {
-          label: "协作",
-          name: "cp_form_collabration"
-        }
+        // {
+        //   label: "报表",
+        //   name: "cp_form_reporter"
+        // },
+        // {
+        //   label: "发布",
+        //   name: "cp_form_publish"
+        // },
+        // {
+        //   label: "协作",
+        //   name: "cp_form_collabration"
+        // }
       ]
     }
   },

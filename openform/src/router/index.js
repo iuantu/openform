@@ -38,7 +38,7 @@ export default new Router({
       children: [
         { path: 'data', name: "cp_form_data", component: FormData},
         { path: 'summary', name: "cp_form_summary", component: FormSummary},
-        
+        { path: 'data', name: "cp_form_data", component: FormData},
       ]
     },
   ]

@@ -39,23 +39,7 @@
       </el-row>
       <el-row>
         <el-col>
-          <el-table :data="values" style="width: 100%;">
-            <el-table-column
-              v-for="(column, key) in columns"
-              :key="key"
-              :prop="column.property"
-              :label="column.label"
-              width="180">
-              <template slot-scope="scope">
-                <div v-if="!Array.isArray(scope.row[scope.column.property])">{{scope.row[scope.column.property]}}</div>
-                <div v-if="Array.isArray(scope.row[scope.column.property])">
-                  <ul>
-                    <li v-for="(value, key) in scope.row[scope.column.property]" :key="key">{{value}}</li>
-                  </ul>
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
+          <DataTable v-bind:values="values" v-bind:columns="columns" />
         </el-col>
       </el-row>
     </el-col>
@@ -143,6 +127,8 @@
 import moment from 'moment'
 import echarts from 'echarts'
 import { ofFetch, baseURL } from '../functions'
+import { loadForFormSummary } from './service/form'
+import DataTable from './DataTable'
 
 export default {
   data() {
@@ -160,66 +146,18 @@ export default {
       baseURL: baseURL,
     }
   },
+  components: {
+    DataTable: DataTable
+  },
 
   async created() {
-    let response = await ofFetch(`/api/v1/form/${this.$route.params.id}`);
-    let data = await response.json();
-    this.form = data;
-
-    let val_res = await ofFetch(`/api/v1/cp/form/${this.$route.params.id}/value`);
-    let val = await val_res.json();
-
-    const valueColumns = data.fields.map((column) => {
-      return {
-        property: new String(column.id),
-        label: column.title,
-        width: "*",
-      }
-    });
-
-    const sequenceColumns = [
-      {
-        property: 'sequence',
-        label: '序号',
-        width: '10',
-      },
-    ];
-
-    const datetimeColumns = [
-      {
-        property: 'created_at',
-        label: '创建时间',
-        width: '100',
-      },
-      {
-        property: 'updated_at',
-        label: '更新时间',
-        width: '100',
-      },
-    ];
-
-    this.columns = [...sequenceColumns, ...valueColumns, ...datetimeColumns];
-
-    const fieldsMapping = {}
-    data.fields.forEach((field) => {
-      fieldsMapping[field.id] = field;
-    })
-
-    this.values = val.data.map((v) => {
-      const row = {};
-      for (const field of data.fields) {
-        const fieldValue = v.values[field.id];
-        
-        row[field.id] = this.fieldValue(field, fieldValue)
-        row.sequence = v.sequence;
-        row.created_at = v.created_at;
-        row.updated_at = v.updated_at;
-      }
-      return row;
-    });
     
+    const { form, values, columns } = await loadForFormSummary(this.$route.params.id);
+    this.form = form;
+    this.values = values;
+    this.columns = columns;
 
-    let summary_response = await ofFetch(`/api/v1/cp/form/${this.$route.params.id}/summary`)
+    let summary_response = await ofFetch(`/api/v1/cp/form/${this.$route.params.id}/summary`);
     let summary = await summary_response.json();
 
     this.read_count_by_days = this.createCountByDays(summary.read_count_by_days);
@@ -353,32 +291,6 @@ export default {
           ],
       };
       chart.setOption(option, true);
-    },
-    
-
-    fieldValue(field, fieldValue) {
-      if (field.discriminator == "text_field") {
-        return fieldValue;
-      }
-
-      if (field.discriminator == 'select_field') {
-        const options = {};
-        for (const opt of field.options) {
-          options[opt.value] = opt;
-        }
-        if (fieldValue) {
-          return fieldValue.map((optValue) => {
-            const opt = options[optValue.value];
-            if (opt.editable) {
-              const text = optValue.text || '无'
-              return `${opt.label} ${text}`;
-            }
-            return opt.label;
-          });
-        }
-      }
-
-      return fieldValue;
     },
 
     createCountByDays(count) {

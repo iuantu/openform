@@ -1,35 +1,63 @@
 <template>
-    <el-table :data="values" style="width: 100%;">
-        <el-table-column
-            v-for="(column, key) in columns"
-            :key="key"
-            :prop="column.property"
-            :label="column.label"
-            width="180">
-            <template slot-scope="scope">
-                <div v-if="!Array.isArray(scope.row[scope.column.property])">{{scope.row[scope.column.property]}}</div>
-                <div v-if="Array.isArray(scope.row[scope.column.property])">
-                    <ul>
-                        <li v-for="(value, key) in scope.row[scope.column.property]" :key="key">{{value}}</li>
-                    </ul>
-                </div>
-            </template>
-        </el-table-column>
-    </el-table>
+  <el-row type="flex" v-loading="!isFetched"  justify="center">
+    <el-col v-if="isFetched">
+      <DataTable v-bind:values="values" v-bind:columns="columns" />
+      <el-pagination background
+        :page-size="perPageSize" :pager-count="pageSize"
+        layout="prev, pager, next" :total="total" @current-change="pageChanged" 
+        :current-page.sync="currentPage">
+      </el-pagination>
+    </el-col>
+  </el-row>
 </template>
 <script>
+import DataTable from './DataTable'
+import { loadForFormData } from './service/form'
+
 export default {
-    data() {
-        return {
-            "values": [],
-            "columns": [],
-        }
-    },
-    async created() {
+  data() {
+    return {
+      form: null,
+      values: [],
+      columns: [],
+      isFetched: false,
+      currentPage: 1,
+      perPageSize: 0,
+      pageSize: 0,
+      total: 0,
+    }
+  },
+
+  async created() {
+    await this.loadFormData();
+  },
+
+  components: {
+    DataTable: DataTable
+  },
+
+  methods: {
+    async loadFormData() {
+      this.isFetched = false;
+
+      const { form, values, columns, paginator } = await loadForFormData(
+        this.$route.params.id, this.currentPage
+      );
+      this.form = form;
+      this.values = values;
+      this.columns = columns;
+
+      this.perPageSize = paginator.per_page_size;
+      this.pageSize = paginator.page_size;
+      this.total = paginator.total;
+
+      this.isFetched = true;
     },
 
-    methods: {
+    async pageChanged() {
+      this.loadFormData();
     }
+  }
     
 }
 </script>
