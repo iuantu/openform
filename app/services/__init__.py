@@ -6,12 +6,13 @@ from app.utils import to_camel_case
 from app.models import UserAgent, Event, EventType
 from app.models.page import Pageable
 from typing import List
+import datetime
 
 class FormService(object):
     form_assembler = FormAssembler()
     form_repository: models.FormRepository = None
     field_repository: models.FieldRepository = None
-
+    select_field_repository: models.SelectFieldRepository = None
     def __init__(self, a_db=None):
         if not a_db:
             self.db = db
@@ -20,6 +21,7 @@ class FormService(object):
         self.form_repository = models.FormRepository(self.db)
         self.field_repository = models.FieldRepository(self.db)
         self.value_repository = models.ValueRepository(self.db)
+        self.select_field_repository = models.SelectFieldRepository(self.db)
 
     def add_new_form(self, dto) -> models.Form:
         form = self.form_assembler.to_model(models.Form(), dto)
@@ -30,6 +32,38 @@ class FormService(object):
 
         return form
 
+    def fetch_forms_not_page(self, user_id):
+        return self.form_repository.find_all_all(user_id)
+
+
+    def remove_form(self, form_id):
+        session = db.session
+        form = self.field_repository.find_one(form_id)
+        form.deleted_at = datetime.now()
+        session.commit()
+
+        return field
+    
+     def count_field(self):
+        session = db.session
+        count = self.field_repository.count()
+        session.commit()
+        return count
+
+    def count_select_field(self):
+        count = self.select_field_repository.count()
+        self.db.session.commit()
+        return count
+
+    def one_minute_commit(self, form_id):
+        t = (datetime.datetime.now() - datetime.timedelta(minutes=1)).strftime("%Y-%m-%d %H:%M:%S")
+        return self.field_repository.find_by_form_id_and_datetime(form_id, t)
+
+    def fetch_fields(self, form_id, page_request):
+        fields = self.field_repository.find_all(form_id, page_request)
+        count = self.field_repository.count_all(form_id)
+        return Pageable(fields, page_request.create_result(count))
+    
     def change_form(self, form_id, dto):
         form = self.form_repository.find_one(form_id)
         self.form_assembler.to_model(form, dto, True)
