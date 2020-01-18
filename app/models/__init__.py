@@ -10,8 +10,7 @@ from .fields import Field, TextField, SelectField, PhoneField
 from .mixins import SoftDeleteableMixin, TimeStampMixin, MultipleMixin
 from .constraints import RequiredConstraint, RangeConstraint, MinConstraint, MaxConstraint
 from .page import PageRequest, PageResult
-from app.models.repositories import FormRepository, FieldRepository, ValueRepository, EventRepository
-
+from app.models.repositories import FormRepository, FieldRepository, ValueRepository, EventRepository, SelectFieldRepository
 make_class_dictable(Model)
 
 
