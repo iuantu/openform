@@ -6,10 +6,11 @@ from sqlalchemy import (
     String,
     JSON,
 )
-from .mixins import TimeStampMixin
-from .user_agent import UserAgentMixin
 
-class Value(Model, TimeStampMixin, UserAgentMixin):
+from .mixins import TimeStampMixin
+from .user_agent import UserAgentMixin, SoftDeleteableMixin
+
+class Value(Model, TimeStampMixin, UserAgentMixin, SoftDeleteableMixin):
     id = Column(Integer, primary_key=True)
 
     sequence = Column(Integer)

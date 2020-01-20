@@ -1,6 +1,6 @@
 import logging
-from . import (Form, Field, Value, Event, PageRequest, SelectField)
-from sqlalchemy import func, Date, cast
+from . import (Form, Field, Value, Event, PageRequest, SelectField, AbUser, CollaborationUser)
+from sqlalchemy import func, Date, cast, or_
 from datetime import date, timedelta
 from typing import List
 from sqlalchemy import distinct, and_
@@ -189,6 +189,7 @@ class ValueRepository(BaseRepository):
                 Value.form_id==form_id,
             )\
             .count()
+
         def count(self):
         return self.db.session.query(func.count(Field.id)).scalar()
 
@@ -222,6 +223,67 @@ class ValueRepository(BaseRepository):
             .filter(Field.form_id == form_id)\
             .first()
         return count[0]
+
+    class ValueFieldRepository(BaseRepository):
+
+        def current_date_by_all_minute_commit_count(self, form_id):
+            self.db \
+                .session \
+                .query(func.date_format(Value.created_at, "%Y-%m-%d %H:%i:00").label('minute_time'),
+                       func.count().label('commit_count')) \
+                .filter(Value.form_id == form_id, Value.created_at > func.current_date()) \
+                .group_by(Value.minute_time) \
+                .order_by(Value.minute_time) \
+                .all()
+
+        def find_one(self, value_id):
+            return self.db \
+                .session \
+                .query(Value) \
+                .filter(Value.id == value_id) \
+                .first()
+
+    class AbUserFieldRepository(BaseRepository):
+
+        def find_one_by_username_or_email(self, username):
+            return self.db \
+                .session \
+                .query(AbUser) \
+                .filter(or_(AbUser.username == username, AbUser.email == username)) \
+                .first()
+
+    class CollaborationUserFieldRepository(BaseRepository):
+
+        def find_all(self, form_id, page_request):
+            if not "id" in page_request.order_by:
+                page_request.order_by["id"] = "desc"
+
+            return self.order_by(
+                self.db \
+                    .session \
+                    .query(CollaborationUser) \
+                    .filter(CollaborationUser.form_id == form_id),
+
+                page_request,
+                CollaborationUser
+            ) \
+                .all()
+
+        def count_all(self, form_id: int):
+            count = self.db \
+                .session \
+                .query(func.count(CollaborationUser.id).label("count")) \
+                .filter(CollaborationUser.form_id == form_id) \
+                .first()
+            return count[0]
+
+        def find_one(self, collaboration_user_id):
+            return self.db \
+                .session \
+                .query(CollaborationUser) \
+                .filter(CollaborationUser.id == collaboration_user_id) \
+                .first()
+
 
 class SelectFieldRepository(BaseRepository):
 
