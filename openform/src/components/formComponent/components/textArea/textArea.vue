@@ -1,10 +1,10 @@
 <template>
   <div class="form-input">
     <div class="title">
-      {{title}}
-      <span class="required" v-show="isRequired">*</span>
+      {{formItm.name || '标题'}}
+      <span class="required" v-show="formItm.isRequired || false">*</span>
     </div>
-    <el-input type="textarea" :placeholder="placeholder" v-model="input" clearable></el-input>
+    <el-input type="textarea" :rows="formItm.textareaRows || 6" :placeholder="formItm.placeholder" v-model="input" clearable></el-input>
   </div>
 </template>
 
@@ -22,7 +22,7 @@ export default {
   },
   methods: {},
   mounted() {},
-  props: ['formIndex']
+  props: ['formIndex', "formItm"]
 };
 </script>
 

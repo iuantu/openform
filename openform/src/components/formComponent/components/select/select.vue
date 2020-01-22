@@ -1,17 +1,16 @@
 <template>
   <div class="form-input">
     <div class="title">
-      {{title}}
-      <span class="required" v-show="isRequired">*</span>
+      {{formItm.name}}
+      <span class="required" v-show="formItm.isRequired">*</span>
     </div>
-    <el-select v-model="select" clearable :placeholder="placeholder">
-      <el-option
-        v-for="(selectItem, selectIndex) in options"
-        :key="selectIndex + '_select'"
-        :label="selectItem.label"
-        :value="selectItem.value"
-      ></el-option>
-    </el-select>
+    <el-radio-group v-model="select">
+      <el-radio v-for="(radioItm, radioIndex) in formItm.options" :key="radioIndex + '_radio'" :label="radioItm.label">
+        {{radioItm.value}}
+        <i class="fa fa-times"></i>
+      </el-radio>
+    </el-radio-group>
+    
   </div>
 </template>
 
@@ -21,29 +20,12 @@ export default {
   components: {},
   data() {
     return {
-      title: "单选",
-      select: "",
-      placeholder: "请输入内容",
-      isRequired: true,
-      options: [
-        {
-          label: "123",
-          value: "123"
-        },
-        {
-          label: "123",
-          value: "123"
-        },
-        {
-          label: "123",
-          value: "123"
-        }
-      ]
+      select: null,
     };
   },
   methods: {},
   mounted() {},
-  props: ['formIndex']
+  props: ['formIndex', 'formItm']
 };
 </script>
 

@@ -1,17 +1,30 @@
 
 .open-form-setting {
-    // width: 100vw;
     height: 100%;
-    width: 680px;
+    margin: 0 auto;
+    .el-container{
+      height: 100%;
+      overflow: hidden;
+      overflow-y: auto;
+      .el-main{
+        &.inner-content{
+          padding: 20px;
+        }
+
+      }
+
+    }
     .list-group{
       padding: 15px;
       box-sizing: border-box;
       min-height: 60px;
       border: 1px dashed #dddddd;
+      text-align: left;
     }
     .list-group-item{
-      width: 680px;
+      width: 100%;
       padding: 15px;
+      box-sizing: border-box;
       .components-setting-btn{
         
       }

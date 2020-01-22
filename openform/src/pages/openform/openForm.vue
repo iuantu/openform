@@ -1,17 +1,15 @@
 <template>
   <div class="open-form">
     <el-container>
-      <el-container>
-        <el-aside v-show="showLeftAside" width="200px" class="openForm-side left">
-          <left-aside></left-aside>
-        </el-aside>
-        <el-main>
-          <router-view v-if="reloadPage"></router-view>
-        </el-main>
-        <el-aside v-show="showRightAside" width="200px" class="openForm-side right">
-          <right-aside></right-aside>
-        </el-aside>
-      </el-container>
+      <el-aside v-show="showLeftAside" width="265px" class="openForm-side left">
+        <left-aside></left-aside>
+      </el-aside>
+      <el-main>
+        <div class="show-left-aside" v-if="!showLeftAside" @click="showLA()">
+          <i class="fa fa-arrow-right"></i>
+        </div>
+        <router-view v-if="reloadPage"></router-view>
+      </el-main>
     </el-container>
   </div>
 </template>
@@ -19,19 +17,17 @@
 <script>
 
 import LeftAside from './../../components/leftAside/leftAside'
-import RightAside from './../../components/rightAside/rightAside'
 
 export default {
   name: "openFormSetting",
   components: {
     'left-aside': LeftAside,
-    'right-aside': RightAside,
   },
   data() {
     return {
       showLeftAside: true,
       reloadPage: true,
-      showRightAside: true,
+      // showRightAside: true,
     };
   },
   methods: {
@@ -46,17 +42,12 @@ export default {
     showLA(){
       this.showLeftAside = !this.showLeftAside
     },
-    // 显示/隐藏右侧栏
-    showRA(){
-      this.showRightAside = !this.showRightAside
-    },
   },
   mounted() {},
   provide() {
     return {
       reload: this.reload,
       leftAside: this.showLA,
-      rightAside: this.showRA,
     };
   },
 };

@@ -1,11 +1,12 @@
 <template>
-  <div class="divide-line"></div>
+
+  <div class="divide-line" :style="{height: formItm.height, background: formItm.background}"></div>
 </template>
 
 <script>
 export default {
   name: "divide",
-  props: ['formIndex']
+  props: ['formIndex', 'formItm'],
 };
 </script>
 
