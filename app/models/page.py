@@ -1,8 +1,16 @@
+import math
+
 class PageRequest:
     def __init__(self, page: int, page_size: int=50, order_by: dict={}):
         self.page = page
         self.page_size = page_size
         self.order_by = order_by
+
+    def order(self, field, direction):
+        field_key = "%s" % (field,)
+
+        if not field_key in self.order_by:
+            self.order_by[field_key] = direction
 
     @staticmethod
     def create(request):
@@ -19,9 +27,9 @@ class PageRequest:
             order_by
         )
 
-    def create_result(self, count):
-        pages = math.ceil(count / self.page_size)
-        result = PageResult(self.page, pages, count, self.page_size)
+    def create_result(self, total):
+        pages = math.ceil(total / self.page_size)
+        result = PageResult(self.page, pages, total, self.page_size)
         return result
 
 class PageResult:

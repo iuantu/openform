@@ -19,9 +19,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 logger = logging.getLogger("flask_appbuilder")
-logger.setLevel(logging.ERROR)
+# logger.setLevel(logging.ERROR)
 logging.getLogger("app").setLevel(logging.DEBUG)
-logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
+# logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
 
 """
  Logging configuration

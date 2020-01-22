@@ -30,7 +30,8 @@ class FormView:
     def _create_field_view(self, field: models.Field, request):
         mapping = {
             models.TextField: TextFieldView,
-            models.SelectField: SelectFieldView
+            models.SelectField: SelectFieldView,
+            models.PhoneField: PhoneFieldView,
         }
         field_view_class = mapping[field.__class__]
 
@@ -143,7 +144,12 @@ class TextFieldView(FieldView):
 
     @property
     def value(self):
-        return self.field.format(self.request.get("%d" % self.field.id))
+        if self.field.bind_parameter:
+            v = self.request.get(self.field.bind_parameter)
+        else:
+            v = self.request.get("%d" % self.field.id)
+
+        return self.field.format(v)
 
     @property
     def class_(self):
@@ -173,6 +179,9 @@ class TextFieldView(FieldView):
                 value=self.value,
                 placeholder=self.field.placeholder
             )
+
+        if self.field.readonly:
+            input.disabled = "disabled"
         
         children = [
             Label(self.field.title, for_=self.id),
@@ -188,6 +197,9 @@ class TextFieldView(FieldView):
                 class_=["form-group", "col-md-12"]),
             class_=["form-row"]
         )
+
+class PhoneFieldView(TextFieldView):
+    pass
 
 class SelectFieldView(FieldView):
 

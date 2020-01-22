@@ -1,10 +1,36 @@
 from flask_appbuilder import BaseView, expose
 from app import appbuilder
-from flask import request, g
+from flask import request, g, redirect, url_for
 from app.models import UserAgent
 from app.services import FormService
 from app.views.models import FormViewModelAssembler
 from app.views.utils import to_user_agent
+
+class ParameterContainer:
+    def __init__(self):
+        pass
+
+    def get(self, name):
+        query_string = request.args.get(name, None)
+        if query_string:
+            return query_string
+        
+        form = request.form.get(name, None)
+        if form:
+            return form
+        
+        return None
+
+    def getlist(self, name):
+        query_string = request.args.getlist(name, None)
+        if query_string:
+            return query_string
+        
+        form = request.form.getlist(name, None)
+        if form:
+            return form
+        
+        return []
 
 class FormView(BaseView):
     form_service = FormService()
@@ -15,21 +41,35 @@ class FormView(BaseView):
     def form(self, form_id):
         user_agent = to_user_agent(request)
         form = self.form_service.fetch_form(form_id, g.user, user_agent)
-        form_view = self.assembler.to_view_model(form, request.form)
+        form_view = self.assembler.to_view_model(form, ParameterContainer())
 
         if "POST" == request.method:
             
             user_agent = to_user_agent(request)
 
-            if self.form_service.submit(form, user_agent):
-                return self.render_template(
-                    'openform/form_success.html'
+            if self.form_service.submit(form, g.user, user_agent):
+                return redirect(
+                    url_for("FormView.success_redirect", form_id=form_id)
                 )
 
         return self.render_template(
             "openform/form.html",
             form_view = form_view,
             form = form
+        )
+
+    @expose('/<form_id>/success_redirect', methods=['GET'])
+    def success_redirect(self, form_id):
+
+        return redirect(
+            url_for("FormView.form_success", form_id=form_id)
+        )
+
+    @expose('/<form_id>/success', methods=['GET'])
+    def form_success(self, form_id):
+
+        return self.render_template(
+            'openform/form_success.html'
         )
 
 appbuilder.add_view_no_menu(FormView)

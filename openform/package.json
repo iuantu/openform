@@ -10,6 +10,7 @@
   "dependencies": {
     "core-js": "^2.6.5",
     "css-loader": "^3.4.1",
+    "echarts": "^4.6.0",
     "element-ui": "^2.13.0",
     "file-loader": "^5.0.2",
     "font-awesome": "^4.7.0",

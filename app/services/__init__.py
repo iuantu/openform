@@ -5,6 +5,7 @@ from app.services.assembler import FormAssembler
 from app.utils import to_camel_case
 from app.models import UserAgent, Event, EventType
 from app.models.page import Pageable
+from typing import List
 
 class FormService(object):
     form_assembler = FormAssembler()
@@ -18,6 +19,7 @@ class FormService(object):
             self.db = a_db
         self.form_repository = models.FormRepository(self.db)
         self.field_repository = models.FieldRepository(self.db)
+        self.value_repository = models.ValueRepository(self.db)
 
     def add_new_form(self, dto) -> models.Form:
         form = self.form_assembler.to_model(models.Form(), dto)
@@ -37,8 +39,8 @@ class FormService(object):
     def fetch_form(self, form_id, user, user_agent) -> models.Form:
         form = self.form_repository.find_one(form_id)
         form.record_count += 1
-
-        event = Event(type=EventType.VIEW_FORM, user_id=user and user.id or None, form_id=form_id)
+        user_id = (user and not user.is_anonymous) and user.id or None
+        event = Event(type=EventType.VIEW_FORM, user_id=user_id or None, form_id=form_id)
         event.assemble_from_user_agent(user_agent)
         db.session.add(event)
         db.session.commit()
@@ -82,7 +84,7 @@ class FormService(object):
 
         return field
 
-    def submit(self, form: models.Form, user_agent: UserAgent):
+    def submit(self, form: models.Form, user, user_agent: UserAgent):
         """ 提交表单
         """
        
@@ -91,6 +93,8 @@ class FormService(object):
             
             v = form.values()
             v.assemble_from_user_agent(user_agent)
+            user_id = (user and not user.is_anonymous) and user.id or None
+            v.user_id = user_id
 
             form.increase_value_sequence()
             v.sequence = form.value_sequence
@@ -100,17 +104,8 @@ class FormService(object):
             return v
         return None
 
-    def fetch_values(self, form_id: int, page: int = 0, page_size: int = 50):
-        values = db\
-            .session\
-            .query(models.Value)\
-            .order_by(models.Value.id.desc())\
-            .filter(models.Value.form_id==form_id)\
-            .limit(page_size)\
-            .offset((page - 1) * page_size)\
-            .all()
+    def fetch_values(self, form_id: int, page_request) -> Pageable:
+        values = self.value_repository.find(form_id, page_request)
+        count = self.value_repository.count(form_id)
 
-        return {
-            "data": [v.asdict() for v in values],
-            "count": 0
-        }
+        return Pageable(values, page_request.create_result(count))

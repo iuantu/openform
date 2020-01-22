@@ -1,5 +1,5 @@
 <template>
-  <el-menu :default-active="activeIndex" class='of-menu' mode="horizontal" @select="handleSelect">
+  <el-menu :default-active="activeIndex" class='of-menu' mode="horizontal">
     <img src="../assets/openform/logo.png" />
     <el-menu-item index="1">表单</el-menu-item>
   </el-menu>
@@ -20,5 +20,10 @@
 
 <script>
 export default {
+  data() {
+    return {
+      activeIndex: "1",
+    }
+  }
 }
 </script>

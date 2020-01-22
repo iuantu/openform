@@ -37,6 +37,8 @@ class ControlPanelFormApi(BaseApi):
         """Create a form
         ---
         post:
+          summary: 创建表单
+          description: 创建表单
           requestBody:
             required: true
             content:
@@ -62,6 +64,7 @@ class ControlPanelFormApi(BaseApi):
         """Create a form
         ---
         put:
+          summary: 更新表单
           requestBody:
             required: true
             content:
@@ -79,14 +82,14 @@ class ControlPanelFormApi(BaseApi):
         
         return self.response(200, **{})
 
-    @expose('/{id}/publish', methods=['DELETE'])
+    @expose('/{id}/publish', methods=['POST'])
     def publish(self):
         """Publish a form
         ---
-        delete:
+        post:
+          summary: 发布表单
           responses:
             200:
-              description: Publish a form
               content:
                 application/json:
                   schema:
@@ -100,6 +103,7 @@ class ControlPanelFormApi(BaseApi):
         """Delete a form
         ---
         delete:
+          summary: 取消表单发布
           responses:
             200:
               description: Delete a form
@@ -120,16 +124,15 @@ class ControlPanelFormApi(BaseApi):
         """Get form list
         ---
         get:
+          summary: 查询表单列表
           responses:
             200:
-              description: Get form list
               content:
                 application/json:
-                schema:
-                  type: object
-                  properties:
-                    message:
-                      type: string
+                  schema:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Form"
         """
         forms = self.form_service.fetch_forms(
             current_user.id, PageRequest.create(request.args)
@@ -146,11 +149,8 @@ class ControlPanelFormApi(BaseApi):
               description: Get a form
               content:
                 application/json:
-                schema:
-                  type: object
-                  properties:
-                    message:
-                      type: string
+                  schema:
+                    $ref: "#/components/schemas/Form"
         """
         
         return self.response(200, **{})
@@ -166,7 +166,7 @@ class ControlPanelFormApi(BaseApi):
             "submit_count": self.value_repository.count_all(user.id, form_id),
             "submit_count_today": self.value_repository.count_today(
                 user.id, form_id),
-            "reads_today": self.event_repository.count(form_id, EventType.VIEW_FORM),
+            "reads_today": self.event_repository.count_today(form_id, EventType.VIEW_FORM),
             "submit_count_by_days": submit_count_by_days,
             "read_count_by_days": self.event_repository.count_by_8_days(form_id, EventType.VIEW_FORM),
             "submit_count_by_mintes": self.value_repository.count_by_24_minute(
@@ -174,33 +174,72 @@ class ControlPanelFormApi(BaseApi):
             "form": form.asdict(),
         })
 
+    @expose('/<form_id>/value', methods=['GET'])
+    def value(self, form_id):
+        page_request = PageRequest.create(request.args)
+        page_request.order("created_at", "desc")
+
+        value = self.form_service.fetch_values(
+            form_id, page_request
+        )
+        return jsonify(value.asdict())
+
     @jwt_required
     @expose("/<form_id>/export", methods=["GET"])
     def export(self, form_id):
+        """
+        ---
+        get:
+          description: "导出CSV文件"
+          responses:
+            200:
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Form"
+        """
         # TODO: 根据 Request Content Type 来导出返回的内容，例如JSON
         form_id = int(form_id)
         count = self.value_repository.count(form_id)
+        form = self.form_repository.find_one(form_id)
+        db.session.commit()
+        fields_map = {}
+        for field in form.fields:
+            fields_map[int(field.id)] = field
+
+        def to_export(row):
+            ex = {}
+
+            for field_id, value in row['values'].items():
+                field = fields_map[int(field_id)]
+                ex[field.title] = field.to_text_value(value)
+            ex['id'] = row['sequence']
+            ex['created_at'] = row['created_at']
+            ex['updated_at'] = row['updated_at']
+
+            return ex
         
         def generate():
-            args = [int(form_id), PageRequest.create(request.args)]
+            paginator = PageRequest.create(request.args)
+            args = [int(form_id), paginator]
             i = 0
             position = 0
-            while i < count:
+            while i < paginator.page_size:
+                print(i)
                 args[1].page = i + 1
                 values = self.value_repository.find(*args)
                 if i == 0:
                     iostream = io.StringIO()
-                    first = values[0]
-                    keys = first.asdict().keys()
+                    first = to_export(values[0].asdict())
+                    keys = first.keys()
                     csv_writer = csv.DictWriter(iostream, fieldnames=keys)
                     csv_writer.writeheader()
 
                 for value in values:
-                    csv_writer.writerow(value.asdict())
+                    csv_writer.writerow(to_export(value.asdict()))
                 
                 iostream.seek(position)
                 for line in iostream.readline():
-                    print(line)
                     yield line
                 position = iostream.tell()
                 i += 1

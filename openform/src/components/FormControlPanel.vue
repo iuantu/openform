@@ -1,38 +1,64 @@
 <template>
-    <el-row type="flex">
-      <el-col>
-        <el-tabs v-model="activeName" @tab-click="onClick">
-            <el-tab-pane label="概述" name="summary">
-                <FormSummary />
-            </el-tab-pane>
-            <el-tab-pane label="编辑" name="edit">编辑</el-tab-pane>
-            <el-tab-pane label="数据" name="data">数据</el-tab-pane>
-            <el-tab-pane label="报表" name="reporter">报表</el-tab-pane>
-            <el-tab-pane label="发布" name="publish">发布</el-tab-pane>
-            <el-tab-pane label="协作" name="collaboration">协作</el-tab-pane>
-        </el-tabs>
-        <!-- TODO: 使用路由试图代替 -->
-        <!-- <router-view></router-view> -->
-      </el-col>
-    </el-row>
+  <el-row type="flex" justify="center">
+    <el-col :md="16">
+      <el-row type="flex" justify="center">
+        <el-col :md="10">
+          <el-tabs class="tabs" v-model="$route.name" @tab-click="onClick">
+            <el-tab-pane v-for="(option, key) in options" :key="key" :label="option.label" :name="option.name"></el-tab-pane>
+          </el-tabs>
+        </el-col>
+      </el-row>
+      <el-row type="flex">
+        <el-col>
+          <router-view></router-view>
+        </el-col>
+      </el-row>
+
+    </el-col>
+  </el-row>
 </template>
+<style scoped>
+  .tabs {
+    margin: 50px 0px 50px 0px;
+  }
+</style>
 <script>
-import FormSummary from './FormSummary'
-
 export default {
-    data() {
-        return {
-            activeName: 'edit',
-        }
-    },
-    methods: {
-        onClick() {
-
+  data() {
+    return {
+      activeName: 'cp_form_summary',
+      options: [
+        {
+          label: '概述',
+          name: 'cp_form_summary'
         },
-    },
-    
-    components: {
-        FormSummary,
+        // {
+        //   label: "编辑",
+        //   name: "cp_form_edit"
+        // },
+        {
+          label: "数据",
+          name: "cp_form_data"
+        },
+        // {
+        //   label: "报表",
+        //   name: "cp_form_reporter"
+        // },
+        // {
+        //   label: "发布",
+        //   name: "cp_form_publish"
+        // },
+        // {
+        //   label: "协作",
+        //   name: "cp_form_collabration"
+        // }
+      ]
     }
+  },
+  methods: {
+    onClick(tab) {
+      this.$router.replace({name: tab.name});
+    },
+  },
 }
 </script>
