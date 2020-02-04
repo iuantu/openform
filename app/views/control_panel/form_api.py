@@ -1,5 +1,8 @@
 import csv
 import io
+import xlwt
+from app.models import form as ff
+from io import BytesIO
 from flask_appbuilder.api import BaseApi, expose
 from app import appbuilder, db
 from flask import (
@@ -32,7 +35,7 @@ class ControlPanelFormApi(BaseApi):
         self.form_repository = FormRepository(db)
   
     @jwt_required
-    @expose('', methods=['POST'])
+    @expose('/', methods=['POST'])
     def create(self):
         """Create a form
         ---
@@ -248,4 +251,67 @@ class ControlPanelFormApi(BaseApi):
         response.headers["Content-Type"] = "text/csv"
 
         return response
+    
+        @jwt_required
+    @expose("/excel", methods=['GET'])
+    def from_excel(self):
+        book = xlwt.Workbook()
+        sheet = book.add_sheet('form')
+        title = ['%s' % item for item in ff.Form.__dict__.keys() if not str(item).startswith("_")]
+        i = 0
+        for h in title:
+            sheet.write(0, i, h)
+            i = 1
+
+        forms = self.form_service.fetch_forms_not_page(current_user.id)
+
+        for row, form in enumerate(forms):
+            for col in range(0, len(title)):
+                sheet.write(row  1, col, form[title[col]])
+
+        bio = BytesIO()
+        book.save(bio)
+        return bio.getvalue()
+
+    @jwt_required
+    @expose("/statement", methods=['GET'])
+    def statement(self):
+         """
+            表单报表
+        :return:
+        """
+        field_num = self.form_service.count_field()
+        select_field_num = self.form_service.count_select_field()
+        return self.response(200, **{"statement": round(select_field_num / field_num, 2)})
+
+    @jwt_required
+    @expose("/find_from_commit_and_record/<form_id>", methods=['GET'])
+    def find_from_commit_and_record(self, form_id):
+        """
+            查询数据提交和浏览数据
+        :param form_id:
+        :return:
+        """
+        form = self.form_service.fetch_form(form_id)
+        commit_count = len(form.fields)
+        record_count = form.record_count
+        return self.response(200, **{"commit_count": commit_count, "record_count": record_count})
+
+    @expose("/one_minute_commit/<form_id>", methods=['GET'])
+    def one_minute_commit(self, form_id):
+        """
+            一分钟提交的数据量
+        :param form_id:
+        :return:
+        """
+        fields = self.form_service.one_minute_commit(form_id)
+        return jsonify(fields.asdict())
+
+    @expose('/<form_id>', methods=['DELETE'])
+    def delete(self, form_id):
+        """Delete a form
+        """
+
+        form = self.form_service.remove_form(form_id)
+        return jsonify(form.asdict())
 appbuilder.add_api(ControlPanelFormApi)
