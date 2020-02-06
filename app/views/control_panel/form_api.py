@@ -57,10 +57,17 @@ class ControlPanelFormApi(BaseApi):
         form["user_id"] = current_user.id
         form = self.form_service.add_new_form(form)
         
-        return jsonify(form.asdict()), 201
+        return jsonify(form.asdict(follow={
+            'fields': {
+                "follow": {
+                    "options": {},
+                    "constraints": {},
+                }
+            }
+        })), 201
 
-    @expose('/{id}', methods=['PUT'])
-    def update(self):
+    @expose('/<form_id>', methods=['PUT'])
+    def update(self, form_id : int):
         """Create a form
         ---
         put:
@@ -79,8 +86,16 @@ class ControlPanelFormApi(BaseApi):
                   schema:
                     $ref: '#/components/schemas/Form'
         """
-        
-        return self.response(200, **{})
+        form_dto = request.json.copy()
+        form = self.form_service.change_form(form_id, form_dto)
+        return jsonify(form.asdict(follow={
+            'fields': {
+                "follow": {
+                    "options": {},
+                    "constraints": {},
+                }
+            }
+        }))
 
     @expose('/{id}/publish', methods=['POST'])
     def publish(self):

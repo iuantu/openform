@@ -30,11 +30,12 @@ class FormService(object):
 
         return form
 
-    def change_form(self, form_id, dto):
+    def change_form(self, form_id, dto) -> models.Form:
         form = self.form_repository.find_one(form_id)
         self.form_assembler.to_model(form, dto, True)
         self.db.session.add(form)
         self.db.session.commit()
+        return form
 
     def fetch_form(self, form_id, user, user_agent) -> models.Form:
         form = self.form_repository.find_one(form_id)
