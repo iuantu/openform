@@ -434,3 +434,7 @@ SCHEMAS = {
         ]
     }
 }
+
+from .openapi.request import REQUEST_SCHEMAS
+
+SCHEMAS.update(**REQUEST_SCHEMAS)

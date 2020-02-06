@@ -44,7 +44,7 @@ class ControlPanelFormApi(BaseApi):
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/Form'
+                  $ref: '#/components/schemas/FormCreation'
           responses:
             200:
               description: Create a form
@@ -77,14 +77,14 @@ class ControlPanelFormApi(BaseApi):
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/Form'
+                  $ref: '#/components/schemas/FormEdition'
           responses:
             200:
-              description: Create a form
-              content:
-                application/json:
-                  schema:
-                    $ref: '#/components/schemas/Form'
+            description: Create a form
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Form'
         """
         form_dto = request.json.copy()
         form = self.form_service.change_form(form_id, form_dto)
