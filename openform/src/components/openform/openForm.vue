@@ -5,34 +5,38 @@
         <div class="add-new">
           <el-button type="primary" size="small" @click="saveForm">保存</el-button>
         </div>
-        <div class="inner-title">
-          <div class="form-title" :style="{textAlign: 'left'}" @click="setTitles">
-            <span v-if="!changeTitle">{{title}}</span>
-            <el-input v-model="title" ref="titles" placeholder="请输入表单标题" v-if="changeTitle" @blur="changeTitle = false"></el-input>
-          </div>
-          <div class="form-sub-title" :style="{textAlign: 'left'}" @click="setSubTitles">
-            <span v-if="!changeSubTitle">{{subtitle}}</span>
-            <el-input v-model="subtitle" ref="subTitles" placeholder="请输入表单副标题" v-if="changeSubTitle" @blur="changeSubTitle = false"></el-input>
-          </div>
-        </div>
-        <draggable
-          class="dragArea list-group"
-          :list="list"
-          group="people"
-          ghost-class="ghost"
-          v-if="showList"
-        >
-          <div class="list-group-item" v-for="(formItm, formIndex) in list" :key="formIndex + '_form'">
-            <form-components :formItm="formItm" :formType="formItm.type" :formIndex="formIndex"></form-components>
-            <div class="components-setting-btn">
-              <el-button type="primary" size="small" icon="el-icon-edit" circle @click="setChange(formIndex)"></el-button>
-              <div class="delete-btn">
-                <el-button type="danger" size="small" icon="el-icon-delete" circle @click="deleteList(formIndex)"></el-button>
-              </div>
+        <div class="roll-contant">
+          <div class="inner-title">
+            <div class="form-title" :style="{textAlign: 'left'}" @click="setTitles">
+              <span v-if="!changeTitle">{{title}}</span>
+              <el-input v-model="title" ref="titles" placeholder="请输入表单标题" v-if="changeTitle" @blur="changeTitle = false"></el-input>
+            </div>
+            <div class="form-sub-title" :style="{textAlign: 'left'}" @click="setSubTitles">
+              <span v-if="!changeSubTitle">{{subtitle}}</span>
+              <el-input v-model="subtitle" ref="subTitles" placeholder="请输入表单副标题" v-if="changeSubTitle" @blur="changeSubTitle = false"></el-input>
             </div>
           </div>
-          <div class="no-list" v-if="list.length == 0">拖 拽 区</div>
-        </draggable>
+          <draggable
+            class="dragArea list-group"
+            :list="list"
+            group="people"
+            ghost-class="ghost"
+            v-if="showList"
+            @sort="addItms"
+          >
+            <div class="list-group-item" v-for="(formItm, formIndex) in list" :key="formIndex + '_form'">
+              <form-components :formItm="formItm" :formType="formItm.type" :formIndex="formIndex"></form-components>
+              <div class="components-setting-btn">
+                <el-button type="primary" size="small" icon="el-icon-edit" circle @click="setChange(formIndex)"></el-button>
+                <div class="delete-btn">
+                  <el-button type="danger" size="small" icon="el-icon-delete" circle @click="deleteList(formIndex)"></el-button>
+                </div>
+              </div>
+            </div>
+            <div class="no-list" v-if="list.length == 0">拖 拽 区</div>
+          </draggable>
+        </div>
+        
       </el-main>
       <el-aside v-show="showRightAside" width="265px" class="openForm-side right">
         <right-aside :formItem="formItem" @formSet="formSets"></right-aside>
@@ -83,13 +87,17 @@ export default {
       this.formItem = JSON.parse(JSON.stringify(this.list[index]))
     },
     deleteList(index){
-      this.$confirm('此操作将永久删除该表单, 是否继续?', '提示', {
+      this.$confirm('此操作将删除该选项, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           this.list.splice(index, 1)
+          this.formItem = {}
         })
+    },
+    addItms(){
+      this.formItem = {}
     },
     // 右侧栏传值
     formSets(params){
@@ -97,8 +105,6 @@ export default {
       let _par = JSON.parse(JSON.stringify(params))
       let _type = this.list[this.settingIndex].type
       let _itm = JSON.parse(JSON.stringify(this.list[this.settingIndex]))
-      _itm.alignType = _par.align
-      _itm.requireText = _par.requireText
       if( _type == 'titles'){
         _itm.name = _par.title
         _itm.subTitle = _par.subtitle
@@ -109,6 +115,9 @@ export default {
         _itm.width = _par.width
         _itm.placeholder = _par.placeholder
         _itm.isRequired = _par.isRequired
+        _itm.width = _par.width
+        _itm.requireText = _par.requireText
+        _itm.alignType = _par.align
         if(_type == 'textAreas'){
           _itm.textareaRows = parseInt(_par.textareaRows)
         }
@@ -124,6 +133,9 @@ export default {
         _itm.placeholder = _par.placeholder
         _itm.options = _par.options
         _itm.isRequired = _par.isRequired
+        _itm.width = _par.width
+        _itm.requireText = _par.requireText
+        _itm.alignType = _par.align
       }
       this.list[this.settingIndex] = JSON.parse(JSON.stringify(_itm))
       this.showList = false

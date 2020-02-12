@@ -11,8 +11,10 @@
     <div class="subtitle" :style="{textAlign: formItm.alignType}">
       {{formItm.subTitle || '副标题'}}
     </div>
-    <el-input type="textarea" :rows="formItm.textareaRows || 6" :placeholder="formItm.placeholder" v-model="input" clearable></el-input>
-    <div class="require-text" v-show="formItm.isRequired || false">{{formItm.requireText || '校验提示'}}</div>
+    <div :style="{width: formItm.width + '%'}">
+      <el-input type="textarea" :rows="formItm.textareaRows || 6" :placeholder="formItm.placeholder" v-model="input" clearable></el-input>
+      <div class="require-text" v-show="formItm.isRequired || false">{{formItm.requireText || '校验提示'}}</div>
+    </div>
   </div>
 </template>
 

@@ -11,13 +11,15 @@
     <div class="subtitle" :style="{textAlign: formItm.alignType}">
       {{formItm.subTitle || '副标题'}}
     </div>
-    <el-radio-group v-model="select">
-      <el-radio v-for="(radioItm, radioIndex) in formItm.options" :key="radioIndex + '_radio'" :label="radioItm.label">
-        {{radioItm.value}}
-        <!-- <i class="fa fa-times"></i> -->
-      </el-radio>
-    </el-radio-group>
-    <div class="require-text" v-show="formItm.isRequired || false">{{formItm.requireText || '校验提示'}}</div>
+    <div :style="{width: formItm.width + '%'}">
+      <el-radio-group v-model="select">
+        <el-radio v-for="(radioItm, radioIndex) in formItm.options" :key="radioIndex + '_radio'" :label="radioItm.label">
+          {{radioItm.value}}
+          <!-- <i class="fa fa-times"></i> -->
+        </el-radio>
+      </el-radio-group>
+      <div class="require-text" v-show="formItm.isRequired || false">{{formItm.requireText || '校验提示'}}</div>
+    </div>
   </div>
 </template>
 

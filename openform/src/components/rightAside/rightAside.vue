@@ -53,8 +53,8 @@
           <el-input size="small" type="number" v-model="textareaRows" @input="setForms"></el-input>
         </div>
         <div class="right-title">宽度</div>
-        <div class="input-style">
-          <el-input size="small" type="number" v-model="inputForm.width" @input="setForms"></el-input>
+        <div class="slider-style">
+          <el-slider size="small" :min='50' v-model="inputForm.width" :step="10" @input="setForms"></el-slider>
         </div>
         <div class="right-title">占位符</div>
         <div class="input-style">
@@ -107,8 +107,8 @@
           </el-table>
         </div>
         <div class="right-title">宽度</div>
-        <div class="input-style">
-          <el-input size="small" type="number" v-model="selectForm.width" @input="setForms"></el-input>
+        <div class="slider-style">
+          <el-slider size="small" :min='50' v-model="selectForm.width" :step="10" @input="setForms"></el-slider>
         </div>
       </div>
     </div>
@@ -240,7 +240,7 @@ export default {
             requireText: newVal.requireText
           }
           this.itmRequired = newVal.isRequired
-          if(newVal.typ == 'textAreas'){
+          if(newVal.type == 'textAreas'){
             this.textareaRows = newVal.textareaRows
           }
         }

@@ -6,11 +6,18 @@
       height: 100%;
       overflow: hidden;
       overflow-y: auto;
+      position: relative;
       .el-main{
         &.inner-content{
           padding: 22px;
           .add-new{
             text-align: right;
+          }
+          .roll-contant{
+            height: calc(100% - 42px);
+            margin-top: 10px;
+            overflow: hidden;
+            overflow-y: auto;
           }
           .inner-title{
             color: #666666;
