@@ -1,13 +1,14 @@
 <template>
   <div class="form-input">
-    <div class="title">
+    <div class="title" :style="{textAlign: formItm.alignType}">
       {{formItm.name || '标题'}}
       <span class="required" v-show="formItm.isRequired || false">*</span>
     </div>
-    <div class="subtitle">
+    <div class="subtitle" :style="{textAlign: formItm.alignType}">
       {{formItm.subTitle || '副标题'}}
     </div>
     <el-input size="small" :placeholder="formItm.placeholder" v-model="input" clearable></el-input>
+    <div class="require-text" v-show="formItm.isRequired || false">{{formItm.requireText || '校验提示'}}</div>
   </div>
 </template>
 

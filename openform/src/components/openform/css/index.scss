@@ -9,6 +9,9 @@
       .el-main{
         &.inner-content{
           padding: 22px;
+          .add-new{
+            text-align: right;
+          }
           .inner-title{
             color: #666666;
             .form-title{

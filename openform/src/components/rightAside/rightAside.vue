@@ -36,6 +36,10 @@
         <div class="input-style">
           <el-switch size="small" v-model="itmRequired" @change="setForms"></el-switch>
         </div>
+        <div class="right-title" v-if="itmRequired">校验提示</div>
+        <div class="input-style" v-if="itmRequired">
+          <el-input size="small" v-model="inputForm.requireText" placeholder="校验提示" @input="setForms"></el-input>
+        </div>
         <div class="right-title">对齐方式</div>
         <div class="input-style">
           <el-radio-group size="small" v-model="titleFormAlign" @change="setForms">
@@ -70,22 +74,42 @@
       <div v-if="itemType == 'selects' || itemType == 'multiSelects'">
         <div class="right-title">标题</div>
         <div class="input-style">
-          <el-input v-model="selectForm.title" placeholder="标题" @input="setForms"></el-input>
+          <el-input size="small" v-model="selectForm.title" placeholder="标题" @input="setForms"></el-input>
+        </div>
+        <div class="right-title">副标题</div>
+        <div class="input-style">
+          <el-input size="small" v-model="selectForm.subtitle" placeholder="副标题" @input="setForms"></el-input>
         </div>
         <div class="right-title">是否必选</div>
-        <el-switch v-model="itmRequired" @change="setForms"></el-switch>
+        <div class="input-style">
+          <el-switch size="small" v-model="itmRequired" @change="setForms"></el-switch>
+        </div>
+        <div class="right-title" v-if="itmRequired">校验提示</div>
+        <div class="input-style" v-if="itmRequired">
+          <el-input size="small" v-model="selectForm.requireText" placeholder="校验提示" @input="setForms"></el-input>
+        </div>
         <div class="right-title">选项{{selectrows}}</div>
-        <el-input v-model="selectForm.options" type="textarea" :rows="selectrows" @input="setForms"></el-input>
+        <div class="input-textarea">
+          <el-input size="small" v-model="selectForm.options" type="textarea" :rows="selectrows" @input="setForms"></el-input>
+        </div>
         <div class="right-title">使用自定义值</div>
-        <el-switch v-model="selfDef"></el-switch>
-        <el-table border v-if="selfDef && isTableChange" :data="selfDefVal" :show-header="false">
-          <el-table-column prop="value"></el-table-column>
-          <el-table-column prop="label">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.label"></el-input>
-            </template>
-          </el-table-column>
-        </el-table>
+        <div class="input-style">
+          <el-switch v-model="selfDef"></el-switch>
+        </div>
+        <div class="input-textarea">
+          <el-table size="small" border v-if="selfDef && isTableChange" :data="selfDefVal" :show-header="false">
+            <el-table-column prop="value"></el-table-column>
+            <el-table-column prop="label">
+              <template slot-scope="scope">
+                <el-input size="small" v-model="scope.row.label"></el-input>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div class="right-title">宽度</div>
+        <div class="input-style">
+          <el-input size="small" type="number" v-model="selectForm.width" @input="setForms"></el-input>
+        </div>
       </div>
     </div>
       
@@ -147,11 +171,14 @@ export default {
         }
       }
       if(this.itemType == 'selects' || this.itemType == 'multiSelects'){
-        postData = {
-          options: [],
-          title: this.selectForm.title,
-          isRequired: this.itmRequired
-        }
+        postData = JSON.parse(JSON.stringify(this.selectForm))
+        postData.options = []
+        postData.isRequired = this.itmRequired
+        // postData = {
+        //   options: [],
+        //   title: this.selectForm.title,
+        //   isRequired: this.itmRequired
+        // }
         let _opts = this.selectForm.options.split('\n')
         this.selectrows = _opts.length < 10 ? _opts.length : 10
         this.selfDefVal = []
@@ -209,7 +236,8 @@ export default {
             title: newVal.name,
             subtitle: newVal.subTitle,
             width: newVal.width,
-            placeholder: newVal.placeholder
+            placeholder: newVal.placeholder,
+            requireText: newVal.requireText
           }
           this.itmRequired = newVal.isRequired
           if(newVal.typ == 'textAreas'){
@@ -219,6 +247,9 @@ export default {
         else if(newVal.type == 'selects' || newVal.type == 'multiSelects'){
           this.selectForm = {
             title: newVal.name,
+            subtitle: newVal.subTitle,
+            width: newVal.width,
+            requireText: newVal.requireText,
             options: ''
           }
           this.selfDefVal = []

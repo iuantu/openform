@@ -90,10 +90,11 @@ export default {
     return {
       list1: [
         // { name: "标题", subTitle: '副标题', type: "titles", backimg: require('./static/img/formsetting/titles.png') },
-        { name: "标题", subTitle: '副标题', showName: '文本字段', width: 20, placeholder: '', isRequired: false, type: "inputs", backimg: require('./static/img/formsetting/inputs.png') },
-        { name: "标题", subTitle: '副标题', showName: '多行文本', width: 20, placeholder: '', isRequired: false, textareaRows: 6, type: "textAreas", backimg: require('./static/img/formsetting/textareas.png') },
+        { name: "标题", subTitle: '副标题', showName: '文本字段', width: 20, placeholder: '', isRequired: false, requireText: '校验提示', alignType: 'left', type: "inputs", backimg: require('./static/img/formsetting/inputs.png') },
+        { name: "标题", subTitle: '副标题', showName: '多行文本', width: 20, placeholder: '', isRequired: false, requireText: '校验提示', alignType: 'left', textareaRows: 6, type: "textAreas", backimg: require('./static/img/formsetting/textareas.png') },
         { 
           name: "标题", 
+          subTitle: '副标题',
           showName: '单项选择',
           options: [
             {
@@ -109,9 +110,10 @@ export default {
               value: "选项3"
             }
           ], 
-          isRequired: false, type: "selects", backimg: require('./static/img/formsetting/selects.png') },
+          width: 20, isRequired: false, requireText: '校验提示', alignType: 'left', type: "selects", backimg: require('./static/img/formsetting/selects.png') },
         { 
           name: "标题", 
+          subTitle: '副标题',
           showName: '多项选择',
           options: [
             {
@@ -127,21 +129,21 @@ export default {
               value: "选项3"
             }
           ], 
-          isRequired: false, type: "multiSelects", backimg: require('./static/img/formsetting/multiSelects.png') },
+          width: 20, isRequired: false, requireText: '校验提示', alignType: 'left', type: "multiSelects", backimg: require('./static/img/formsetting/multiSelects.png') },
         // { name: "文件上传", showName: '文件上传', height: '1px', background: '#eeeeee', type: "uploadFiles", backimg: require('./static/img/formsetting/divides.png') },
         // { name: "分割线", height: '1px', background: '#eeeeee', type: "divideLines", backimg: require('./static/img/formsetting/divides.png') },
         // { name: "富文本", type: "editors", backimg: require('./static/img/formsetting/wangEditor.png') },
       ],
       list2: [
-        { name: "真实姓名", subTitle: '请输入您的真实姓名', showName: '姓名', width: 20, placeholder: '', isRequired: false, type: "inputsNames", backimg: require('./static/img/formsetting/inputs.png') },
-        { name: "手机号码", subTitle: '请输入您的手机号码', showName: '手机号码', width: 20, placeholder: '', isRequired: false, type: "inputsCells", backimg: require('./static/img/formsetting/inputs.png') },
+        { name: "真实姓名", subTitle: '请输入您的真实姓名', showName: '姓名', width: 20, placeholder: '', isRequired: false, requireText: '校验提示', alignType: 'left', type: "inputsNames", backimg: require('./static/img/formsetting/inputs.png') },
+        { name: "手机号码", subTitle: '请输入您的手机号码', showName: '手机号码', width: 20, placeholder: '', isRequired: false, requireText: '校验提示', alignType: 'left', type: "inputsCells", backimg: require('./static/img/formsetting/inputs.png') },
       ],
       list3: [
-        { name: "支付", subTitle: '支付', showName: '支付', width: 20, placeholder: '', isRequired: false, type: "payments", backimg: require('./static/img/formsetting/inputs.png') },
+        { name: "支付", subTitle: '支付', showName: '支付', width: 20, placeholder: '', isRequired: false, requireText: '校验提示', alignType: 'left', type: "payments", backimg: require('./static/img/formsetting/inputs.png') },
       ],
       list4: [
-        { name: "NPS", subTitle: 'NPS', showName: 'NPS', width: 20, placeholder: '', isRequired: false, type: "NPS", backimg: require('./static/img/formsetting/inputs.png') },
-        { name: "评分", subTitle: '评分', showName: '评分', width: 20, placeholder: '', isRequired: false, type: "counts", backimg: require('./static/img/formsetting/inputs.png') },
+        { name: "NPS", subTitle: 'NPS', showName: 'NPS', width: 20, placeholder: '', isRequired: false, requireText: '校验提示', alignType: 'left', type: "NPS", backimg: require('./static/img/formsetting/inputs.png') },
+        { name: "评分", subTitle: '评分', showName: '评分', width: 20, placeholder: '', isRequired: false, requireText: '校验提示', alignType: 'left', type: "counts", backimg: require('./static/img/formsetting/inputs.png') },
       ]
     };
   },

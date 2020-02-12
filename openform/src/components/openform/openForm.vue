@@ -2,15 +2,17 @@
   <div class="open-form-setting">
     <el-container>
       <el-main class="inner-content">
-        <el-button type="primary" size="small" @click="saveForm">保存</el-button>
+        <div class="add-new">
+          <el-button type="primary" size="small" @click="saveForm">保存</el-button>
+        </div>
         <div class="inner-title">
-          <div class="form-title" :style="{textAlign: 'left'}" @click="changeTitle = true">
+          <div class="form-title" :style="{textAlign: 'left'}" @click="setTitles">
             <span v-if="!changeTitle">{{title}}</span>
-            <el-input v-model="title" placeholder="请输入表单标题" v-if="changeTitle" @blur="changeTitle = false"></el-input>
+            <el-input v-model="title" ref="titles" placeholder="请输入表单标题" v-if="changeTitle" @blur="changeTitle = false"></el-input>
           </div>
-          <div class="form-sub-title" :style="{textAlign: 'left'}" @click="changeSubTitle = true">
+          <div class="form-sub-title" :style="{textAlign: 'left'}" @click="setSubTitles">
             <span v-if="!changeSubTitle">{{subtitle}}</span>
-            <el-input v-model="subtitle" placeholder="请输入表单副标题" v-if="changeSubTitle" @blur="changeSubTitle = false"></el-input>
+            <el-input v-model="subtitle" ref="subTitles" placeholder="请输入表单副标题" v-if="changeSubTitle" @blur="changeSubTitle = false"></el-input>
           </div>
         </div>
         <draggable
@@ -18,15 +20,14 @@
           :list="list"
           group="people"
           ghost-class="ghost"
+          v-if="showList"
         >
-          <div v-if="showList">
-            <div class="list-group-item" v-for="(formItm, formIndex) in list" :key="formIndex + '_form'">
-              <form-components :formItm="formItm" :formType="formItm.type" :formIndex="formIndex"></form-components>
-              <div class="components-setting-btn">
-                <el-button type="primary" size="small" icon="el-icon-edit" circle @click="setChange(formIndex)"></el-button>
-                <div class="delete-btn">
-                  <el-button type="danger" size="small" icon="el-icon-delete" circle @click="deleteList(formIndex)"></el-button>
-                </div>
+          <div class="list-group-item" v-for="(formItm, formIndex) in list" :key="formIndex + '_form'">
+            <form-components :formItm="formItm" :formType="formItm.type" :formIndex="formIndex"></form-components>
+            <div class="components-setting-btn">
+              <el-button type="primary" size="small" icon="el-icon-edit" circle @click="setChange(formIndex)"></el-button>
+              <div class="delete-btn">
+                <el-button type="danger" size="small" icon="el-icon-delete" circle @click="deleteList(formIndex)"></el-button>
               </div>
             </div>
           </div>
@@ -92,9 +93,12 @@ export default {
     },
     // 右侧栏传值
     formSets(params){
+      // console.log(params)
       let _par = JSON.parse(JSON.stringify(params))
       let _type = this.list[this.settingIndex].type
       let _itm = JSON.parse(JSON.stringify(this.list[this.settingIndex]))
+      _itm.alignType = _par.align
+      _itm.requireText = _par.requireText
       if( _type == 'titles'){
         _itm.name = _par.title
         _itm.subTitle = _par.subtitle
@@ -115,6 +119,9 @@ export default {
       }
       else if(_type == 'selects' || _type == 'multiSelects'){
         _itm.name = _par.title
+        _itm.subTitle = _par.subtitle
+        _itm.width = _par.width
+        _itm.placeholder = _par.placeholder
         _itm.options = _par.options
         _itm.isRequired = _par.isRequired
       }
@@ -123,8 +130,6 @@ export default {
       this.$nextTick(()=>{
         this.showList = true
       })
-      
-      
     },
     saveForm(){
       console.log(this.list)
@@ -190,14 +195,24 @@ export default {
     getForm(){
       let _url = this.$route.query.id
       if(_url){
-        // this.formDetail = JSON.parse(sessionStorage.getItem('formList'))
-        // if(this.formDetail){
-        //   console.log(this.formDetail)
-        // }
         this.service.getApi('cp/form/' + _url).then(({data})=>{
           console.log(data)
         })
       }
+    },
+    // 修改form title
+    setTitles(){
+      this.changeTitle = true
+      this.$nextTick(()=>{
+        this.$refs.titles.$el.querySelector('input').focus()
+      })
+    },
+    // 修改副标题
+    setSubTitles(){
+      this.changeSubTitle = true
+      this.$nextTick(()=>{
+        this.$refs.subTitles.$el.querySelector('input').focus()
+      })
     }
   },
   created(){

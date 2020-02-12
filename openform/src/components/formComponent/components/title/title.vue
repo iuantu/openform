@@ -1,9 +1,15 @@
 <template>
   <div class="form-input">
-    <div class="desTitle">
+    <!-- <div class="desTitle">
       {{formItm.name || "标题"}}
     </div>
-    <div class="desSubTitle">{{formItm.subTitle || '副标题'}}</div>
+    <div class="desSubTitle">{{formItm.subTitle || '副标题'}}</div> -->
+    <div class="title" :style="{textAlign: formItm.alignType}">
+      {{formItm.name || '标题'}}
+    </div>
+    <div class="subtitle" :style="{textAlign: formItm.alignType}">
+      {{formItm.subTitle || '副标题'}}
+    </div>
   </div>
 </template>
 
