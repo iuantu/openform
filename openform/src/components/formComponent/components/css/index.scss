@@ -1,4 +1,12 @@
 .form-input{
+    .title{
+        font-weight: bold;
+        padding: 10px 0 5px;
+    }
+    .subtitle{
+        padding-bottom: 15px;
+        font-size: 14px;
+    }
     .el-input__suffix-inner{
         position: absolute;
         margin-left: calc(100% - 25px);

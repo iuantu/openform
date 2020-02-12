@@ -10,7 +10,6 @@ import App from './App.vue'
 // 引入fontAwesome
 import 'font-awesome/css/font-awesome.min.css'
 
-
 Vue.use(VueRouter)
 Vue.use(VueResource)
 Vue.use(ElementUI)

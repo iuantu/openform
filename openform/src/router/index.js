@@ -10,6 +10,8 @@ import OpenFormSetting from './../components/openform/openForm'
 import Login from './../components/Login'
 import OpenForm from './../pages/openform/openForm'
 
+import OpenFormList from './../pages/openFormList/openFormList'
+
 Vue.use(Router)
 
 export default new Router({
@@ -41,5 +43,9 @@ export default new Router({
         { path: 'data', name: "cp_form_data", component: FormData},
       ]
     },
+    {
+      path: '/openFormList',
+      component: OpenFormList
+    }
   ]
 })

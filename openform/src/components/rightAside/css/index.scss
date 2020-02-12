@@ -1,4 +1,24 @@
 .right-aside{
     width: 100%;
     height: 100%;
+    .title-name{
+        color: #999999;
+        text-align: left;
+        padding: 10px;
+        border-bottom: 1px solid #eeeeee;
+    }
+    .right-title{
+        text-align: left;
+        font-size: 14px;
+        padding: 15px 10px 5px;
+    }
+    .input-style{
+        padding: 0 10px;
+        position: relative;
+        height: 32px;
+        .el-switch, .el-radio-group{
+            position: absolute;
+            left: 10px;
+        }
+    }
 }

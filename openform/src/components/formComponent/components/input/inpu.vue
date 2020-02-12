@@ -4,7 +4,10 @@
       {{formItm.name || '标题'}}
       <span class="required" v-show="formItm.isRequired || false">*</span>
     </div>
-    <el-input :placeholder="formItm.placeholder" v-model="input" clearable></el-input>
+    <div class="subtitle">
+      {{formItm.subTitle || '副标题'}}
+    </div>
+    <el-input size="small" :placeholder="formItm.placeholder" v-model="input" clearable></el-input>
   </div>
 </template>
 

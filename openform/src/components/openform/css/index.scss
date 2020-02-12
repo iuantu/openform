@@ -8,25 +8,54 @@
       overflow-y: auto;
       .el-main{
         &.inner-content{
-          padding: 20px;
+          padding: 22px;
+          .inner-title{
+            color: #666666;
+            .form-title{
+              font-size: 20px;
+              padding: 15px 0 5px;
+            }
+            .form-sub-title{
+              padding-bottom: 10px;
+              border-bottom: 1px solid #eeeeee;
+            }
+          }
         }
 
       }
 
     }
     .list-group{
+      margin-top: 15px;
       padding: 15px;
       box-sizing: border-box;
       min-height: 60px;
       border: 1px dashed #dddddd;
       text-align: left;
+      position: relative;
+      .no-list{
+        text-align: center;
+        font-size: 22px;
+        color: #999999;
+        position: absolute;
+        z-index: 0;
+        width: 100%;
+        padding-top: 12px;
+      }
     }
     .list-group-item{
       width: 100%;
       padding: 15px;
       box-sizing: border-box;
+      display: flex;
+      display: -webkit-flex;
+      flex-wrap: nowrap;
       .components-setting-btn{
-        
+        width: 80px;
+        margin-left: 15px;
+        .delete-btn{
+          margin-top: 10px;
+        }
       }
     }
     .ghost{

@@ -14,10 +14,16 @@
     width: 100vw;
     height: 100vh;
     .openForm-side{
-        background: rgba(0,0,0,.5);
+        // background: rgba(0,0,0,.5);
+        box-sizing: border-box;
+        border-right: 1px solid #eeeeee;
+        border-left: 1px solid #eeeeee;
     }
     .main-container{
         width: 100%;
         height: calc(100vh - 60px);
+    }
+    .color-red{
+        color: #F56C6C;
     }
 }

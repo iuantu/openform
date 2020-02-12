@@ -1,7 +1,8 @@
 export let baseURL;
 
 if (process.env.NODE_ENV === 'development') {
-    baseURL = `${document.location.protocol}//${document.location.hostname}:5000`;
+    // baseURL = `${document.location.protocol}//${document.location.hostname}:5000`;
+    baseURL = 'https://oform.cn'
 } else {
     baseURL = `${document.location.protocol}//${document.location.host}`;
 }
@@ -86,6 +87,51 @@ export class SecurityService {
         const json = await response.json();
         return new UIRegister(json);
     }
+
+    async getFormList(){
+        const response = await this.client.request(
+            '/api/v1/cp/form/',
+            {
+                method: 'GET',
+            }
+        )
+        const json = await response.json()
+        return json
+    }
+
+    async postApi(url, postData){
+        const response = await this.client.request(
+            '/api/v1/' + url,
+            {
+                method: 'POST',
+                body: JSON.stringify(postData)
+            }
+        )
+        const json = await response.json()
+        return json
+    }
+
+    async getApi(url){
+        const response = await this.client.request(
+            '/api/v1/' + url,
+            {
+                method: 'GET'
+            }
+        )
+        const json = await response.json()
+        return json
+    }
+
+    async putApi(url){
+        const response = await this.client.request(
+            '/api/v1/' + url,
+            {
+                method: 'PUT'
+            }
+        )
+        const json = await response.json()
+        return json
+    }
 }
 
 export async function ofFetch(path = '', options = {}) {
@@ -103,6 +149,7 @@ export async function ofFetch(path = '', options = {}) {
 
     for (let i = 0; i < 3; i++ ) {
         const response = await fetch(baseURL + path, options)
+        // const response = await fetch(path, options)
         if (401 == response.status) {
             // no implement
         }

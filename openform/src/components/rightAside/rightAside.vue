@@ -23,33 +23,38 @@
         </el-radio-group>
       </div>
       <div v-if="itemType == 'inputs' || itemType == 'textAreas'">
+        <div class="title-name">属性设置</div>
         <div class="right-title">标题</div>
         <div class="input-style">
-          <el-input v-model="inputForm.title" placeholder="标题" @input="setForms"></el-input>
+          <el-input size="small" v-model="inputForm.title" placeholder="标题" @input="setForms"></el-input>
         </div>
-        <div class="right-title">是否必选</div>
-        <el-switch v-model="itmRequired" @change="setForms"></el-switch>
-        <div class="right-title">对齐方式</div>
-        <el-radio-group v-model="titleFormAlign" @change="setForms">
-          <el-radio-button label="left">左对齐</el-radio-button>
-          <el-radio-button label="center">剧中</el-radio-button>
-          <el-radio-button label="right">右对齐</el-radio-button>
-        </el-radio-group>
         <div class="right-title">副标题</div>
         <div class="input-style">
-          <el-input v-model="inputForm.subtitle" placeholder="副标题" @input="setForms"></el-input>
+          <el-input size="small" v-model="inputForm.subtitle" placeholder="副标题" @input="setForms"></el-input>
+        </div>
+        <div class="right-title">是否必选</div>
+        <div class="input-style">
+          <el-switch size="small" v-model="itmRequired" @change="setForms"></el-switch>
+        </div>
+        <div class="right-title">对齐方式</div>
+        <div class="input-style">
+          <el-radio-group size="small" v-model="titleFormAlign" @change="setForms">
+            <el-radio-button label="left">左对齐</el-radio-button>
+            <el-radio-button label="center">剧中</el-radio-button>
+            <el-radio-button label="right">右对齐</el-radio-button>
+          </el-radio-group>
         </div>
         <div class="right-title" v-if="itemType == 'textAreas'">行数</div>
         <div class="input-style" v-if="itemType == 'textAreas'">
-          <el-input type="number" v-model="textareaRows" @input="setForms"></el-input>
+          <el-input size="small" type="number" v-model="textareaRows" @input="setForms"></el-input>
         </div>
         <div class="right-title">宽度</div>
         <div class="input-style">
-          <el-input type="number" v-model="inputForm.width" @input="setForms"></el-input>
+          <el-input size="small" type="number" v-model="inputForm.width" @input="setForms"></el-input>
         </div>
         <div class="right-title">占位符</div>
         <div class="input-style">
-          <el-input v-model="inputForm.placeholder" @input="setForms"></el-input>
+          <el-input size="small" v-model="inputForm.placeholder" @input="setForms"></el-input>
         </div>
       </div>
       <div v-if="itemType == 'divideLines'">

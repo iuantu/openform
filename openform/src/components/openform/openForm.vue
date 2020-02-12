@@ -2,9 +2,16 @@
   <div class="open-form-setting">
     <el-container>
       <el-main class="inner-content">
+        <el-button type="primary" size="small" @click="saveForm">保存</el-button>
         <div class="inner-title">
-          <div class="form-title" :style="{textAlign: 'left'}">{{title}}</div>
-          <div class="form-sub-title" :style="{textAlign: 'left'}">{{subtitle}}</div>
+          <div class="form-title" :style="{textAlign: 'left'}" @click="changeTitle = true">
+            <span v-if="!changeTitle">{{title}}</span>
+            <el-input v-model="title" placeholder="请输入表单标题" v-if="changeTitle" @blur="changeTitle = false"></el-input>
+          </div>
+          <div class="form-sub-title" :style="{textAlign: 'left'}" @click="changeSubTitle = true">
+            <span v-if="!changeSubTitle">{{subtitle}}</span>
+            <el-input v-model="subtitle" placeholder="请输入表单副标题" v-if="changeSubTitle" @blur="changeSubTitle = false"></el-input>
+          </div>
         </div>
         <draggable
           class="dragArea list-group"
@@ -16,15 +23,17 @@
             <div class="list-group-item" v-for="(formItm, formIndex) in list" :key="formIndex + '_form'">
               <form-components :formItm="formItm" :formType="formItm.type" :formIndex="formIndex"></form-components>
               <div class="components-setting-btn">
-                <el-button type="primary" @click="setChange(formIndex)">设置</el-button>  
-                <el-button type="danger">删除</el-button>
+                <el-button type="primary" size="small" icon="el-icon-edit" circle @click="setChange(formIndex)"></el-button>
+                <div class="delete-btn">
+                  <el-button type="danger" size="small" icon="el-icon-delete" circle @click="deleteList(formIndex)"></el-button>
+                </div>
               </div>
             </div>
           </div>
-          
+          <div class="no-list" v-if="list.length == 0">拖 拽 区</div>
         </draggable>
       </el-main>
-      <el-aside v-show="showRightAside" width="200px" class="openForm-side right">
+      <el-aside v-show="showRightAside" width="265px" class="openForm-side right">
         <right-aside :formItem="formItem" @formSet="formSets"></right-aside>
       </el-aside>
     </el-container>
@@ -36,6 +45,7 @@ import draggable from "vuedraggable";
 
 import formComponents from "./../../components/formComponent/formComponet";
 import RightAside from './../../components/rightAside/rightAside'
+import { SecurityService } from '../../functions';
 
 
 export default {
@@ -54,7 +64,11 @@ export default {
       showRightAside: true,
       formItem: {},
       settingIndex: null,
-      showList: true
+      showList: true,
+      formDetail: null,
+      changeTitle: false,
+      changeSubTitle: false,
+
     };
   },
   methods: {
@@ -66,6 +80,15 @@ export default {
     setChange(index){
       this.settingIndex = index
       this.formItem = JSON.parse(JSON.stringify(this.list[index]))
+    },
+    deleteList(index){
+      this.$confirm('此操作将永久删除该表单, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.list.splice(index, 1)
+        })
     },
     // 右侧栏传值
     formSets(params){
@@ -102,7 +125,84 @@ export default {
       })
       
       
+    },
+    saveForm(){
+      console.log(this.list)
+      let postData = {
+        title: this.title,
+        fields: []
+      }
+      this.list.map((itm, index)=>{
+        if(itm.type == "inputs" || itm.type == "textAreas"){
+          let _itm = {
+            title: itm.name,
+            name: "name" + index,
+            discriminator: "text_field",
+            multiple: false,
+            placeholder: itm.placeholder,
+            constraints: []
+          }
+          if(itm.isRequired){
+            _itm.constraints = [
+              {
+                "discriminator": "required_constraint"
+              }
+            ]
+          }
+          if(itm.type == "textAreas"){
+            _itm.multiple = true
+            _itm.layout_row_index = itm.textareaRows
+          }
+          postData.fields.push(_itm)
+        }
+        else if(itm.type == "selects" || itm.type == "multiSelects"){
+          let _itm = {
+            title: itm.name,
+            discriminator: "select_field",
+            multiple: false,
+            type: 'radio',
+            constraints: [],
+            options: []
+          }
+          if(itm.isRequired){
+            _itm.constraints = [
+              {
+                "discriminator": "required_constraint"
+              }
+            ]
+          }
+          itm.options.map(opts=>{
+            let _opts = {
+              label: opts.value
+            }
+            _itm.options.push(_opts)
+          })
+          if(itm.type == "multiSelects"){
+            postData.type == 'checkbox'
+          }
+          postData.fields.push(_itm)
+        }
+      })
+      this.service.postApi('cp/form', postData).then(({data})=>{
+        // console.log(data)
+      })
+    },
+    getForm(){
+      let _url = this.$route.query.id
+      if(_url){
+        // this.formDetail = JSON.parse(sessionStorage.getItem('formList'))
+        // if(this.formDetail){
+        //   console.log(this.formDetail)
+        // }
+        this.service.getApi('cp/form/' + _url).then(({data})=>{
+          console.log(data)
+        })
+      }
     }
+  },
+  created(){
+    this.service = new SecurityService();
+    // this.getForm()
   },
   mounted() {}
 };
