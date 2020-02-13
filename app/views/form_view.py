@@ -40,17 +40,19 @@ class FormView(BaseView):
     @expose('/<form_id>', methods=["GET", "POST"])
     def form(self, form_id):
         user_agent = to_user_agent(request)
-        form = self.form_service.fetch_form(form_id, g.user, user_agent)
+        form = self.form_service.fetch_form(form_id, g.user)
         form_view = self.assembler.to_view_model(form, ParameterContainer())
 
         if "POST" == request.method:
-            
-            user_agent = to_user_agent(request)
-
             if self.form_service.submit(form, g.user, user_agent):
                 return redirect(
                     url_for("FormView.success_redirect", form_id=form_id)
                 )
+        else:
+            event = Event(type=EventType.VIEW_FORM, user_id=None, form_id=form_id)
+            event.assemble_from_user_agent(user_agent)
+            db.session.add(event)
+            db.session.commit()
 
         return self.render_template(
             "openform/form.html",

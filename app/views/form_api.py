@@ -32,7 +32,8 @@ class FormApi(BaseApi):
                     $ref: '#/components/schemas/Form'
         """
         user_agent = to_user_agent(request)
-        form = self.form_service.fetch_form(form_id, current_user, user_agent)
+        form = self.form_service.fetch_form(form_id, current_user)
+
         return jsonify(form.asdict(follow={
             'fields': {
                 "follow": {

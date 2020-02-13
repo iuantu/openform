@@ -154,8 +154,8 @@ class ControlPanelFormApi(BaseApi):
         )
         return jsonify(forms.asdict())
 
-    @expose('/{id}', methods=['GET'])
-    def get_detail(self):
+    @expose('/<form_id>', methods=['GET'])
+    def get_detail(self, form_id):
         """Get a form
         ---
         get:
@@ -167,8 +167,16 @@ class ControlPanelFormApi(BaseApi):
                   schema:
                     $ref: "#/components/schemas/Form"
         """
-        
-        return self.response(200, **{})
+
+        form = self.form_service.fetch_form(form_id, current_user)
+        return jsonify(form.asdict(follow={
+            'fields': {
+                "follow": {
+                    "options": {},
+                    "constraints": {},
+                }
+            }
+        }))
 
     @jwt_required
     @expose("/<form_id>/summary", methods=["GET"])
