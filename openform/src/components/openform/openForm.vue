@@ -73,6 +73,7 @@ export default {
       formDetail: null,
       changeTitle: false,
       changeSubTitle: false,
+      _id: null,
 
     };
   },
@@ -136,6 +137,9 @@ export default {
         _itm.width = _par.width
         _itm.requireText = _par.requireText
         _itm.alignType = _par.align
+        if(_par.id){
+          _itm.id = _par.id
+        }
       }
       this.list[this.settingIndex] = JSON.parse(JSON.stringify(_itm))
       this.showList = false
@@ -144,10 +148,14 @@ export default {
       })
     },
     saveForm(){
-      console.log(this.list)
+      // console.log(this.list)
+      // return
       let postData = {
         title: this.title,
         fields: []
+      }
+      if(this._id){
+        postData.id = this._id
       }
       this.list.map((itm, index)=>{
         if(itm.type == "inputs" || itm.type == "textAreas"){
@@ -158,6 +166,9 @@ export default {
             multiple: false,
             placeholder: itm.placeholder,
             constraints: []
+          }
+          if(itm.id){
+            _itm.id = itm.id
           }
           if(itm.isRequired){
             _itm.constraints = [
@@ -181,6 +192,9 @@ export default {
             constraints: [],
             options: []
           }
+          if(itm.id){
+            _itm.id = itm.id
+          }
           if(itm.isRequired){
             _itm.constraints = [
               {
@@ -192,6 +206,9 @@ export default {
             let _opts = {
               label: opts.value
             }
+            if(opts.id){
+              _opts.id = opts.id
+            }
             _itm.options.push(_opts)
           })
           if(itm.type == "multiSelects"){
@@ -200,15 +217,77 @@ export default {
           postData.fields.push(_itm)
         }
       })
-      this.service.postApi('cp/form', postData).then(({data})=>{
-        // console.log(data)
-      })
+      if(this._id){
+        this.service.putApi('/cp/form/' + this._id, postData).then(({data})=>{
+
+        })
+      }
+      else{
+        this.service.postApi('cp/form', postData).then(({data})=>{
+          // console.log(data)
+        })
+
+      }
     },
     getForm(){
-      let _url = this.$route.query.id
-      if(_url){
-        this.service.getApi('cp/form/' + _url).then(({data})=>{
-          console.log(data)
+      this.list = []
+      this._id = this.$route.query.id
+      if(this._id){
+        this.service.getApi('cp/form/' + this._id).then(data=>{
+          // console.log(data)
+          this.title = data.title
+          data.fields.map(itm=>{
+            let _itm = {
+              name: itm.title, 
+              subTitle: itm.title, 
+              width: 100, 
+              isRequired: false, 
+              requireText: '校验提示', 
+              alignType: 'left', 
+              id: itm.id,
+              form_id: itm.form_id,
+              constraints: itm.constraints
+            }
+            itm.constraints.map(requ => {
+              if(requ.discriminator && requ.discriminator == 'required_constraint'){
+                _itm.isRequired = true
+              }
+            })
+            if(itm.discriminator == 'text_field' && !itm.multiple){
+              _itm.type = 'inputs'
+              _itm.showName = '文本字段'
+              _itm.placeholder = itm.placeholder
+            }
+            if(itm.discriminator == "text_field" && itm.multiple){
+              _itm.type = "textAreas"
+              _itm.textareaRows = itm.layout_row_index
+              _itm.showName = '多行文本'
+              _itm.placeholder = itm.placeholder
+            }
+            if(itm.discriminator == 'select_field'){
+              if(itm.type == "radio"){
+                _itm.type = 'selects'
+                _itm.showName = '单项选择'
+              }
+              else if(itm.type == 'checkbox'){
+                _itm.type = 'multiSelects'
+                _itm.showName = '多项选择'
+              }
+              _itm.options = []
+              itm.options.map(opt => {
+                let _opt = {
+                  label: opt.value,
+                  value: opt.label,
+                  editable: opt.editable,
+                  field_id: opt.field_id,
+                  id: opt.id,
+                  ordering: opt.ordering
+                }
+                _itm.options.push(_opt)
+              })
+            }
+            this.list.push(_itm)
+          })
         })
       }
     },
@@ -229,7 +308,7 @@ export default {
   },
   created(){
     this.service = new SecurityService();
-    // this.getForm()
+    this.getForm()
   },
   mounted() {}
 };

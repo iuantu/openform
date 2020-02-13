@@ -122,11 +122,12 @@ export class SecurityService {
         return json
     }
 
-    async putApi(url){
+    async putApi(url, postData){
         const response = await this.client.request(
             '/api/v1/' + url,
             {
-                method: 'PUT'
+                method: 'PUT',
+                body: JSON.stringify(postData)
             }
         )
         const json = await response.json()
