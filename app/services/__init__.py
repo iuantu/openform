@@ -6,6 +6,7 @@ from app.utils import to_camel_case
 from app.models import UserAgent, Event, EventType
 from app.models.page import Pageable
 from typing import List
+from flask_appbuilder.security.sqla.models import Role
 
 class FormService(object):
     form_assembler = FormAssembler()
@@ -20,12 +21,21 @@ class FormService(object):
         self.form_repository = models.FormRepository(self.db)
         self.field_repository = models.FieldRepository(self.db)
         self.value_repository = models.ValueRepository(self.db)
+        self.role_repository = models.RoleRepository(self.db)
 
-    def add_new_form(self, dto) -> models.Form:
-        form = self.form_assembler.to_model(models.Form(), dto)
+    def add_new_form(self, command) -> models.Form:
+        form = self.form_assembler.to_model(models.Form(), command)
 
         session = self.db.session
         session.add(form)
+        session.flush()
+
+        collaborator = models.FormCollaborator(
+            form.id,
+            form.user_id,
+            self.role_repository.find_by("Manager").id,
+        )
+        session.add(collaborator)
         session.commit()
 
         return form
@@ -107,3 +117,9 @@ class FormService(object):
         count = self.value_repository.count(form_id)
 
         return Pageable(values, page_request.create_result(count))
+
+    def all_roles(self):
+        session = self.db.session
+        return session.query(Role)\
+            .filter(Role.name.in_(['Editor', 'Manager', 'Viewer']))\
+            .all()

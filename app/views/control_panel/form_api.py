@@ -2,6 +2,7 @@ import csv
 import io
 from flask_appbuilder.api import BaseApi, expose
 from app import appbuilder, db
+from app.views.decorators import form_guard
 from flask import (
     request,
     jsonify,
@@ -16,7 +17,7 @@ from app.models import (
     PageRequest,
     EventRepository,
     ValueRepository,
-    FormRepository
+    FormRepository,
 )
 
 class ControlPanelFormApi(BaseApi):
@@ -30,7 +31,7 @@ class ControlPanelFormApi(BaseApi):
         self.event_repository = EventRepository(db)
         self.value_repository = ValueRepository(db)
         self.form_repository = FormRepository(db)
-  
+
     @jwt_required
     @expose('', methods=['POST'])
     def create(self):
@@ -66,8 +67,9 @@ class ControlPanelFormApi(BaseApi):
             }
         })), 201
 
-    @expose('/<form_id>', methods=['PUT'])
-    def update(self, form_id : int):
+    @jwt_required
+    @expose('/<int:form_id>', methods=['PUT'])
+    def update(self, form_id: int):
         """Create a form
         ---
         put:
@@ -86,7 +88,11 @@ class ControlPanelFormApi(BaseApi):
                 schema:
                   $ref: '#/components/schemas/Form'
         """
+
+        form_guard(int(form_id), ['Manager'])
+
         form_dto = request.json.copy()
+        form_dto['id'] = int(form_id)
         form = self.form_service.change_form(form_id, form_dto)
         return jsonify(form.asdict(follow={
             'fields': {
@@ -154,8 +160,9 @@ class ControlPanelFormApi(BaseApi):
         )
         return jsonify(forms.asdict())
 
-    @expose('/<form_id>', methods=['GET'])
-    def get_detail(self, form_id):
+    @jwt_required
+    @expose('/<int:form_id>', methods=['GET'])
+    def get_detail(self, form_id: int):
         """Get a form
         ---
         get:
@@ -167,7 +174,7 @@ class ControlPanelFormApi(BaseApi):
                   schema:
                     $ref: "#/components/schemas/Form"
         """
-
+        form_guard(form_id, ['Viewer', 'Editor', 'Manager'])
         form = self.form_service.fetch_form(form_id, current_user)
         return jsonify(form.asdict(follow={
             'fields': {
@@ -179,8 +186,10 @@ class ControlPanelFormApi(BaseApi):
         }))
 
     @jwt_required
-    @expose("/<form_id>/summary", methods=["GET"])
-    def summary(self, form_id):
+    @expose("/<int:form_id>/summary", methods=["GET"])
+    def summary(self, form_id: int):
+        form_guard(form_id, ['Viewer', 'Editor', 'Manager'])
+
         user = current_user
         submit_count_by_days = self.value_repository.count_by_8_days(user.id, form_id)
         form = self.form_repository.find_one(form_id)
@@ -197,8 +206,11 @@ class ControlPanelFormApi(BaseApi):
             "form": form.asdict(),
         })
 
-    @expose('/<form_id>/value', methods=['GET'])
-    def value(self, form_id):
+    @jwt_required
+    @expose('/<int:form_id>/value', methods=['GET'])
+    def value(self, form_id: int):
+        form_guard(form_id, ['Viewer', 'Editor', 'Manager'])
+
         page_request = PageRequest.create(request.args)
         page_request.order("created_at", "desc")
 
