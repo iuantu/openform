@@ -187,6 +187,9 @@ export default {
               value: itm,
               label: (this._selfDefVal[index] ? this._selfDefVal[index].label : itm)
             }
+            if(this._selfDefVal[index] && this._selfDefVal[index].id){
+              _itm.id = this._selfDefVal[index].id
+            }
             postData.options.push(_itm)
             this.selfDefVal.push(_itm)
         })
@@ -208,6 +211,9 @@ export default {
           let _itm = {
             value: itm,
             label: (this.selfDefVal[index] ? this.selfDefVal[index].label : itm)
+          }
+          if(itm.id && this.selfDefVal[index]){
+            _itm.id = this.selfDefVal[index].id
           }
           postData.options.push(_itm)
         }
