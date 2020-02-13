@@ -37,13 +37,10 @@ class FormService(object):
         self.db.session.commit()
         return form
 
-    def fetch_form(self, form_id, user, user_agent) -> models.Form:
+    def fetch_form(self, form_id, user) -> models.Form:
         form = self.form_repository.find_one(form_id)
         form.record_count += 1
         user_id = (user and not user.is_anonymous) and user.id or None
-        event = Event(type=EventType.VIEW_FORM, user_id=user_id or None, form_id=form_id)
-        event.assemble_from_user_agent(user_agent)
-        db.session.add(event)
         db.session.commit()
 
         return form
