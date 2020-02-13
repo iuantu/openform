@@ -87,6 +87,7 @@ class ControlPanelFormApi(BaseApi):
                   $ref: '#/components/schemas/Form'
         """
         form_dto = request.json.copy()
+        form_dto['id'] = int(form_id)
         form = self.form_service.change_form(form_id, form_dto)
         return jsonify(form.asdict(follow={
             'fields': {
