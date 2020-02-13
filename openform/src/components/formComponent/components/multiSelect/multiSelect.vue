@@ -1,5 +1,5 @@
 <template>
-  <div class="form-input">
+  <div class="form-input" :style="{width: formItm.width + '%'}">
     <!-- <div class="title" :style="{textAlign: formItm.alignType}">
       {{formItm.name}}
       <span class="required" v-show="formItm.isRequired">*</span>
@@ -11,7 +11,7 @@
     <div class="subtitle" :style="{textAlign: formItm.alignType}">
       {{formItm.subTitle || '副标题'}}
     </div>
-    <div :style="{width: formItm.width + '%'}">
+    <div>
       <el-checkbox-group v-model="select">
         <el-checkbox v-for="(checkItm, checkIndex) in formItm.options" :key="checkIndex + '_checkbox'" :label="checkItm.label">
           {{checkItm.value}}

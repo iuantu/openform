@@ -102,7 +102,7 @@ export default {
     },
     // 右侧栏传值
     formSets(params){
-      console.log(params)
+      // console.log(params)
       let _par = JSON.parse(JSON.stringify(params))
       let _type = this.list[this.settingIndex].type
       let _itm = JSON.parse(JSON.stringify(this.list[this.settingIndex]))

@@ -1,5 +1,5 @@
 <template>
-  <div class="form-input">
+  <div class="form-input" :style="{width: formItm.width + '%'}">
     <!-- <div class="title">
       {{formItm.name}}
       <span class="required" v-show="formItm.isRequired">*</span>
@@ -11,7 +11,7 @@
     <div class="subtitle" :style="{textAlign: formItm.alignType}">
       {{formItm.subTitle || '副标题'}}
     </div>
-    <div :style="{width: formItm.width + '%'}">
+    <div>
       <el-radio-group v-model="select">
         <el-radio v-for="(radioItm, radioIndex) in formItm.options" :key="radioIndex + '_radio'" :label="radioItm.label">
           {{radioItm.value}}

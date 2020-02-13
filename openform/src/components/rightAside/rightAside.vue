@@ -106,6 +106,14 @@
             </el-table-column>
           </el-table>
         </div>
+        <div class="right-title">对齐方式</div>
+        <div class="input-style">
+          <el-radio-group size="small" v-model="titleFormAlign" @change="setForms">
+            <el-radio-button label="left">左对齐</el-radio-button>
+            <el-radio-button label="center">剧中</el-radio-button>
+            <el-radio-button label="right">右对齐</el-radio-button>
+          </el-radio-group>
+        </div>
         <div class="right-title">宽度</div>
         <div class="slider-style">
           <el-slider size="small" :min='50' v-model="selectForm.width" :step="10" @input="setForms"></el-slider>
@@ -172,6 +180,7 @@ export default {
       }
       if(this.itemType == 'selects' || this.itemType == 'multiSelects'){
         postData = JSON.parse(JSON.stringify(this.selectForm))
+        postData.align = this.titleFormAlign
         postData.options = []
         postData.isRequired = this.itmRequired
         // postData = {
