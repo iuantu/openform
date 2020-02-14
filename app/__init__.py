@@ -9,7 +9,7 @@ def monkey_patch_create_access_token(identity, fresh=False, expires_delta=None, 
     return _create_access_token(identity, fresh, datetime.timedelta(days=365), user_claims)
 flask_jwt_extended.create_access_token = monkey_patch_create_access_token
 
-from flask import Flask, make_response
+from flask import Flask, make_response, jsonify
 from flask_appbuilder import AppBuilder, SQLA
 from flask_appbuilder.views import IndexView
 from flask_appbuilder.baseviews import expose
@@ -67,3 +67,12 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 """
 
 from . import views, models
+
+
+from .exceptions import *
+
+@app.errorhandler(HttpStatusException)
+def error_handler(e):
+    return jsonify({
+        'message': e.message
+    }), e.http_status_code

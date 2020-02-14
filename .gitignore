@@ -13,3 +13,4 @@ venv
 .vscode
 dist
 node_modules
+.vagrant

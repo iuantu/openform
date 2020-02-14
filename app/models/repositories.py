@@ -1,8 +1,9 @@
 import logging
-from . import (Form, Field, Value, Event, PageRequest)
-from sqlalchemy import func, Date, cast
+from . import (Form, Field, Value, Event, PageRequest, FormCollaborator)
+from sqlalchemy import func, Date, cast, or_
 from datetime import date, timedelta
 from typing import List
+from flask_appbuilder.security.sqla.models import User, Role
 
 class BaseRepository:
     def __init__(self, db):
@@ -15,6 +16,43 @@ class BaseRepository:
 
         return query.limit(page_request.page_size)\
             .offset((page_request.page - 1) * page_request.page_size)
+
+
+class UserRepository(BaseRepository):
+    def find_by(self, username):
+        session = self.db.session
+        user = session\
+            .query(User)\
+            .filter(or_(
+                User.username==username,
+                User.email==username
+            ))\
+            .first()
+
+        return user
+
+
+class RoleRepository(BaseRepository):
+
+    def find_by(self, name: str) -> Role:
+        session = self.db.session
+        role = session\
+            .query(Role)\
+            .filter(Role.name==name)\
+            .first()
+
+        return role
+
+class CollaboratorRepository(BaseRepository):
+    def find_one(self, form_id, user_id):
+        session = self.db.session
+        collaborator = session\
+            .query(FormCollaborator)\
+            .filter(FormCollaborator.form_id==form_id,
+                FormCollaborator.user_id==user_id)\
+            .first()
+
+        return collaborator
 
 class FormRepository(BaseRepository):
 
@@ -34,7 +72,8 @@ class FormRepository(BaseRepository):
             self.db\
             .session\
             .query(Form)\
-            .filter(Form.user_id==user_id),
+            .join(FormCollaborator, FormCollaborator.form_id==Form.id)\
+            .filter(FormCollaborator.user_id==user_id),
 
             page_request,
             Form
