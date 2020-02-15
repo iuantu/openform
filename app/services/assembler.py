@@ -28,16 +28,25 @@ class ModelFactory:
             (k, v) for k, v in dto.items() if not isinstance(v, (list, ))
         ])
 
-    def remove_model(self, primary_key, model, dto, dto_field_name):
-        collection = getattr(model, dto_field_name)
+    def remove_model(self, primary_key, model, dto, collection_field_name):
+        # logging.debug('dto')
+        # logging.debug(dto)
+        collection = getattr(model, collection_field_name)
 
         dto_hash_map = {}
-        for i in dto[dto_field_name]:
+        for i in dto[collection_field_name]:
             if primary_key.name in i:
                 dto_hash_map[i[primary_key.name]] = i
 
         for i in collection:
-            if not getattr(i, primary_key.name) in dto_hash_map:
+            primary_key_value = getattr(i, primary_key.name)
+            if not primary_key_value:
+                continue
+
+            if not primary_key_value in dto_hash_map:
+                # logging.debug("primary key value")
+                # logging.debug(primary_key_value)
+                # logging.debug(i.asdict())
                 collection.remove(i)
 
     def process_one_to_many(self, model, primary_key, dto_field_name, \
@@ -64,10 +73,15 @@ class ModelFactory:
                     self.clear_relation_field(relation_dto), 
                     dto_field_name
                 )
-                # 注释下面两行代码解决新增对象失败
-                # if isinstance(relation_dto, dict):
-                #     self.create_or_update(obj, relation_dto, False)
+
+                
+
+                # logging.debug("%s %s" % (dto_field_name, obj.asdict()))
                 relations.append(obj)
+
+                # 注释下面两行代码解决新增对象失败
+                if isinstance(relation_dto, dict):
+                    self.create_or_update(obj, relation_dto, False)
 
     def create_or_update(self, model: Model, dto, is_update: bool=False):
         for dto_field_name, v in dto.items():
@@ -79,6 +93,7 @@ class ModelFactory:
                     relations_dto_field, is_update)
 
                 if is_update:# and isinstance(dto, dict):
+                    # logging.debug('remove model')
                     self.remove_model(primary_key, model, dto, dto_field_name)
 
             elif getattr(model, dto_field_name) != v:
