@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - staging
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: deploy
+      uses: appleboy/ssh-action@master
+      env:
+        DEPLOYMENT: ${{ github.ref }}
+      with:
+        host: ${{ secrets.HOST }}
+        username: develop
+        key: ${{ secrets.SSH_KEY }}
+        port: 2222
+        envs: DEPLOYMENT
+        script: |
+          echo "/storage/oform/${DEPLOYMENT:11}"
+          cd "/storage/oform/${DEPLOYMENT:11}"; ./scripts/deploy.py
