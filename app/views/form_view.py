@@ -1,10 +1,11 @@
 from flask_appbuilder import BaseView, expose
-from app import appbuilder
+from app import appbuilder, db
 from flask import request, g, redirect, url_for
 from app.models import UserAgent
 from app.services import FormService
 from app.views.models import FormViewModelAssembler
 from app.views.utils import to_user_agent
+from app.models import Event, EventType
 
 class ParameterContainer:
     def __init__(self):
