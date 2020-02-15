@@ -46,6 +46,10 @@ export default new Router({
     {
       path: '/openFormList',
       component: OpenFormList
+    },
+    {
+      path: '/',
+      component: OpenFormList
     }
   ]
 })
