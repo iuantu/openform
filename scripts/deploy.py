@@ -19,4 +19,4 @@ os.system('venv/bin/flask db upgrade')
 os.system('kill -HUP $(cat app.pid)')
 
 # npm build
-os.system('cd openform; yarn build')
+os.system('cd openform; /home/develop/.yarn/bin/yarn build')
