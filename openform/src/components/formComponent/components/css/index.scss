@@ -1,3 +1,8 @@
+.form-components{
+    &.isActive{
+        border: 1px solid #dddddd;
+    }
+}
 .form-input{
     .title{
         font-weight: bold;

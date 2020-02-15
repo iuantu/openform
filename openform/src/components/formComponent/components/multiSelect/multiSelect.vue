@@ -15,7 +15,7 @@
       <el-checkbox-group v-model="select">
         <el-checkbox v-for="(checkItm, checkIndex) in formItm.options" :key="checkIndex + '_checkbox'" :label="checkItm.label">
           {{checkItm.value}}
-          <i class="fa fa-times"></i>
+          <!-- <i class="fa fa-times"></i> -->
         </el-checkbox>
       </el-checkbox-group>
       <div class="require-text" v-show="formItm.isRequired || false">{{formItm.requireText || '校验提示'}}</div>
