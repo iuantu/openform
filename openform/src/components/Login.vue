@@ -95,7 +95,7 @@ export default {
               this.$message(uiLogin.message);
             } else {
               // this.$router.replace({name: "cp_form_list"});
-              this.$router.replace({name: "openFormList"});
+              this.$router.replace({path: "/openFormList"});
             }
           })
         } else {
