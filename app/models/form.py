@@ -12,11 +12,36 @@ from sqlalchemy import (
 from .mixins import TimeStampMixin, SoftDeleteableMixin
 from .value import Value
 
+# form_collaborator_table = Table('form_collaborator', Base.metadata,
+#     Column('form_id', Integer, ForeignKey('form.id')),
+#     Column('user_id', Integer, ForeignKey('user.id')),
+#     Column('created_at', DateTime, default=func.now()),
+#     Column('updated_at', DateTime, default=func.now(), onupdate=func.now()),
+# )
+
+class FormCollaborator(Model, TimeStampMixin):
+    id = Column(Integer, primary_key=True)
+    form_id = Column(Integer, ForeignKey('form.id'))
+    form = relationship('Form', uselist=False, foreign_keys=form_id)
+    user_id = Column(Integer, ForeignKey('ab_user.id'))
+    user = relationship('User', uselist=False, foreign_keys=user_id)
+    role_id = Column(Integer, ForeignKey('ab_role.id'))
+    role = relationship('Role', uselist=False, foreign_keys=role_id)
+
+    def __init__(self, form_id=None, user_id=None, role_id=None):
+        super().__init__()
+        
+        self.form_id = form_id
+        self.user_id = user_id
+        self.role_id = role_id
+
+
 class Form(Model, SoftDeleteableMixin, TimeStampMixin):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("ab_user.id"))
     title = Column(String(500), nullable=False)
     fields = relationship('Field')
+    # collaborator = relationship('User', secondary=form_collaborator_table)
 
     published_at = Column(DateTime, nullable=True, default=None)
     record_count = Column(Integer, server_default=text("0"))

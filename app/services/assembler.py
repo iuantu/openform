@@ -64,8 +64,9 @@ class ModelFactory:
                     self.clear_relation_field(relation_dto), 
                     dto_field_name
                 )
-                if isinstance(relation_dto, dict):
-                    self.create_or_update(obj, relation_dto, is_update)
+                # 注释下面两行代码解决新增对象失败
+                # if isinstance(relation_dto, dict):
+                #     self.create_or_update(obj, relation_dto, False)
                 relations.append(obj)
 
     def create_or_update(self, model: Model, dto, is_update: bool=False):

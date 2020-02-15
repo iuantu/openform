@@ -4,6 +4,7 @@ from app.views.control_panel import *
 from app.views.form_api import *
 from app.views.user_api import *
 from app.views.form_view import *
+from app.views.control_panel.collaboration_api import *
 
 @appbuilder.app.errorhandler(404)
 def page_not_found(e):
