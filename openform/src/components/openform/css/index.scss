@@ -113,15 +113,13 @@
       width: 100%;
       padding: 15px;
       box-sizing: border-box;
-      display: flex;
-      display: -webkit-flex;
-      flex-wrap: nowrap;
+      position: relative;
       .components-setting-btn{
         width: 80px;
         margin-left: 15px;
-        .delete-btn{
-          margin-top: 10px;
-        }
+        position: absolute;
+        left: calc(100% - 90px);
+        top: 25px;
       }
     }
     .ghost{

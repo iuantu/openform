@@ -29,13 +29,13 @@
                 v-if="showList"
                 @sort="addItms"
               >
-                <div class="list-group-item" v-for="(formItm, formIndex) in list" :key="formIndex + '_form'" @click="editIndex = formIndex">
+                <div class="list-group-item" v-for="(formItm, formIndex) in list" :key="formIndex + '_form'" @click="editIndex = formIndex; setChange(formIndex)">
                   <form-components :class="{isActive: editIndex == formIndex}" :formItm="formItm" :formType="formItm.type" :formIndex="formIndex"></form-components>
                   <div class="components-setting-btn" v-if="editIndex == formIndex">
-                    <el-button type="primary" size="small" icon="el-icon-edit" circle @click.stop="setChange(formIndex)"></el-button>
-                    <div class="delete-btn">
+                    <!-- <el-button type="primary" size="small" icon="el-icon-edit" circle @click.stop="setChange(formIndex)"></el-button> -->
+                    <!-- <div class="delete-btn"> -->
                       <el-button type="danger" size="small" icon="el-icon-delete" circle @click.stop="deleteList(formIndex)"></el-button>
-                    </div>
+                    <!-- </div> -->
                   </div>
                 </div>
                 <div class="no-list" v-if="list.length == 0">拖 拽 区</div>
@@ -49,10 +49,7 @@
           <el-tab-pane label="报表" name="fifth">报表</el-tab-pane>
           <el-tab-pane label="发布" name="sixth">发布</el-tab-pane>
           <el-tab-pane label="协作" name="seventh">协作</el-tab-pane>
-        </el-tabs> 
-
-
-        
+        </el-tabs>
       </div>
       <el-aside v-show="showRightAside" width="265px" class="openForm-side right">
         <right-aside :formItem="formItem" @formSet="formSets"></right-aside>
@@ -184,7 +181,9 @@ export default {
             discriminator: "text_field",
             multiple: false,
             placeholder: itm.placeholder,
-            constraints: []
+            constraints: [],
+            layout_row_index: index,
+            layout_column_index: 0,
           }
           if(itm.id){
             _itm.id = itm.id
@@ -198,7 +197,7 @@ export default {
           }
           if(itm.type == "textAreas"){
             _itm.multiple = true
-            _itm.layout_row_index = itm.textareaRows
+            // _itm.layout_row_index = itm.textareaRows
           }
           postData.fields.push(_itm)
         }
@@ -231,11 +230,13 @@ export default {
             _itm.options.push(_opts)
           })
           if(itm.type == "multiSelects"){
-            postData.type == 'checkbox'
+            _itm.type = 'checkbox'
           }
+
           postData.fields.push(_itm)
         }
       })
+
       if(this._id){
         this.service.putApi('/cp/form/' + this._id, postData).then(({data})=>{
 
@@ -279,7 +280,7 @@ export default {
             }
             if(itm.discriminator == "text_field" && itm.multiple){
               _itm.type = "textAreas"
-              _itm.textareaRows = itm.layout_row_index
+              // _itm.textareaRows = itm.layout_row_index
               _itm.showName = '多行文本'
               _itm.placeholder = itm.placeholder
             }
@@ -324,9 +325,10 @@ export default {
         this.$refs.subTitles.$el.querySelector('input').focus()
       })
     },
-    handleClick(tab, event){
+    handleClick(tab){
       this.formItem = {}
       this.editIndex = null
+      sessionStorage.setItem('formTabName', tab.name)
       if(tab.name == "second"){
         this.leftAside()
       }
@@ -345,8 +347,21 @@ export default {
     this.service = new SecurityService();
     this.getForm()
     this.hideLeftAside()
+    if(sessionStorage.getItem('formTabName')){
+      this.activeName = sessionStorage.getItem('formTabName')
+      sessionStorage.removeItem('formTabName')
+      let _tab = {
+        name: this.activeName
+      }
+      this.$nextTick(()=>{
+        this.handleClick(_tab)
+      })
+
+    }
   },
-  mounted() {}
+  mounted() {
+
+  }
 };
 </script>
 

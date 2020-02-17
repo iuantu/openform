@@ -17,7 +17,6 @@
             {{getTime(formList[scope.$index].created_at)}}
           </template>
         </el-table-column>
-        <el-table-column label="Zip code" prop="" width="160px"></el-table-column>
         <el-table-column label="操作" width="100px">
             <template slot-scope="scope">
                 <el-button type="text" size="small" @click="addNew(formList[scope.$index].id)">修改</el-button>
