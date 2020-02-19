@@ -198,7 +198,7 @@ export default {
             constraints: [],
             layout_row_index: index,
             layout_column_index: 0,
-            // constraints: []
+            constraints: []
           }
           if(itm.id){
             _itm.id = itm.id
@@ -237,7 +237,9 @@ export default {
             multiple: false,
             type: 'radio',
             // constraints: [],
-            options: []
+            options: [],
+            layout_row_index: index,
+            layout_column_index: 0,
           }
           if(itm.id){
             _itm.id = itm.id
@@ -251,8 +253,7 @@ export default {
           }
           itm.options.map(opts=>{
             let _opts = {
-              label: opts.value,
-              // default: false
+              label: opts.value
             }
             if(opts.id){
               _opts.id = opts.id
