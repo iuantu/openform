@@ -90,11 +90,11 @@ export default {
     return {
       list1: [
         // { name: "标题", subTitle: '副标题', type: "titles", backimg: require('./static/img/formsetting/titles.png') },
-        { name: "标题", subTitle: '副标题', showName: '文本字段', defaults: '', isMax: false, isMin: false, max: 0, min: 0, width: 100, placeholder: '', isRequired: false, requireText: '校验提示', isRequiredText: false, alignType: 'left', type: "inputs", backimg: require('./static/img/formsetting/inputs.png') },
-        { name: "标题", subTitle: '副标题', showName: '多行文本', defaults: '', isMax: false, isMin: false, max: 0, min: 0, width: 100, placeholder: '', isRequired: false, requireText: '校验提示', isRequiredText: false, alignType: 'left', textareaRows: 6, type: "textAreas", backimg: require('./static/img/formsetting/textareas.png') },
+        { name: "标题", subTitle: '说明', showName: '文本字段', defaults: '', isMax: false, isMin: false, max: 0, min: 0, width: 100, placeholder: '', isRequired: false, requireText: '校验提示', isRequiredText: false, alignType: 'left', type: "inputs", backimg: require('./static/img/formsetting/inputs.png') },
+        { name: "标题", subTitle: '说明', showName: '多行文本', defaults: '', isMax: false, isMin: false, max: 0, min: 0, width: 100, placeholder: '', isRequired: false, requireText: '校验提示', isRequiredText: false, alignType: 'left', textareaRows: 6, type: "textAreas", backimg: require('./static/img/formsetting/textareas.png') },
         { 
           name: "标题", 
-          subTitle: '副标题',
+          subTitle: '说明',
           showName: '单项选择',
           isRequiredText: false,
           options: [
@@ -117,7 +117,7 @@ export default {
           width: 100, isRequired: false, requireText: '校验提示', alignType: 'left', type: "selects", backimg: require('./static/img/formsetting/selects.png') },
         { 
           name: "标题", 
-          subTitle: '副标题',
+          subTitle: '说明',
           showName: '多项选择',
           isRequiredText: false,
           options: [

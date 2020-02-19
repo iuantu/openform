@@ -179,6 +179,7 @@ export default {
       // return
       let postData = {
         title: this.title,
+        description: this.subtitle,
         fields: []
       }
       if(this._id){
@@ -186,8 +187,10 @@ export default {
       }
       this.list.map((itm, index)=>{
         if(itm.type == "inputs" || itm.type == "textAreas"){
+          // console.log(itm)
           let _itm = {
             title: itm.name,
+            description: itm.subTitle,
             name: "name" + index,
             discriminator: "text_field",
             multiple: false,
@@ -229,6 +232,7 @@ export default {
         else if(itm.type == "selects" || itm.type == "multiSelects"){
           let _itm = {
             title: itm.name,
+            description: itm.subtitle,
             discriminator: "select_field",
             multiple: false,
             type: 'radio',
@@ -261,7 +265,7 @@ export default {
           postData.fields.push(_itm)
         }
       })
-      console.log(postData)
+
       // return
 
       if(this._id){
@@ -283,10 +287,13 @@ export default {
         this.service.getApi('cp/form/' + this._id).then(data=>{
           // console.log(data)
           this.title = data.title
+          if(data.description){
+            this.subtitle = data.description
+          }
           data.fields.map(itm=>{
             let _itm = {
               name: itm.title, 
-              subTitle: itm.title, 
+              subTitle: itm.description? itm.description: '说明', 
               width: 100, 
               isRequired: false, 
               requireText: '校验提示', 
@@ -298,6 +305,14 @@ export default {
             itm.constraints.map(requ => {
               if(requ.discriminator && requ.discriminator == 'required_constraint'){
                 _itm.isRequired = true
+              }
+              else if(requ.discriminator && requ.discriminator == 'min_constraint'){
+                _itm.isMin = true
+                _itm.min = requ.min
+              }
+              else if(requ.discriminator && requ.discriminator == 'max_constraint'){
+                _itm.isMax = true
+                _itm.max = requ.max
               }
             })
             if(itm.discriminator == 'text_field' && !itm.multiple){
