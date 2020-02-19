@@ -99,6 +99,10 @@ export default {
   },
   methods: {
     setChange(index){
+      // console.log(this.formItem)
+      if(this.settingIndex == index && JSON.stringify(this.formItem) != '{}'){
+        return
+      }
       this.settingIndex = index
       this.formItem = JSON.parse(JSON.stringify(this.list[index]))
     },
@@ -115,6 +119,7 @@ export default {
     addItms(){
       this.formItem = {}
       this.editIndex = null
+      this.settingIndex = null
     },
     // 右侧栏传值
     formSets(params){
@@ -135,6 +140,9 @@ export default {
         _itm.width = _par.width
         _itm.requireText = _par.requireText
         _itm.alignType = _par.align
+        _itm.isRequiredText = _par.isRequiredText
+        _itm.min = _par.min
+        _itm.max = _par.max
         if(_type == 'textAreas'){
           _itm.textareaRows = parseInt(_par.textareaRows)
         }
@@ -153,6 +161,7 @@ export default {
         _itm.width = _par.width
         _itm.requireText = _par.requireText
         _itm.alignType = _par.align
+        _itm.isRequiredText = _par.isRequiredText
         if(_par.id){
           _itm.id = _par.id
         }
