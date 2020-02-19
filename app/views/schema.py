@@ -39,6 +39,10 @@ SCHEMAS = {
                 "type": "string",
                 "description": "表单标题"
             },
+            "description": {
+                "type": "string",
+                "description": "表单描述"
+            },
             "fields": {
                 "type": "array",
                 "items": {

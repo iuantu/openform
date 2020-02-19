@@ -7,6 +7,7 @@ from sqlalchemy import (
     Integer,
     String,
     DateTime,
+    Text,
     ForeignKey
 )
 from .mixins import TimeStampMixin, SoftDeleteableMixin
@@ -40,6 +41,7 @@ class Form(Model, SoftDeleteableMixin, TimeStampMixin):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("ab_user.id"))
     title = Column(String(500), nullable=False)
+    description = Column(Text, nullable=True)
     fields = relationship('Field')
     # collaborator = relationship('User', secondary=form_collaborator_table)
 

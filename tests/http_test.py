@@ -33,6 +33,7 @@ def test_create_form():
     global FORM
     payload = {
         "title": "一些小问题",
+        "description": "一些小问题",
         "fields": [
             {
                 "title": "你喜欢的编程语言",
@@ -67,6 +68,8 @@ def test_form_list():
 
 def test_form():
     response = session.get("%s/cp/form/%d" % (URL, FORM_ID))
+
+    assert "一些小问题" == response.json()["description"]
 
 def test_change_form():
     field = FORM['fields'][0]
