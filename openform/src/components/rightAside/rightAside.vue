@@ -55,18 +55,18 @@
           </div>
         </div>
         <div class="input-textarea checkbox-input">
-          <el-checkbox class="required-checkbox"></el-checkbox>
+          <el-checkbox v-model="isMin" class="required-checkbox" @change="setForms"></el-checkbox>
           <div class="checkbox-right">
             最少填
-            <el-input v-model="inputForm.min" type="number" size="mini"></el-input>
+            <el-input v-model="inputForm.min" type="number" size="mini" @input="setForms"></el-input>
             个字
           </div>
         </div>
         <div class="input-textarea checkbox-input">
-          <el-checkbox class="required-checkbox"></el-checkbox>
+          <el-checkbox v-model="isMax" class="required-checkbox" @change="setForms"></el-checkbox>
           <div class="checkbox-right">
             最多填
-            <el-input v-model="inputForm.max" type="number" size="mini"></el-input>
+            <el-input v-model="inputForm.max" type="number" size="mini" @input="setForms"></el-input>
             个字
           </div>
         </div>
@@ -113,7 +113,6 @@
         </div>
         <div class="right-title">选项</div>
         <div class="input-textarea">
-          <!-- <el-input size="small" v-model="selectForm.options" type="textarea" :rows="selectrows" @input="setForms"></el-input> -->
           <draggable tag="ul" :list="selfDefVal" class="list-group" handle=".handle" @sort="setForms" ghost-class="ghost" v-if="showOpts">
             <div
               class="list-group-item"
@@ -126,7 +125,6 @@
                   <span :class="{'isText': optItm.isText}">T</span>
                 </el-button>
               </el-input>
-              <!-- <span class="text">{{ optItm.value }} </span> -->
               <i class="fa fa-trash-o" @click="confirmDelOpts(index)"></i>
             </div>
           </draggable>
@@ -152,10 +150,6 @@
           <el-checkbox :disabled="!itmRequired" class="required-checkbox" v-model="isRequiredText" @change="setForms">自定义错误提示</el-checkbox>
           <el-input :disabled="!itmRequired" class="mt-10" v-model="selectForm.requireText" size="small" @input="setForms"></el-input>
         </div>
-        <!-- <div class="right-title" v-if="itmRequired">校验提示</div>
-        <div class="input-style" v-if="itmRequired">
-          <el-input size="small" v-model="selectForm.requireText" placeholder="校验提示" @input="setForms"></el-input>
-        </div> -->
         <!-- <div class="input-textarea">
           <el-table size="small" border v-if="selfDef && isTableChange" :data="selfDefVal" :show-header="false">
             <el-table-column prop="value"></el-table-column>
@@ -219,7 +213,9 @@ export default {
       selectrows: 3,
       isTableChange: true,
       isRequiredText: false,
-      showOpts: true
+      showOpts: true,
+      isMin: false,
+      isMax: false,
     };
   },
   methods: {
@@ -238,6 +234,8 @@ export default {
         if(this.itemType == 'textAreas'){
           postData.textareaRows = this.textareaRows
         }
+        postData.isMin = this.isMin
+        postData.isMax = this.isMax
         if(!this.itmRequired){
           this.isRequiredText = false
         }
@@ -346,6 +344,8 @@ export default {
           }
           this.itmRequired = newVal.isRequired
           this.isRequiredText = newVal.isRequiredText
+          this.isMin = newVal.isMin
+          this.isMax = newVal.isMax
           if(newVal.type == 'textAreas'){
             this.textareaRows = newVal.textareaRows
           }

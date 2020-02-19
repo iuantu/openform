@@ -143,6 +143,8 @@ export default {
         _itm.isRequiredText = _par.isRequiredText
         _itm.min = _par.min
         _itm.max = _par.max
+        _itm.isMax = _par.isMin
+        _itm.isMin = _par.isMin
         if(_type == 'textAreas'){
           _itm.textareaRows = parseInt(_par.textareaRows)
         }
@@ -193,16 +195,30 @@ export default {
             constraints: [],
             layout_row_index: index,
             layout_column_index: 0,
+            constraints: []
           }
           if(itm.id){
             _itm.id = itm.id
           }
           if(itm.isRequired){
-            _itm.constraints = [
-              {
-                "discriminator": "required_constraint"
-              }
-            ]
+            let _required = {
+              discriminator: "required_constraint"
+            }
+            _itm.constraints.push(_required)
+          }
+          if(itm.isMax){
+            let _min = {
+              discriminator: "max_constraint",
+              max: itm.max
+            }
+            _itm.constraints.push(_min)
+          }
+          if(itm.isMin){
+            let _min = {
+              discriminator: "min_constraint",
+              min: itm.min
+            }
+            _itm.constraints.push(_min)
           }
           if(itm.type == "textAreas"){
             _itm.multiple = true
@@ -245,6 +261,8 @@ export default {
           postData.fields.push(_itm)
         }
       })
+      console.log(postData)
+      // return
 
       if(this._id){
         this.service.putApi('/cp/form/' + this._id, postData).then(({data})=>{
