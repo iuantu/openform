@@ -60,6 +60,10 @@ EDITION_SCHEMAS = {
                 "type": "string",
                 "description": "字段标题"
             },
+            "description": {
+                "type": "string",
+                "description": "字段描述"
+            },
             "layout_row_index": {
                 "type": "integer",
                 "format": "int32",

@@ -37,6 +37,7 @@ def test_create_form():
         "fields": [
             {
                 "title": "你喜欢的编程语言",
+                "description": "你喜欢的编程语言",
                 "discriminator": "select_field",
                 "multiple": True,
                 "type": "checkbox",
@@ -68,8 +69,10 @@ def test_form_list():
 
 def test_form():
     response = session.get("%s/cp/form/%d" % (URL, FORM_ID))
+    form = response.json()
 
-    assert "一些小问题" == response.json()["description"]
+    assert "一些小问题" == form["description"]
+    assert "你喜欢的编程语言" == form['fields'][0]['description']
 
 def test_change_form():
     field = FORM['fields'][0]

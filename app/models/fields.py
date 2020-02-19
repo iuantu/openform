@@ -8,6 +8,7 @@ from sqlalchemy import (
     Column,
     Integer,
     String,
+    Text,
     Boolean,
     ForeignKey,
     DateTime,
@@ -26,6 +27,7 @@ class Field(Model, SoftDeleteableMixin):
     form_id = Column(Integer, ForeignKey('form.id'))
     name = Column(String(255))
     title = Column(String(500))
+    description = Column(Text, nullable=True)
     discriminator = Column(String(50))
     constraints = relationship('Constraint')
     readonly = Column(Boolean, default=False)
