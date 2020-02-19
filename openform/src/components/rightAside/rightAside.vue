@@ -102,6 +102,7 @@
         </div>
       </div>
       <div v-if="itemType == 'selects' || itemType == 'multiSelects'">
+        <div class="title-name">属性设置</div>
         <div class="right-title">标题</div>
         <div class="input-style">
           <el-input size="small" v-model="selectForm.title" placeholder="标题" @input="setForms"></el-input>
@@ -110,23 +111,52 @@
         <div class="input-style">
           <el-input size="small" v-model="selectForm.subtitle" placeholder="副标题" @input="setForms"></el-input>
         </div>
-        <div class="right-title">是否必选</div>
-        <div class="input-style">
-          <el-switch size="small" v-model="itmRequired" @change="setForms"></el-switch>
-        </div>
-        <div class="right-title" v-if="itmRequired">校验提示</div>
-        <div class="input-style" v-if="itmRequired">
-          <el-input size="small" v-model="selectForm.requireText" placeholder="校验提示" @input="setForms"></el-input>
-        </div>
-        <div class="right-title">选项{{selectrows}}</div>
+        <div class="right-title">选项</div>
         <div class="input-textarea">
-          <el-input size="small" v-model="selectForm.options" type="textarea" :rows="selectrows" @input="setForms"></el-input>
+          <!-- <el-input size="small" v-model="selectForm.options" type="textarea" :rows="selectrows" @input="setForms"></el-input> -->
+          <draggable tag="ul" :list="selfDefVal" class="list-group" handle=".handle" @sort="setForms" ghost-class="ghost" v-if="showOpts">
+            <div
+              class="list-group-item"
+              v-for="(optItm, index) in selfDefVal"
+              :key="index + '_opt'"
+            >
+              <i class="fa fa-align-justify handle"></i>
+              <el-input v-model="optItm.value" @input="setForms">
+                <el-button slot="append" @click="setIsText(index)">
+                  <span :class="{'isText': optItm.isText}">T</span>
+                </el-button>
+              </el-input>
+              <!-- <span class="text">{{ optItm.value }} </span> -->
+              <i class="fa fa-trash-o" @click="confirmDelOpts(index)"></i>
+            </div>
+          </draggable>
+          <el-button type="primary" size="small" @click="addOpts">添加选项</el-button>
         </div>
-        <div class="right-title">使用自定义值</div>
+        <div class="right-title">提示</div>
+        <div class="input-textarea">
+          <el-input class="text-area-pos" type="textarea" rows="4" size="small" v-model="selectForm.remaind" @input="setForms"></el-input>
+        </div>
+        <div class="title-name secs">数据校验</div>
+        <!-- <div class="right-title">使用自定义值</div>
         <div class="input-style">
           <el-switch v-model="selfDef"></el-switch>
+        </div> -->
+        <div class="right-title">必填项</div>
+        <div class="input-textarea">
+          <el-checkbox class="required-checkbox" v-model="itmRequired" @change="setForms">必填项</el-checkbox>
+          <div class="commands">
+            必填项的数据如果没有填写会提示错误
+          </div>
         </div>
         <div class="input-textarea">
+          <el-checkbox :disabled="!itmRequired" class="required-checkbox" v-model="isRequiredText" @change="setForms">自定义错误提示</el-checkbox>
+          <el-input :disabled="!itmRequired" class="mt-10" v-model="selectForm.requireText" size="small" @input="setForms"></el-input>
+        </div>
+        <!-- <div class="right-title" v-if="itmRequired">校验提示</div>
+        <div class="input-style" v-if="itmRequired">
+          <el-input size="small" v-model="selectForm.requireText" placeholder="校验提示" @input="setForms"></el-input>
+        </div> -->
+        <!-- <div class="input-textarea">
           <el-table size="small" border v-if="selfDef && isTableChange" :data="selfDefVal" :show-header="false">
             <el-table-column prop="value"></el-table-column>
             <el-table-column prop="label">
@@ -147,16 +177,20 @@
         <div class="right-title">宽度</div>
         <div class="slider-style">
           <el-slider size="small" :min='50' v-model="selectForm.width" :step="10" @input="setForms"></el-slider>
-        </div>
+        </div> -->
       </div>
     </div>
       
 </template>
 
 <script>
+import draggable from "vuedraggable";
+
 export default {
   name: "rightAside",
-  components: {},
+  components: {
+    draggable,
+  },
   data() {
     return {
       itemType: '',
@@ -185,6 +219,7 @@ export default {
       selectrows: 3,
       isTableChange: true,
       isRequiredText: false,
+      showOpts: true
     };
   },
   methods: {
@@ -218,26 +253,21 @@ export default {
         postData.align = this.titleFormAlign
         postData.options = []
         postData.isRequired = this.itmRequired
-        // postData = {
-        //   options: [],
-        //   title: this.selectForm.title,
-        //   isRequired: this.itmRequired
-        // }
-        let _opts = this.selectForm.options.split('\n')
-        this.selectrows = _opts.length < 10 ? _opts.length : 10
-        this.selfDefVal = []
-        _opts.map((itm, index)=>{
+        postData.isRequiredText = this.isRequiredText
+        if(!this.itmRequired){
+          this.isRequiredText = false
+        }
+        this.selfDefVal.map((itm, index)=>{
             let _itm = {
-              value: itm,
-              label: (this._selfDefVal[index] ? this._selfDefVal[index].label : itm)
+              value: itm.value,
+              label: itm.label,
+              isText: itm.isText
             }
-            if(this._selfDefVal[index] && this._selfDefVal[index].id){
-              _itm.id = this._selfDefVal[index].id
+            if(itm.id){
+              _itm.id = itm.id
             }
             postData.options.push(_itm)
-            this.selfDefVal.push(_itm)
         })
-        // console.log(this.selfDefVal)
       }
       this.$emit('formSet', postData)
     },
@@ -263,8 +293,33 @@ export default {
         }
       })
       // console.log(postData.options)
-
-
+    },
+    setIsText(index){
+      this.selfDefVal[index].isText = !this.selfDefVal[index].isText
+      this.setForms()
+    },
+    confirmDelOpts(index){
+      this.$confirm('此操作将删除该选项, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.deleteOpts(index)
+        })
+    },
+    deleteOpts(index){
+      this.selfDefVal.splice(index, 1)
+      this.setForms()
+    },
+    addOpts(){
+      let _leg = Math.random() * 1000
+      let _itm = {
+        label: "选项_" + _leg,
+        value: "选项",
+        isText: false
+      }
+      this.selfDefVal.push(_itm)
+      this.setForms()
     }
   },
   mounted() {

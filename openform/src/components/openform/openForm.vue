@@ -99,7 +99,8 @@ export default {
   },
   methods: {
     setChange(index){
-      if(this.settingIndex == index){
+      // console.log(this.formItem)
+      if(this.settingIndex == index && JSON.stringify(this.formItem) != '{}'){
         return
       }
       this.settingIndex = index
@@ -160,6 +161,7 @@ export default {
         _itm.width = _par.width
         _itm.requireText = _par.requireText
         _itm.alignType = _par.align
+        _itm.isRequiredText = _par.isRequiredText
         if(_par.id){
           _itm.id = _par.id
         }

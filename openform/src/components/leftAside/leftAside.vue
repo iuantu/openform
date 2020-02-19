@@ -96,18 +96,22 @@ export default {
           name: "标题", 
           subTitle: '副标题',
           showName: '单项选择',
+          isRequiredText: false,
           options: [
             {
               label: "选项1",
-              value: "选项1"
+              value: "选项1",
+              isText: false
             },
             {
               label: "选项2",
-              value: "选项2"
+              value: "选项2",
+              isText: false
             },
             {
               label: "选项3",
-              value: "选项3"
+              value: "选项3",
+              isText: false
             }
           ], 
           width: 100, isRequired: false, requireText: '校验提示', alignType: 'left', type: "selects", backimg: require('./static/img/formsetting/selects.png') },
@@ -115,18 +119,22 @@ export default {
           name: "标题", 
           subTitle: '副标题',
           showName: '多项选择',
+          isRequiredText: false,
           options: [
             {
               label: "选项1",
-              value: "选项1"
+              value: "选项1",
+              isText: false
             },
             {
               label: "选项2",
-              value: "选项2"
+              value: "选项2",
+              isText: false
             },
             {
               label: "选项3",
-              value: "选项3"
+              value: "选项3",
+              isText: false
             }
           ], 
           width: 100, isRequired: false, requireText: '校验提示', alignType: 'left', type: "multiSelects", backimg: require('./static/img/formsetting/multiSelects.png') },

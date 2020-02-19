@@ -26,6 +26,18 @@
         font-size: 12px;
         padding: 5px 0 0 5px;
     }
+    .el-radio-group, .el-checkbox-group{
+        width: 100%;
+        .el-radio, .el-checkbox{
+            display: block;
+            min-height: 34px;
+            line-height: 34px;
+            margin-bottom: 10px;
+            .el-input{
+                width: 200px;
+            }
+        }
+    }
 
 }
 .divide-line{
