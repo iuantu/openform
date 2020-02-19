@@ -1,13 +1,13 @@
 <template>
   <div class="open-form">
     <el-container>
-      <el-aside v-show="showLeftAside" width="265px" class="openForm-side left">
-        <left-aside></left-aside>
+      <el-aside width="265px" class="openForm-side left">
+        <left-aside v-show="showLeftAside" ></left-aside>
       </el-aside>
       <el-main>
-        <div class="show-left-aside" v-if="!showLeftAside" @click="showLA()">
+        <!-- <div class="show-left-aside" v-if="!showLeftAside" @click="showLA()">
           <i class="fa fa-arrow-right"></i>
-        </div>
+        </div> -->
         <router-view v-if="reloadPage"></router-view>
       </el-main>
     </el-container>
@@ -25,7 +25,7 @@ export default {
   },
   data() {
     return {
-      showLeftAside: true,
+      showLeftAside: false,
       reloadPage: true,
       // showRightAside: true,
     };
@@ -40,14 +40,18 @@ export default {
     },
     // 显示/隐藏左侧栏
     showLA(){
-      this.showLeftAside = !this.showLeftAside
+      this.showLeftAside = true
     },
+    hideLA(){
+      this.showLeftAside = false
+    }
   },
   mounted() {},
   provide() {
     return {
       reload: this.reload,
       leftAside: this.showLA,
+      hideLeftAside: this.hideLA
     };
   },
 };

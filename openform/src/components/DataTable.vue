@@ -1,11 +1,11 @@
 <template>
-  <el-table :data="values" style="width: 100%;">
+  <el-table border :data="values" style="width: 99.9%;">
     <el-table-column
       v-for="(column, key) in columns"
       :key="key"
       :prop="column.property"
-      :label="column.label"
-      :width="column.width">
+      :label="column.label">
+      <!-- :width="column.width"> -->
       <template slot-scope="scope">
         <div v-if="!Array.isArray(scope.row[scope.column.property])">{{scope.row[scope.column.property]}}</div>
         <div v-if="Array.isArray(scope.row[scope.column.property])">

@@ -10,9 +10,14 @@ import App from './App.vue'
 // 引入fontAwesome
 import 'font-awesome/css/font-awesome.min.css'
 
+// 引入公共方法
+import publicMethods from './publicMethods/publicMethods'
+
 Vue.use(VueRouter)
 Vue.use(VueResource)
 Vue.use(ElementUI)
+Vue.use(publicMethods);
+
 
 Vue.config.productionTip = false
 

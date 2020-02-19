@@ -1,43 +1,59 @@
 <template>
   <div class="open-form-setting">
     <el-container>
-      <el-main class="inner-content">
-        <div class="add-new">
+      <div class="inner-content">
+        <div class="add-new" v-if="activeName == 'second'">
           <el-button type="primary" size="small" @click="saveForm">保存</el-button>
         </div>
-        <div class="roll-contant">
-          <div class="inner-title">
-            <div class="form-title" :style="{textAlign: 'left'}" @click="setTitles">
-              <span v-if="!changeTitle">{{title}}</span>
-              <el-input v-model="title" ref="titles" placeholder="请输入表单标题" v-if="changeTitle" @blur="changeTitle = false"></el-input>
-            </div>
-            <div class="form-sub-title" :style="{textAlign: 'left'}" @click="setSubTitles">
-              <span v-if="!changeSubTitle">{{subtitle}}</span>
-              <el-input v-model="subtitle" ref="subTitles" placeholder="请输入表单副标题" v-if="changeSubTitle" @blur="changeSubTitle = false"></el-input>
-            </div>
-          </div>
-          <draggable
-            class="dragArea list-group"
-            :list="list"
-            group="people"
-            ghost-class="ghost"
-            v-if="showList"
-            @sort="addItms"
-          >
-            <div class="list-group-item" v-for="(formItm, formIndex) in list" :key="formIndex + '_form'">
-              <form-components :formItm="formItm" :formType="formItm.type" :formIndex="formIndex"></form-components>
-              <div class="components-setting-btn">
-                <el-button type="primary" size="small" icon="el-icon-edit" circle @click="setChange(formIndex)"></el-button>
-                <div class="delete-btn">
-                  <el-button type="danger" size="small" icon="el-icon-delete" circle @click="deleteList(formIndex)"></el-button>
+        <el-tabs type="card" v-model="activeName" @tab-click="handleClick">
+          <el-tab-pane label="概述" name="first">
+            <form-summary></form-summary>
+          </el-tab-pane>
+          <el-tab-pane label="编辑" name="second">
+            <div class="roll-contant">
+              <div class="inner-title">
+                <div class="form-title" :style="{textAlign: 'left'}" @click="setTitles">
+                  <span v-if="!changeTitle">{{title}}</span>
+                  <el-input v-model="title" ref="titles" placeholder="请输入表单标题" v-if="changeTitle" @blur="changeTitle = false"></el-input>
+                </div>
+                <div class="form-sub-title" :style="{textAlign: 'left'}" @click="setSubTitles">
+                  <span v-if="!changeSubTitle">{{subtitle}}</span>
+                  <el-input v-model="subtitle" ref="subTitles" placeholder="请输入表单副标题" v-if="changeSubTitle" @blur="changeSubTitle = false"></el-input>
                 </div>
               </div>
+              <draggable
+                class="dragArea list-group"
+                :list="list"
+                group="people"
+                ghost-class="ghost"
+                v-if="showList"
+                @sort="addItms"
+              >
+                <div class="list-group-item" v-for="(formItm, formIndex) in list" :key="formIndex + '_form'" @click="editIndex = formIndex">
+                  <form-components :class="{isActive: editIndex == formIndex}" :formItm="formItm" :formType="formItm.type" :formIndex="formIndex"></form-components>
+                  <div class="components-setting-btn" v-if="editIndex == formIndex">
+                    <el-button type="primary" size="small" icon="el-icon-edit" circle @click.stop="setChange(formIndex)"></el-button>
+                    <div class="delete-btn">
+                      <el-button type="danger" size="small" icon="el-icon-delete" circle @click.stop="deleteList(formIndex)"></el-button>
+                    </div>
+                  </div>
+                </div>
+                <div class="no-list" v-if="list.length == 0">拖 拽 区</div>
+              </draggable>
             </div>
-            <div class="no-list" v-if="list.length == 0">拖 拽 区</div>
-          </draggable>
-        </div>
+          </el-tab-pane>
+          <el-tab-pane label="预览" name="third">
+            <form-preview v-if="showPreview" :list="list"></form-preview>
+          </el-tab-pane>
+          <el-tab-pane label="数据" name="fourth">数据</el-tab-pane>
+          <el-tab-pane label="报表" name="fifth">报表</el-tab-pane>
+          <el-tab-pane label="发布" name="sixth">发布</el-tab-pane>
+          <el-tab-pane label="协作" name="seventh">协作</el-tab-pane>
+        </el-tabs> 
+
+
         
-      </el-main>
+      </div>
       <el-aside v-show="showRightAside" width="265px" class="openForm-side right">
         <right-aside :formItem="formItem" @formSet="formSets"></right-aside>
       </el-aside>
@@ -47,19 +63,22 @@
 
 <script>
 import draggable from "vuedraggable";
+import { SecurityService } from '../../functions';
 
 import formComponents from "./../../components/formComponent/formComponet";
 import RightAside from './../../components/rightAside/rightAside'
-import { SecurityService } from '../../functions';
-
+import FormSummary from './formSummary'
+import FormPreView from './formPreView'
 
 export default {
   name: "clone",
-  inject: ["reload", "leftAside"],
+  inject: ["reload", "leftAside", "hideLeftAside"],
   components: {
     draggable,
     "form-components": formComponents,
     'right-aside': RightAside,
+    'form-summary': FormSummary,
+    'form-preview': FormPreView,
   },
   data() {
     return {
@@ -74,15 +93,14 @@ export default {
       changeTitle: false,
       changeSubTitle: false,
       _id: null,
+      activeName: 'first',
+
+      showPreview: false,
+      editIndex: null,
 
     };
   },
   methods: {
-
-    // 显示/隐藏右侧栏
-    showRA(){
-      this.showRightAside = !this.showRightAside
-    },
     setChange(index){
       this.settingIndex = index
       this.formItem = JSON.parse(JSON.stringify(this.list[index]))
@@ -99,6 +117,7 @@ export default {
     },
     addItms(){
       this.formItem = {}
+      this.editIndex = null
     },
     // 右侧栏传值
     formSets(params){
@@ -304,11 +323,28 @@ export default {
       this.$nextTick(()=>{
         this.$refs.subTitles.$el.querySelector('input').focus()
       })
+    },
+    handleClick(tab, event){
+      this.formItem = {}
+      this.editIndex = null
+      if(tab.name == "second"){
+        this.leftAside()
+      }
+      else{
+        this.hideLeftAside()
+        if(tab.name == 'third'){
+          this.showPreview = false
+          this.$nextTick(()=>{
+            this.showPreview = true
+          })
+        }
+      }
     }
   },
   created(){
     this.service = new SecurityService();
     this.getForm()
+    this.hideLeftAside()
   },
   mounted() {}
 };
