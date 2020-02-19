@@ -2,7 +2,7 @@ export let baseURL;
 
 if (process.env.NODE_ENV === 'development') {
     // baseURL = `${document.location.protocol}//${document.location.hostname}:5000`;
-    baseURL = 'https://oform.cn'
+    baseURL = 'https://staging.oform.cn'
 } else {
     baseURL = `${document.location.protocol}//${document.location.host}`;
 }

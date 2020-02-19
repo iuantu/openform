@@ -198,7 +198,7 @@ export default {
             constraints: [],
             layout_row_index: index,
             layout_column_index: 0,
-            constraints: []
+            // constraints: []
           }
           if(itm.id){
             _itm.id = itm.id
@@ -232,11 +232,11 @@ export default {
         else if(itm.type == "selects" || itm.type == "multiSelects"){
           let _itm = {
             title: itm.name,
-            description: itm.subtitle,
+            description: itm.subTitle,
             discriminator: "select_field",
             multiple: false,
             type: 'radio',
-            constraints: [],
+            // constraints: [],
             options: []
           }
           if(itm.id){
@@ -251,7 +251,8 @@ export default {
           }
           itm.options.map(opts=>{
             let _opts = {
-              label: opts.value
+              label: opts.value,
+              // default: false
             }
             if(opts.id){
               _opts.id = opts.id
@@ -260,6 +261,7 @@ export default {
           })
           if(itm.type == "multiSelects"){
             _itm.type = 'checkbox'
+            _itm.multiple = true
           }
 
           postData.fields.push(_itm)
