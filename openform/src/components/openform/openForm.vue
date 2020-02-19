@@ -143,6 +143,8 @@ export default {
         _itm.isRequiredText = _par.isRequiredText
         _itm.min = _par.min
         _itm.max = _par.max
+        _itm.isMax = _par.isMin
+        _itm.isMin = _par.isMin
         if(_type == 'textAreas'){
           _itm.textareaRows = parseInt(_par.textareaRows)
         }
@@ -177,6 +179,7 @@ export default {
       // return
       let postData = {
         title: this.title,
+        description: this.subtitle,
         fields: []
       }
       if(this._id){
@@ -184,8 +187,10 @@ export default {
       }
       this.list.map((itm, index)=>{
         if(itm.type == "inputs" || itm.type == "textAreas"){
+          // console.log(itm)
           let _itm = {
             title: itm.name,
+            description: itm.subTitle,
             name: "name" + index,
             discriminator: "text_field",
             multiple: false,
@@ -193,16 +198,30 @@ export default {
             constraints: [],
             layout_row_index: index,
             layout_column_index: 0,
+            constraints: []
           }
           if(itm.id){
             _itm.id = itm.id
           }
           if(itm.isRequired){
-            _itm.constraints = [
-              {
-                "discriminator": "required_constraint"
-              }
-            ]
+            let _required = {
+              discriminator: "required_constraint"
+            }
+            _itm.constraints.push(_required)
+          }
+          if(itm.isMax){
+            let _min = {
+              discriminator: "max_constraint",
+              max: itm.max
+            }
+            _itm.constraints.push(_min)
+          }
+          if(itm.isMin){
+            let _min = {
+              discriminator: "min_constraint",
+              min: itm.min
+            }
+            _itm.constraints.push(_min)
           }
           if(itm.type == "textAreas"){
             _itm.multiple = true
@@ -213,6 +232,7 @@ export default {
         else if(itm.type == "selects" || itm.type == "multiSelects"){
           let _itm = {
             title: itm.name,
+            description: itm.subtitle,
             discriminator: "select_field",
             multiple: false,
             type: 'radio',
@@ -246,6 +266,8 @@ export default {
         }
       })
 
+      // return
+
       if(this._id){
         this.service.putApi('/cp/form/' + this._id, postData).then(({data})=>{
 
@@ -265,10 +287,13 @@ export default {
         this.service.getApi('cp/form/' + this._id).then(data=>{
           // console.log(data)
           this.title = data.title
+          if(data.description){
+            this.subtitle = data.description
+          }
           data.fields.map(itm=>{
             let _itm = {
               name: itm.title, 
-              subTitle: itm.title, 
+              subTitle: itm.description? itm.description: '说明', 
               width: 100, 
               isRequired: false, 
               requireText: '校验提示', 
@@ -280,6 +305,14 @@ export default {
             itm.constraints.map(requ => {
               if(requ.discriminator && requ.discriminator == 'required_constraint'){
                 _itm.isRequired = true
+              }
+              else if(requ.discriminator && requ.discriminator == 'min_constraint'){
+                _itm.isMin = true
+                _itm.min = requ.min
+              }
+              else if(requ.discriminator && requ.discriminator == 'max_constraint'){
+                _itm.isMax = true
+                _itm.max = requ.max
               }
             })
             if(itm.discriminator == 'text_field' && !itm.multiple){
