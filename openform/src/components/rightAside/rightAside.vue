@@ -28,9 +28,9 @@
         <div class="input-style">
           <el-input size="small" v-model="inputForm.title" placeholder="标题" @input="setForms"></el-input>
         </div>
-        <div class="right-title">副标题</div>
-        <div class="input-style">
-          <el-input size="small" v-model="inputForm.subtitle" placeholder="副标题" @input="setForms"></el-input>
+        <div class="right-title">说明</div>
+        <div class="input-textarea">
+          <el-input type="textarea" :row="3" size="small" v-model="inputForm.subtitle" placeholder="副标题" @input="setForms"></el-input>
         </div>
         <div class="right-title">默认值</div>
         <div class="input-style" v-if="itemType == 'inputs'">
@@ -107,9 +107,9 @@
         <div class="input-style">
           <el-input size="small" v-model="selectForm.title" placeholder="标题" @input="setForms"></el-input>
         </div>
-        <div class="right-title">副标题</div>
-        <div class="input-style">
-          <el-input size="small" v-model="selectForm.subtitle" placeholder="副标题" @input="setForms"></el-input>
+        <div class="right-title">说明</div>
+        <div class="input-textarea">
+          <el-input type="textarea" :row="3" size="small" v-model="selectForm.subtitle" placeholder="副标题" @input="setForms"></el-input>
         </div>
         <div class="right-title">选项</div>
         <div class="input-textarea">
