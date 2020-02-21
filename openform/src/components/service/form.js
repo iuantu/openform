@@ -1,6 +1,12 @@
 import assembleToDataTable from './assembler/data_table_assembler';
 import { ofFetch } from '../../functions';
 
+export async function loadFormAnalysis(formId) {
+  const response = await ofFetch(`/api/v1/cp/form/analysis/${formId}`);
+  const data = await response.json();
+  return data;
+}
+
 export async function loadForFormSummary(formId) {
 
   const formResponse = await ofFetch(`/api/v1/form/${formId}`);
@@ -17,6 +23,13 @@ export async function loadForFormSummary(formId) {
     values: values,
     columns: columns,
   }
+}
+
+export async function loadForm(formId) {
+
+  const formResponse = await ofFetch(`/api/v1/form/${formId}`);
+  const form = await formResponse.json();
+  return form;
 }
 
 export async function loadForFormData(formId, page=1) {

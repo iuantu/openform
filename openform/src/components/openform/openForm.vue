@@ -48,7 +48,9 @@
           <el-tab-pane label="数据" name="fourth">
             <form-data :id="formId"></form-data>
           </el-tab-pane>
-          <el-tab-pane label="报表" name="fifth">报表</el-tab-pane>
+          <el-tab-pane label="报表" name="fifth">
+            <form-reporter :id="formId"></form-reporter>
+          </el-tab-pane>
           <el-tab-pane label="发布" name="sixth">
             <publish :id="formId"></publish>
           </el-tab-pane>
@@ -73,6 +75,8 @@ import FormPreView from './formPreView'
 import FormData from './../../components/FormData'
 
 import Publish from '../../components/publish/Publish'
+import FormReporter from '../../components/FormReporter'
+
 export default {
   name: "clone",
   inject: ["reload", "leftAside", "hideLeftAside"],
@@ -84,6 +88,7 @@ export default {
     'form-preview': FormPreView,
     FormData,
     Publish,
+    FormReporter,
   },
 
   data() {
