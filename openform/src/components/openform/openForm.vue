@@ -7,7 +7,7 @@
         </div>
         <el-tabs type="card" v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="概述" name="first">
-            <form-summary></form-summary>
+            <form-summary :id="formId"></form-summary>
           </el-tab-pane>
           <el-tab-pane label="编辑" name="second">
             <div class="roll-contant">
@@ -45,7 +45,9 @@
           <el-tab-pane label="预览" name="third">
             <form-preview v-if="showPreview" :list="list"></form-preview>
           </el-tab-pane>
-          <el-tab-pane label="数据" name="fourth">数据</el-tab-pane>
+          <el-tab-pane label="数据" name="fourth">
+            <form-data :id="formId"></form-data>
+          </el-tab-pane>
           <el-tab-pane label="报表" name="fifth">报表</el-tab-pane>
           <el-tab-pane label="发布" name="sixth">发布</el-tab-pane>
           <el-tab-pane label="协作" name="seventh">协作</el-tab-pane>
@@ -66,6 +68,7 @@ import formComponents from "./../../components/formComponent/formComponet";
 import RightAside from './../../components/rightAside/rightAside'
 import FormSummary from './formSummary'
 import FormPreView from './formPreView'
+import FormData from './../../components/FormData'
 
 export default {
   name: "clone",
@@ -76,7 +79,9 @@ export default {
     'right-aside': RightAside,
     'form-summary': FormSummary,
     'form-preview': FormPreView,
+    FormData,
   },
+
   data() {
     return {
       title: '标题',
@@ -404,9 +409,12 @@ export default {
 
     }
   },
-  mounted() {
-
-  }
+  mounted() {},
+  computed: {
+    formId() {
+      return new Number(this.$route.query.id);
+    }
+  },
 };
 </script>
 
