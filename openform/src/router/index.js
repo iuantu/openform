@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import FormSummary from './../components/FormSummary'
-import FormData from './../components/FormData'
+import FormData from './../components/TheFormData'
 import FormList from './../components/FormList'
 import FormControlPanel from './../components/FormControlPanel'
 import Register from '../components/Register'
@@ -40,7 +40,6 @@ export default new Router({
       children: [
         { path: 'data', name: "cp_form_data", component: FormData},
         { path: 'summary', name: "cp_form_summary", component: FormSummary},
-        { path: 'data', name: "cp_form_data", component: FormData},
       ]
     },
     {

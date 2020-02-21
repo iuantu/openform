@@ -35,7 +35,7 @@
         </el-row>            
     </div>
     <div class="summary-table">
-        <DataTable v-bind:values="values" v-bind:columns="columns" />
+        <form-summary-data :id="id"></form-summary-data>
     </div>
 
   </div>
@@ -47,9 +47,16 @@ import { SecurityService, ofFetch, baseURL } from '../../functions';
 import { loadForFormSummary } from './../service/form'
 import echarts from 'echarts'
 import DataTable from './../DataTable'
+import FormSummaryData from './../../components/FormSummaryData'
 
 export default {
   name: "formSummary",
+  props: {
+    id: {
+      type: Number,
+      default: 1,
+    }
+  },
   data() {
     return {
       values: [],
@@ -297,7 +304,7 @@ export default {
     }, 500);
   },
   components: {
-    DataTable: DataTable
+    FormSummaryData,
   },
 };
 </script>
