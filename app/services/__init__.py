@@ -3,7 +3,7 @@ from app import db
 from datetime import datetime
 from app.services.assembler import FormAssembler
 from app.utils import to_camel_case
-from app.models import UserAgent, Event, EventType
+from app.models import UserAgent, Event, EventType, Choice
 from app.models.page import Pageable
 from typing import List
 from flask_appbuilder.security.sqla.models import Role
@@ -103,6 +103,25 @@ class FormService(object):
             v.assemble_from_user_agent(user_agent)
             user_id = (user and not user.is_anonymous) and user.id or None
             v.user_id = user_id
+
+            # 查找所有的选项字段并保存选择的结果
+            
+            def find_option_id(field, value):
+                for option in field.options:
+                    if value == option.value:
+                        return option.id
+
+                return -1
+
+            for field in form.select_fields:
+                for value in field.value:
+                    choice = Choice(
+                        form_id=form.id,
+                        field_id=field.id,
+                        option_id=find_option_id(field, value['value']),
+                        value=value['value']
+                    )
+                    session.add(choice)
 
             form.increase_value_sequence()
             v.sequence = form.value_sequence

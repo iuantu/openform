@@ -154,12 +154,10 @@ class SelectField(Field, MultipleMixin):
     def format(self, values):
         formatted_values = []
         for value in values:
-            formatted_values.append(
-                {
+            formatted_values.append({
                 "value": int(value["value"]),
                 "text": value["text"]
-                }
-            )
+            })
         return formatted_values
 
     def to_text_value(self, val):
@@ -179,6 +177,18 @@ class SelectField(Field, MultipleMixin):
             return value[0]
 
         return "，".join(value)
+
+class Choice(Model, TimeStampMixin):
+    id = Column(Integer, primary_key=True)
+    form_id = Column(Integer)
+    field_id = Column(Integer)
+    option_id = Column(Integer)
+    value = Column(Integer)
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        for k, v in kwargs.items():
+            setattr(self, k, v)
 
 @event.listens_for(SelectField.options, 'append', propagate=True)
 def selected_append_listener(target, value, initiator):

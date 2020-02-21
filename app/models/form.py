@@ -10,6 +10,7 @@ from sqlalchemy import (
     Text,
     ForeignKey
 )
+from .fields import SelectField
 from .mixins import TimeStampMixin, SoftDeleteableMixin
 from .value import Value
 
@@ -57,8 +58,6 @@ class Form(Model, SoftDeleteableMixin, TimeStampMixin):
             setattr(self, k, v)
 
     def values(self):
-        
-
         value_dict = {}
         for field in self.fields:
             value_dict[field.id] = field.value
@@ -83,3 +82,11 @@ class Form(Model, SoftDeleteableMixin, TimeStampMixin):
         if not self.value_sequence:
             self.value_sequence = 0
         self.value_sequence += 1
+
+    @property
+    def select_fields(self):
+        fields = []
+        for field in self.fields:
+            if isinstance(field, SelectField):
+                fields.append(field)
+        return fields
