@@ -49,7 +49,9 @@
             <form-data :id="formId"></form-data>
           </el-tab-pane>
           <el-tab-pane label="报表" name="fifth">报表</el-tab-pane>
-          <el-tab-pane label="发布" name="sixth">发布</el-tab-pane>
+          <el-tab-pane label="发布" name="sixth">
+            <publish :id="formId"></publish>
+          </el-tab-pane>
           <el-tab-pane label="协作" name="seventh">协作</el-tab-pane>
         </el-tabs>
       </div>
@@ -70,6 +72,7 @@ import FormSummary from './formSummary'
 import FormPreView from './formPreView'
 import FormData from './../../components/FormData'
 
+import Publish from '../../components/publish/Publish'
 export default {
   name: "clone",
   inject: ["reload", "leftAside", "hideLeftAside"],
@@ -80,6 +83,7 @@ export default {
     'form-summary': FormSummary,
     'form-preview': FormPreView,
     FormData,
+    Publish,
   },
 
   data() {
@@ -414,7 +418,7 @@ export default {
     formId() {
       return new Number(this.$route.query.id);
     }
-  },
+  }
 };
 </script>
 
