@@ -47,7 +47,9 @@
           </el-tab-pane>
           <el-tab-pane label="数据" name="fourth">数据</el-tab-pane>
           <el-tab-pane label="报表" name="fifth">报表</el-tab-pane>
-          <el-tab-pane label="发布" name="sixth">发布</el-tab-pane>
+          <el-tab-pane label="发布" name="sixth">
+            <publish :id="formId"></publish>
+          </el-tab-pane>
           <el-tab-pane label="协作" name="seventh">协作</el-tab-pane>
         </el-tabs> 
 
@@ -69,7 +71,7 @@ import formComponents from "./../../components/formComponent/formComponet";
 import RightAside from './../../components/rightAside/rightAside'
 import FormSummary from './formSummary'
 import FormPreView from './formPreView'
-
+import Publish from '../../components/publish/Publish'
 export default {
   name: "clone",
   inject: ["reload", "leftAside", "hideLeftAside"],
@@ -79,6 +81,7 @@ export default {
     'right-aside': RightAside,
     'form-summary': FormSummary,
     'form-preview': FormPreView,
+    Publish,
   },
   data() {
     return {
@@ -346,7 +349,12 @@ export default {
     this.getForm()
     this.hideLeftAside()
   },
-  mounted() {}
+  mounted() {},
+  computed: {
+    formId() {
+      return new Number(this.$route.query.id);
+    }
+  },
 };
 </script>
 
