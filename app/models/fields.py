@@ -105,6 +105,11 @@ class TextField(Field, TextFieldMixin):
         'polymorphic_identity':'text_field',
     }
 
+class DescriptionField(Field):
+    __tablename__ = 'field'
+    __mapper_args__ = {
+        'polymorphic_identity':'description_field',
+    }
 
 class PhoneField(Field, TextFieldMixin):
     vertify = Column(Boolean, default=False)

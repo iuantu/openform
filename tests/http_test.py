@@ -52,6 +52,11 @@ def test_create_form():
                         "discriminator": "required_constraint"
                     }
                 ]
+            },
+            {
+                "title": "",
+                "description": "这是一段描述",
+                "discriminator": "description_field",
             }
         ]
     }
@@ -73,6 +78,8 @@ def test_form():
 
     assert "一些小问题" == form["description"]
     assert "你喜欢的编程语言" == form['fields'][0]['description']
+
+    assert "这是一段描述" == form['fields'][1]['description']
 
 def test_change_form():
     field = FORM['fields'][0]
