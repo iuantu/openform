@@ -280,13 +280,18 @@ export default {
           }
 
           postData.fields.push(_itm)
+        } else if ( itm.type == 'description') {
+          postData.fields.push({
+            discriminator: 'description_field',
+            description: itm.description,
+          })
         }
       })
 
       // return
 
       if(this._id){
-        this.service.putApi('/cp/form/' + this._id, postData).then(({data})=>{
+        this.service.putApi('cp/form/' + this._id, postData).then(({data})=>{
 
         })
       }
@@ -342,6 +347,10 @@ export default {
               // _itm.textareaRows = itm.layout_row_index
               _itm.showName = '多行文本'
               _itm.placeholder = itm.placeholder
+            }
+            if (itm.discriminator == 'description_field') {
+              _itm.type = 'description';
+              _itm.description = itm.description;
             }
             if(itm.discriminator == 'select_field'){
               if(itm.type == "radio"){

@@ -7,6 +7,7 @@
     <form-multi-select :formIndex="formIndex" :formItm="formItm" v-if="formType == 'multiSelects'"></form-multi-select>
     <divide :formIndex="formIndex" :formItm="formItm" v-if="formType == 'divideLines'"></divide>
     <form-editor :formIndex="formIndex" :formItm="formItm" v-if="formType == 'editors'"></form-editor>
+    <description :formIndex="formIndex" :formItm="formItm" v-if="formType == 'description'"></description>
   </div>
 </template>
 
@@ -18,6 +19,8 @@ import formMultiSelect from './components/multiSelect/multiSelect'
 import divide from './components/divide/divide'
 import formEditor from './components/editor/editor'
 import formTitle from './components/title/title'
+import Description from './components/Description'
+
 export default {
   name: "clone",
   components: {
@@ -28,6 +31,7 @@ export default {
     'divide': divide,
     'form-editor': formEditor,
     'form-title': formTitle,
+    Description,
   },
   data() {
     return {};

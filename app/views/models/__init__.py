@@ -32,6 +32,7 @@ class FormView:
             models.TextField: TextFieldView,
             models.SelectField: SelectFieldView,
             models.PhoneField: PhoneFieldView,
+            models.DescriptionField: DescriptionField,
         }
         field_view_class = mapping[field.__class__]
 
@@ -139,6 +140,25 @@ class FieldView:
     def __init__(self, field, request):
         self.field = field
         self.request = request
+
+class DescriptionField(FieldView):
+
+    @property
+    def value(self):
+        return None
+
+    def as_element(self):
+        
+        children = [
+            Label(self.field.title),
+            Div(self.field.description)
+        ]
+
+        return Div(
+            Div(*children,
+                class_=["form-group", "col-md-12"]),
+            class_=["form-row"]
+        )
 
 class TextFieldView(FieldView):
 
