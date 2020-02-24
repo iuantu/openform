@@ -12,6 +12,8 @@ import OpenForm from './../pages/openform/openForm'
 
 import OpenFormList from './../pages/openFormList/openFormList'
 
+// import OpenFormPublic from './../pages/openFormPublic/openFormPublic'
+
 Vue.use(Router)
 
 export default new Router({
@@ -50,6 +52,11 @@ export default new Router({
     {
       path: '/',
       component: OpenFormList
-    }
+    },
+    // {
+    //   path: '/openFormPublic',
+    //   name: 'OpenFormPublic',
+    //   component: OpenFormPublic,
+    // },
   ]
 })

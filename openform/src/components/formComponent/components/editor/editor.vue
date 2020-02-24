@@ -1,6 +1,8 @@
 <template>
   <div class="form-input">
-    <div :ref="'editorElem' + randoms" style="text-align:left;"></div>
+    <div :ref="'editorElem' + randoms" style="text-align:left;" v-show="selectedIndex == formIndex"></div>
+    <div v-show="selectedIndex != formIndex && formItm.value != ''" v-html="formItm.value"></div>
+    <div class="editor-show" v-show="selectedIndex != formIndex && formItm.value == ''">点击显示富文本</div>
   </div>
 </template>
 
@@ -26,6 +28,10 @@ export default {
     // 编辑器的事件，每次改变会获取其html内容
     this.editor.customConfig.onchange = html => {
       this.editorContent = html;
+      let postData = {
+        value: html
+      }
+      this.$emit('setFormItm', JSON.stringify(postData))
     };
     this.editor.customConfig.menus = [
       // 菜单配置
@@ -50,8 +56,9 @@ export default {
       "redo" // 重复
     ];
     this.editor.create(); // 创建富文本实例
+    this.editor.txt.html(this.formItm.value)
   },
-  props: ['formIndex']
+  props: ['formIndex', 'selectedIndex', 'formItm']
 };
 </script>
 

@@ -6,17 +6,17 @@
     <form-select :formIndex="formIndex" :formItm="formItm" v-if="formType == 'selects'"></form-select>
     <form-multi-select :formIndex="formIndex" :formItm="formItm" v-if="formType == 'multiSelects'"></form-multi-select>
     <!-- <divide :formIndex="formIndex" :formItm="formItm" v-if="formType == 'divideLines'"></divide> -->
-    <!-- <form-editor :formIndex="formIndex" :formItm="formItm" v-if="formType == 'editors'"></form-editor> -->
+    <form-editor :formIndex="formIndex" :formItm="formItm" v-if="formType == 'editors'"></form-editor>
   </div>
 </template>
 
 <script>
-import formInput from "./components/input/input";
-import formTextArea from './components/textArea/textArea'
-import formSelect from './components/select/select'
-import formMultiSelect from './components/multiSelect/multiSelect'
+import formInput from "./../formComponent/components/input/inpu";
+import formTextArea from './../formComponent/components/textArea/textArea'
+import formSelect from './../formComponent/components/select/select'
+import formMultiSelect from './../formComponent/components/multiSelect/multiSelect'
 // import divide from './components/divide/divide'
-// import formEditor from './components/editor/editor'
+import formEditor from './../formComponent/components/editor/editorPreview'
 // import formTitle from './components/title/title'
 export default {
   name: "clone",
@@ -26,7 +26,7 @@ export default {
     'form-select': formSelect,
     'form-multi-select': formMultiSelect,
     // 'divide': divide,
-    // 'form-editor': formEditor,
+    'form-editor': formEditor,
     // 'form-title': formTitle,
   },
   data() {
