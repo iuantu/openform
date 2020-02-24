@@ -1,5 +1,5 @@
 <template>
-  <el-row type="flex" v-loading="!isFetched" justify="center">
+  <el-row type="flex" v-loading="!isFetched"  justify="center">
     <el-col v-if="isFetched">
       <DataTable v-bind:values="values" v-bind:columns="columns" />
       <el-pagination background
@@ -28,13 +28,6 @@ export default {
     }
   },
 
-  props: {
-    id: {
-      type: Number,
-      defualt: 1,
-    }
-  },
-
   async created() {
     await this.loadFormData();
   },
@@ -48,7 +41,7 @@ export default {
       this.isFetched = false;
 
       const { form, values, columns, paginator } = await loadForFormData(
-        this.id, this.currentPage
+        this.$route.params.id, this.currentPage
       );
       this.form = form;
       this.values = values;

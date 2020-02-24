@@ -7,7 +7,7 @@
         </div>
         <el-tabs type="card" v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="概述" name="first">
-            <form-summary></form-summary>
+            <form-summary :id="formId"></form-summary>
           </el-tab-pane>
           <el-tab-pane label="编辑" name="second">
             <div class="roll-contant">
@@ -45,9 +45,15 @@
           <el-tab-pane label="预览" name="third">
             <form-preview v-if="showPreview" :list="list" :title="title" :subtitle="subtitle" :showseltype="true"></form-preview>
           </el-tab-pane>
-          <el-tab-pane label="数据" name="fourth">数据</el-tab-pane>
-          <el-tab-pane label="报表" name="fifth">报表</el-tab-pane>
-          <el-tab-pane label="发布" name="sixth" :disabled="!isEdit">发布</el-tab-pane>
+          <el-tab-pane label="数据" name="fourth">
+            <form-data :id="formId"></form-data>
+          </el-tab-pane>
+          <el-tab-pane label="报表" name="fifth">
+            <form-reporter :id="formId"></form-reporter>
+          </el-tab-pane>
+          <el-tab-pane label="发布" name="sixth">
+            <publish :id="formId"></publish>
+          </el-tab-pane>
           <el-tab-pane label="协作" name="seventh">协作</el-tab-pane>
         </el-tabs>
       </div>
@@ -66,6 +72,10 @@ import formComponents from "./../../components/formComponent/formComponet";
 import RightAside from './../../components/rightAside/rightAside'
 import FormSummary from './formSummary'
 import FormPreView from './formPreView'
+import FormData from './../../components/FormData'
+
+import Publish from '../../components/publish/Publish'
+import FormReporter from '../../components/FormReporter'
 
 export default {
   name: "clone",
@@ -76,7 +86,11 @@ export default {
     'right-aside': RightAside,
     'form-summary': FormSummary,
     'form-preview': FormPreView,
+    FormData,
+    Publish,
+    FormReporter,
   },
+
   data() {
     return {
       title: '标题',
@@ -278,15 +292,19 @@ export default {
           }
 
           postData.fields.push(_itm)
+        } else if ( itm.type == 'description') {
+          postData.fields.push({
+            discriminator: 'description_field',
+            description: itm.description,
+          })
         }
       })
 
       // return
 
       if(this._id){
-        this.service.putApi('/cp/form/' + this._id, postData).then(data=>{
-          // console.log(data)
-          this.reload()
+        this.service.putApi('cp/form/' + this._id, postData).then(({data})=>{
+
         })
       }
       else{
@@ -351,6 +369,10 @@ export default {
               // _itm.textareaRows = itm.layout_row_index
               _itm.showName = '多行文本'
               _itm.placeholder = itm.placeholder
+            }
+            if (itm.discriminator == 'description_field') {
+              _itm.type = 'description';
+              _itm.description = itm.description;
             }
             if(itm.discriminator == 'select_field'){
               if(itm.type == "radio"){
@@ -427,8 +449,11 @@ export default {
 
     }
   },
-  mounted() {
-
+  mounted() {},
+  computed: {
+    formId() {
+      return new Number(this.$route.query.id);
+    }
   }
 };
 </script>
