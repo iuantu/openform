@@ -29,8 +29,8 @@
                 v-if="showList"
                 @sort="addItms"
               >
-                <div class="list-group-item" v-for="(formItm, formIndex) in list" :key="formIndex + '_form'" @click="editIndex = formIndex; setChange(formIndex)">
-                  <form-components :class="{isActive: editIndex == formIndex}" :formItm="formItm" :formType="formItm.type" :formIndex="formIndex"></form-components>
+                <div class="list-group-item" v-for="(formItm, formIndex) in list" :key="formIndex + '_form'" @click.stop="editIndex = formIndex; setChange(formIndex)">
+                  <form-components :class="{isActive: editIndex == formIndex}" :formItm="formItm" :formType="formItm.type" :formIndex="formIndex" :selectedIndex='settingIndex' @setFormItm='setFormItm'></form-components>
                   <div class="components-setting-btn" v-if="editIndex == formIndex">
                     <!-- <el-button type="primary" size="small" icon="el-icon-edit" circle @click.stop="setChange(formIndex)"></el-button> -->
                     <!-- <div class="delete-btn"> -->
@@ -43,7 +43,7 @@
             </div>
           </el-tab-pane>
           <el-tab-pane label="预览" name="third">
-            <form-preview v-if="showPreview" :list="list"></form-preview>
+            <form-preview v-if="showPreview" :list="list" :title="title" :subtitle="subtitle" :showseltype="true"></form-preview>
           </el-tab-pane>
           <el-tab-pane label="数据" name="fourth">
             <form-data :id="formId"></form-data>
@@ -108,10 +108,22 @@ export default {
 
       showPreview: false,
       editIndex: null,
+      isEdit: false,
 
     };
   },
   methods: {
+    // 修改form中间
+    setFormItm(params){
+      let _par = JSON.parse(params)
+      let _itm = JSON.parse(JSON.stringify(this.list[this.settingIndex]))
+      _itm.value = _par.value
+      this.list[this.settingIndex] = JSON.parse(JSON.stringify(_itm))
+      this.showList = false
+      this.$nextTick(()=>{
+        this.showList = true
+      })
+    },
     setChange(index){
       // console.log(this.formItem)
       if(this.settingIndex == index && JSON.stringify(this.formItem) != '{}'){
@@ -296,8 +308,17 @@ export default {
         })
       }
       else{
-        this.service.postApi('cp/form', postData).then(({data})=>{
+        this.service.postApi('cp/form', postData).then(data=>{
           // console.log(data)
+          if(data.id){
+            this.$router.push({
+              path: '/openform',
+              query: {
+                id: data.id
+              }
+            })
+          }
+
         })
 
       }
@@ -306,6 +327,7 @@ export default {
       this.list = []
       this._id = this.$route.query.id
       if(this._id){
+        this.isEdit = true
         this.service.getApi('cp/form/' + this._id).then(data=>{
           // console.log(data)
           this.title = data.title

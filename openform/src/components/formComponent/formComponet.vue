@@ -6,7 +6,7 @@
     <form-select :formIndex="formIndex" :formItm="formItm" v-if="formType == 'selects'"></form-select>
     <form-multi-select :formIndex="formIndex" :formItm="formItm" v-if="formType == 'multiSelects'"></form-multi-select>
     <divide :formIndex="formIndex" :formItm="formItm" v-if="formType == 'divideLines'"></divide>
-    <form-editor :formIndex="formIndex" :formItm="formItm" v-if="formType == 'editors'"></form-editor>
+    <form-editor :formIndex="formIndex" :formItm="formItm" v-if="formType == 'editors'" :selectedIndex="selectedIndex" @setFormItm='setFormItm'></form-editor>
     <description :formIndex="formIndex" :formItm="formItm" v-if="formType == 'description'"></description>
   </div>
 </template>
@@ -36,9 +36,13 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    setFormItm(params){
+      this.$emit('setFormItm', params)
+    }
+  },
   mounted() {},
-  props: ['formType', 'formIndex', 'formItm']
+  props: ['formType', 'formIndex', 'formItm', 'selectedIndex']
 };
 </script>
 

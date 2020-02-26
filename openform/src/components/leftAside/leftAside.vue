@@ -141,7 +141,7 @@ export default {
           width: 100, isRequired: false, requireText: '校验提示', alignType: 'left', type: "multiSelects", backimg: require('./static/img/formsetting/multiSelects.png') },
         // { name: "文件上传", showName: '文件上传', height: '1px', background: '#eeeeee', type: "uploadFiles", backimg: require('./static/img/formsetting/divides.png') },
         // { name: "分割线", height: '1px', background: '#eeeeee', type: "divideLines", backimg: require('./static/img/formsetting/divides.png') },
-        // { name: "富文本", type: "editors", backimg: require('./static/img/formsetting/wangEditor.png') },
+        { name: "富文本", showName: '富文本', type: "editors", value: '', backimg: require('./static/img/formsetting/wangEditor.png') },
       ],
       list2: [
         { name: "真实姓名", subTitle: '请输入您的真实姓名', showName: '姓名', width: 100, placeholder: '', isRequired: false, requireText: '校验提示', alignType: 'left', type: "inputsNames", backimg: require('./static/img/formsetting/inputs.png') },

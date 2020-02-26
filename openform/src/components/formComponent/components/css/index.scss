@@ -38,6 +38,17 @@
             }
         }
     }
+    .editor-show{
+        border: 1px solid #eeeeee;
+        text-align: center;
+        font-size: 18px;
+        color: #cccccc;
+        padding: 20px;
+        cursor: pointer;
+    }
+    .editor-preview{
+        text-align: left;
+    }
 
 }
 .divide-line{

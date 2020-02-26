@@ -1,9 +1,11 @@
 <template>
   <div class="form-preview">
-    <el-radio-group size="small" v-model="showType">
+    <el-radio-group size="small" v-model="showType" v-if="showseltype">
       <el-radio-button label="computer">浏览器</el-radio-button>
       <el-radio-button label="mobile">手机</el-radio-button>
     </el-radio-group>
+    <div class="title">{{title}}</div>
+    <div class="subtitle">{{subtitle}}</div>
     <div class="preview-content" v-if="showType == 'computer'">
         <div v-for="(formItm, formIndex) in list" :key='formIndex + "_form"'>
             <form-preview :formType='formItm.type' :formIndex="formIndex" :formItm="formItm"></form-preview>
@@ -25,14 +27,14 @@ export default {
       'form-preview': FormPreView,
   },
   methods: {
-    
+     
   },
   created(){
 
   },
   mounted() {
   },
-  props: ['list']
+  props: ['list', "title", 'subtitle', 'showseltype']
 };
 </script>
 
