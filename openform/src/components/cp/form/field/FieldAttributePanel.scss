@@ -1,0 +1,90 @@
+.right-aside{
+    width: 100%;
+    padding-bottom: 20px;
+    .mt-10{
+        margin-top: 10px;
+    }
+    .title-name{
+        color: #666666;
+        text-align: left;
+        padding: 10px;
+        border-bottom: 1px solid #eeeeee;
+        font-size: 16px;
+        &.secs{
+            margin-top: 15px;
+            border-top: 1px solid #eeeeee;
+        }
+
+    }
+    .right-title{
+        text-align: left;
+        font-size: 14px;
+        padding: 15px 10px 5px;
+    }
+    .input-style{
+        padding: 0 10px;
+        position: relative;
+        height: 32px;
+        text-align: left;
+        .el-switch, .el-radio-group{
+            position: absolute;
+            left: 10px;
+        }
+    }
+    .input-textarea{
+        padding: 0 10px;
+        text-align: left;
+        .el-checkbox{
+            margin-top: 10px;
+            &.required-checkbox{
+                margin-top: 15px;
+            }
+        }
+        .commands{
+            font-size: 15px;
+            padding-left: 25px;
+        }
+        &.checkbox-input{
+            display: flex;
+            display: -webkit-flex;
+            flex-wrap: nowrap;
+            margin-bottom: 5px;
+            .checkbox-right{
+                display: flex;
+                display: -webkit-flex;
+                flex-wrap: nowrap;
+                padding-left: 10px;
+                font-size: 15px;
+                align-items: flex-end;
+                .el-input{
+                    width: 80px;
+                    margin: 0 10px;
+                }
+            }
+        }
+        .list-group{
+            padding: 0;
+            margin-top: 0;
+            border: none;
+            .list-group-item{
+                padding: 15px 0;
+                .isText{
+                    color: #409EFF;
+                }
+                .el-input{
+                    width: 75%;
+                    margin: 0 10px;
+                }
+                .handle{
+                    color: #999999;
+                }
+                i{
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+    .slider-style{
+        padding: 0 20px;
+    }
+}

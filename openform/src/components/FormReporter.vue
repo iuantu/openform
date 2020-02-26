@@ -34,13 +34,9 @@
 import { loadFormAnalysis, loadForm } from './service/form'
 
 export default {
-  props: {
-    id: {
-      type: Number
-    }
-  },
   data() {
     return {
+      id: 0,
       analysis: [],
       reporter: [],
       lines: [
@@ -51,6 +47,7 @@ export default {
     }
   },
   async created() {
+    this.id = this.$route.params.id;
     const form = await loadForm(this.id);
     const analysis = await loadFormAnalysis(this.id);
     const analysisMap = {}

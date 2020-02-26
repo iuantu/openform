@@ -1,8 +1,8 @@
 export let baseURL;
 
 if (process.env.NODE_ENV === 'development') {
-    // baseURL = `${document.location.protocol}//${document.location.hostname}:5000`;
-    baseURL = 'https://staging.oform.cn'
+    baseURL = `${document.location.protocol}//${document.location.hostname}:5000`;
+    // baseURL = 'https://staging.oform.cn'
 } else {
     baseURL = `${document.location.protocol}//${document.location.host}`;
 }
@@ -47,6 +47,36 @@ class UIRegister extends UIBase {
 class HttpClient {
     async request(path, options) {
         return ofFetch(path, options);
+    }
+}
+
+class BaseService {
+    constructor() {
+        this.client = new HttpClient();
+    }
+}
+
+export class FormService extends BaseService {
+    async fetchForm(formId) {
+        const response = await this.client.request(
+            `/api/v1/cp/form/${formId}`
+        );
+        const json = await response.json();
+
+        return json;
+    }
+
+    async changeForm(formId, request) {
+        const response = await this.client.request(
+            `/api/v1/cp/form/${formId}`,
+            {
+                method: 'PUT',
+                body: JSON.stringify(request)
+            }
+        );
+        const json = await response.json();
+
+        return json;
     }
 }
 

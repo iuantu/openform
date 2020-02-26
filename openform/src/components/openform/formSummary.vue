@@ -73,8 +73,13 @@ export default {
     };
   },
   methods: {
+    // timeFormat(text, formatText){
+    //   return moment(text).format(formatText)
+    // },
+
     getTime(time){
-        return this.timeFormat(time, 'YYYY年MM月DD日')
+      return '';
+        // return this.timeFormat(time, 'YYYY年MM月DD日')
     },
     initMonthChart() {
       const chart = echarts.init(document.getElementById('summaryData'));

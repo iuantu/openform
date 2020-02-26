@@ -19,13 +19,11 @@
 </style>
 <script>
 export default {
-  props: {
-    id: {
-      type: Number,
-      default: -1
-    },
-  },
   computed: {
+    id() {
+      return this.$route.params.id;
+    },
+
     formURL() {
       const formURL = [document.location.protocol, "//", document.location.hostname];
       if (document.location.port != 80) {

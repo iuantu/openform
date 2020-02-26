@@ -17,6 +17,7 @@ import { loadForFormData } from './service/form'
 export default {
   data() {
     return {
+      id: 0,
       form: null,
       values: [],
       columns: [],
@@ -25,13 +26,6 @@ export default {
       perPageSize: 0,
       pageSize: 0,
       total: 0,
-    }
-  },
-
-  props: {
-    id: {
-      type: Number,
-      defualt: 1,
     }
   },
 
@@ -45,6 +39,7 @@ export default {
 
   methods: {
     async loadFormData() {
+      this.id = this.$route.params.id;
       this.isFetched = false;
 
       const { form, values, columns, paginator } = await loadForFormData(

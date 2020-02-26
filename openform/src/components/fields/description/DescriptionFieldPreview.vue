@@ -1,18 +1,31 @@
 <template>
   <div class="form-input" :style="{width: formItm.width + '%'}">
     <div class="title" :style="{textAlign: formItm.alignType}">
-      {{formItm.title || '描述'}}
+      {{field.title || '描述'}}
       <rich-editor :text="input" @change="onChange"></rich-editor>
     </div>
   </div>
 </template>
 <script>
-import RichEditor from './RichEditor'
+import RichEditor from './../../formComponent/components/RichEditor'
 
 export default {
-  name: "input",
   components: {
     RichEditor,
+  },
+  props: {
+    field: {
+      type: Object,
+      default() {
+        return {
+          title: '',
+          description: ''
+        }
+      }
+    },
+    index: {
+      type: Number
+    }
   },
   data() {
     return {
@@ -22,13 +35,12 @@ export default {
   },
   methods: {
     onChange(text) {
-      this.formItm.description = text;
+      this.field.description = text;
     }
   },
   created() {
-    this.input = this.formItm.description;
+    this.input = this.field.description;
   },
   mounted() {},
-  props: ['formIndex', 'formItm']
 }
 </script>

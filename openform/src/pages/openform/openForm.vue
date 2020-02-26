@@ -5,10 +5,7 @@
         <left-aside v-show="showLeftAside" ></left-aside>
       </el-aside>
       <el-main>
-        <!-- <div class="show-left-aside" v-if="!showLeftAside" @click="showLA()">
-          <i class="fa fa-arrow-right"></i>
-        </div> -->
-        <router-view v-if="reloadPage"></router-view>
+        <open-form></open-form>
       </el-main>
     </el-container>
   </div>
@@ -17,15 +14,17 @@
 <script>
 
 import LeftAside from './../../components/leftAside/leftAside'
+import OpenForm from './../../components/openform/openForm'
 
 export default {
   name: "openFormSetting",
   components: {
     'left-aside': LeftAside,
+    OpenForm,
   },
   data() {
     return {
-      showLeftAside: false,
+      showLeftAside: true,
       reloadPage: true,
       // showRightAside: true,
     };
@@ -43,7 +42,7 @@ export default {
       this.showLeftAside = true
     },
     hideLA(){
-      this.showLeftAside = false
+      this.showLeftAside = true
     }
   },
   mounted() {},
