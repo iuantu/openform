@@ -8,7 +8,7 @@ from .constraint import Constraint
 
 class MaxConstraint(Constraint):
     id = Column(Integer, ForeignKey('constraint.id'), primary_key=True)
-    min = Column(Integer)
+    max = Column(Integer)
 
     __mapper_args__ = {
         'polymorphic_identity':'max_constraint',
@@ -19,7 +19,7 @@ class MaxConstraint(Constraint):
             raise ValidationError()
 
         if isinstance(value, int):
-            if value > self.min:
+            if value > self.max:
                 raise ValidationError()
 
         elif isinstance(value, list):

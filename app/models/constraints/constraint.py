@@ -1,9 +1,11 @@
 from flask_appbuilder import Model
 from sqlalchemy import (
     Column,
+    Boolean,
     Integer,
     String,
     ForeignKey,
+    text
 )
 from ..mixins import (TimeStampMixin)
 
@@ -12,6 +14,7 @@ class Constraint(Model, TimeStampMixin):
     field_id = Column(Integer, ForeignKey('field.id'))
 
     discriminator = Column(String(50))
+    enabled = Column(Boolean, server_default=text('true'))
 
     __mapper_args__ = {
         'polymorphic_identity': 'field',

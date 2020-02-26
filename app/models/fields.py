@@ -32,6 +32,9 @@ class Field(Model, SoftDeleteableMixin):
     constraints = relationship('Constraint')
     readonly = Column(Boolean, default=False)
 
+    error_message = Column(String(500), nullable=True)
+    error_message_enabled = Column(Boolean, default=False)
+
     layout_row_index = Column(Integer)
     layout_column_index = Column(Integer)
     layout_columns = Column(Integer)
