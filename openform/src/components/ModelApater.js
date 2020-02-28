@@ -208,8 +208,6 @@ class AbstractFieldModelAdapter {
       error_message: viewModel.error_message,
       error_message_enabled: viewModel.error_message_enabled,
     };
-    console.log(attributeValues, viewModel);
-    debugger;
   
     if (viewModel.constraints) {
       try {
@@ -258,7 +256,47 @@ class TextFieldModelAdapter extends AbstractFieldModelAdapter {
 class SelectFieldModelAdapter extends AbstractFieldModelAdapter {
   toRequestModel(field) {
     const request = super.toRequestModel(field);
+    request.options = field.options.map((option) => {
+      const requestOption = {
+        label: option.label,
+        editable: option.editable,
+        ordering: option.ordering,
+      }
+      if (option.id) {
+        requestOption.id = option.id;
+      }
+      return requestOption;
+    })
+
+    for (let i = 0, size = request.options.length; i < size; i++) {
+      const option = request.options[i];
+      option.ordering = i;
+    }
     return request;
+  }
+
+  toViewModel(requestModel) {
+    return {
+      multiple: requestModel.multiple,
+      options: requestModel.options.map((option) => {
+        return {
+          id: option.id,
+          label: option.label,
+          value: option.value,
+          ordering: option.ordering,
+          editable: option.editable,
+        }
+      }).sort((a, b) => {
+        return a.ordering - b.ordering;
+      }),
+      ...super.toViewModel(requestModel),
+    }
+  }
+
+  fromViewModelToAttribute(viewModel) {
+    const values = super.fromViewModelToAttribute(viewModel);
+    values.options = viewModel.options;
+    return values;
   }
 }
   

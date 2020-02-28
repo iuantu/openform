@@ -2,14 +2,14 @@
   <div>
     <div class="right-title">选项</div>
       <div class="input-textarea">
-        <draggable tag="ul" :list="field.options" class="list-group" handle=".handle" @sort="onDraggableSort" ghost-class="ghost">
+        <draggable tag="ul" :list="value" class="list-group" handle=".handle" @sort="onDraggableSort" ghost-class="ghost">
           <div
             class="list-group-item"
-            v-for="(option, index) in field.options"
+            v-for="(option, index) in value"
             :key="index"
           >
             <i class="fa fa-align-justify handle"></i>
-            <el-input v-model="option.value" @input="onOptionChange">
+            <el-input v-model="option.label" @input="onOptionChange">
               <!-- <el-button slot="append" @click="setIsText(index)">
                 <span :class="{'isText': optItm.isText}">T</span>
               </el-button> -->
@@ -22,20 +22,28 @@
   </div>
 </template>
 <script>
+import draggable from "vuedraggable";
+
 export default {
+  key: 'options',
   props: {
-    field: {
-      type: Object
+    value: {
+      type: Array
     }
   },
   data() {
     return {
+      options: [],
     }
   },
   created() {
-
+    this.bind();
   },
   methods: {
+    bind() {
+      this.options = this.value;
+    },
+
     onDraggableSort() {
 
     },
@@ -50,8 +58,7 @@ export default {
         })
     },
     deleteOption(index){
-      this.selfDefVal.splice(index, 1)
-      this.setForms()
+      this.options.splice(index, 1)
     },
     onAddClick() {
       let _leg = Math.random() * 1000
@@ -61,6 +68,14 @@ export default {
       }
       this.selfDefVal.push(_itm)
     }
+  },
+  watch: {
+    value() {
+      this.field = this.value;
+    }
+  },
+  components: {
+    draggable,
   }
 }
 </script>

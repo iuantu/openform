@@ -32,7 +32,6 @@ export default {
     },
     bind() {
       if (this.value) {
-        debugger;
         this.enabled = this.value.error_message_enabled;
         this.error_message = this.value.error_message;
       }

@@ -1,9 +1,11 @@
 import TextFieldMeta from './text_field'
 import DescriptionFieldMeta from './description'
+import SingleSelectFieldMeta from './select_field'
 
 const metas = [
   TextFieldMeta,
-  DescriptionFieldMeta
+  DescriptionFieldMeta,
+  SingleSelectFieldMeta
 ];
 
 const d = {}

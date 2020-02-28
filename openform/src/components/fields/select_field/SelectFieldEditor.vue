@@ -1,20 +1,22 @@
 <template>
-  <div class="form-input" :style="{width: formItm.width + '%'}">
+  <div class="form-input">
     <!-- <div class="title" :style="{textAlign: formItm.alignType}">
       {{formItm.name}}
       <span class="required" v-show="formItm.isRequired">*</span>
     </div> -->
     <div class="title">
-      {{field.title || '标题'}}
-      <span class="required" v-show="formItm.isRequired || false">*</span>
+      {{field.title || '未命名'}}
+      <!-- <span class="required" v-show="formItm.isRequired || false">*</span> -->
     </div>
     <div class="subtitle">
       {{field.description}}
     </div>
     <div>
-      <el-checkbox-group v-model="select">
-        <el-checkbox v-for="(checkItm, checkIndex) in formItm.options" :key="checkIndex + '_checkbox'" :label="checkItm.label">
-          {{checkItm.value}}
+      <el-radio-group v-model="field.options" v-if="!field.multiple">
+        <el-radio v-for="(option, optionIndex) in field.options" :key="optionIndex" :label="option.label"></el-radio>
+      </el-radio-group>
+      <el-checkbox-group v-model="field.options" v-if="field.multiple">
+        <el-checkbox v-for="(option, optionIndex) in field.options" :key="optionIndex" :label="option.label">
           <!-- <i class="fa fa-times"></i> -->
           <!-- <el-input size="small" v-if="checkItm.isText"></el-input> -->
         </el-checkbox>
@@ -39,5 +41,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import "./../css/index.scss";
+// @import "./../css/index.scss";
 </style>

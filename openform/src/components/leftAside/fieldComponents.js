@@ -8,25 +8,25 @@ export default {
       name: "标题", 
       subTitle: '说明',
       showName: '单项选择',
-      isRequiredText: false,
+      title: '未命名',
       options: [
         {
           label: "选项1",
-          value: "选项1",
-          isText: false
+          editable: false,
         },
         {
           label: "选项2",
-          value: "选项2",
-          isText: false
+          editable: false,
         },
         {
           label: "选项3",
-          value: "选项3",
-          isText: false
+          editable: false,
         }
       ], 
-      width: 100, isRequired: false, requireText: '校验提示', alignType: 'left', type: "selects", backimg: require('./static/img/formsetting/selects.png') },
+      discriminator: 'select-field',
+      multiple: false,
+      backimg: require('./static/img/formsetting/selects.png')
+    },
     { 
       name: "标题", 
       subTitle: '说明',
