@@ -70,11 +70,9 @@ export default {
   async created() {
     console.log("form editor created");
     console.log(this.form);
-    // const id = this.$route.params.id;
-    // let formView;
-    // formView = await loadFromRmoteForView(this.form);
-
-
+    
+    this.title = this.form.title;
+    this.description = this.form.description;
   },
   methods: {
     onTitleChange(text) {

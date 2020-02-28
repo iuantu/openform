@@ -143,7 +143,6 @@ class AbstractFieldModelAdapter {
     requestModel.name = viewModel.name;
     requestModel.description = viewModel.description;
     requestModel.readonly = viewModel.readonly;
-
     requestModel.constraints = viewModel.constraints;
     return requestModel;
   }

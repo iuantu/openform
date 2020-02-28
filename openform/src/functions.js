@@ -78,6 +78,19 @@ export class FormService extends BaseService {
 
         return json;
     }
+
+    async createForm(request) {
+        const response = await this.client.request(
+            `/api/v1/cp/form`,
+            {
+                method: 'POST',
+                body: JSON.stringify(request)
+            }
+        );
+        const json = await response.json();
+
+        return json;
+    }
 }
 
 export class SecurityService {

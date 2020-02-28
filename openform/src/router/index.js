@@ -29,14 +29,15 @@ export default new Router({
       component: Register,
     },
     {
-      path: '/openform/:id',
+      path: '/form',
       component: OpenForm,
       children: [
-        { path: 'summary', name: 'cp_form_summary', component: TheFormSummary },
+        { path: 'summary/:id', name: 'cp_form_summary', component: TheFormSummary },
         { path: 'editor', name: 'cp_form_editor', component: FormEditor },
-        { path: 'data', name: 'cp_form_data', component: FormData },
-        { path: 'reporter', name: 'cp_form_reporter', component: FormReporter },
-        { path: 'publish', name: 'cp_form_publish', component: FormPublish },
+        { path: 'editor/:id', name: 'cp_form_editor', component: FormEditor },
+        { path: 'data/:id', name: 'cp_form_data', component: FormData },
+        { path: 'reporter/:id', name: 'cp_form_reporter', component: FormReporter },
+        { path: 'publish/:id', name: 'cp_form_publish', component: FormPublish },
       ]
     },
     { path: '/cp/form', name: 'cp_form_list', component: FormList},

@@ -113,7 +113,15 @@ export default {
     }
 
     const formService = new FormService();
-    this.form = forView(await formService.fetchForm(this.id));
+    if (!this.isCreate) {
+      this.form = forView(await formService.fetchForm(this.id));
+    } else {
+      this.form = forView({
+        title: "未命名表单",
+        description: "未命名表单的描述",
+        fields: [],
+      })
+    }
     this.fields = this.form.fields;
     this.controller = new FormEditorController();
     this.controller.setFormId(this.id);
