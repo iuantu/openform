@@ -2,9 +2,10 @@ import DescriptionFieldEditor from './DescriptionFieldEditor'
 import DescriptionFieldPreview from './DescriptionFieldPreview'
 import * as attrs from '../../cp/form/field/attributes'
 
-export default {
+const define = {
   name: '描述',
   discriminator: 'description-field',
+  category: 'basic',
   editor: DescriptionFieldEditor,
   preview: DescriptionFieldPreview,
   attributes: {
@@ -19,5 +20,13 @@ export default {
     other: [
       // FieldAttributeHidden
     ]
+  },
+  default() {
+    return {
+      discriminator: define.discriminator,
+      title: '未命名',
+    }
   }
-}
+};
+
+export default define

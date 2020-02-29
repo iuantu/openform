@@ -1,105 +1,45 @@
 <template>
-    <div class="left-aside">
-        <div class="my-components">基本
-          <!-- <i class="fa fa-arrow-left" @click="leftAside()"></i> -->
-        </div>
-        <draggable
-            class="dragArea list-group"
-            :list="list1"
-            :group="{ name: 'components', pull: 'clone', put: false,  }"
-            :sort="false"
-            :clone="cloneComponent"
-            ghost-class="ghost">
-            <div class="list-group-item"
-              v-for="(element, index) in list1"
-              :key="index + element.name"
-            >
-              <div class="inner-items">
-                <i class="fa fa-file-text-o"></i>
-                {{element.showName}}
-              </div>
+  <div class="left-aside">
+    <div v-for="(category, index) in categories" :key="index">
+      <div class="my-components">{{category.label}}</div>
+      <draggable
+          class="dragArea list-group"
+          :list="category.components"
+          :group="{ name: 'components', pull: 'clone', put: false,  }"
+          :sort="false"
+          :clone="cloneComponent"
+          ghost-class="ghost">
+          <div class="list-group-item"
+            v-for="(element, componentIndex) in category.components"
+            :key="componentIndex"
+          >
+            <div class="inner-items">
+              <i class="fa fa-file-text-o"></i>
+              {{element.name}}
             </div>
-        </draggable>
-        <div class="my-components">联系人
-        </div>
-        <draggable
-            class="dragArea list-group"
-            :list="list2"
-            :group="{ name: 'components', pull: 'clone', put: false,  }"
-            :sort="false"
-            :disabled="true"
-            ghost-class="ghost">
-            <div class="list-group-item"
-              v-for="(element, index) in list2"
-              :key="index + element.name"
-            >
-              <div class="inner-items">
-                <i class="fa fa-file-text-o"></i>
-                {{element.showName}}
-              </div>
-            </div>
-        </draggable>
-        <div class="my-components">支付</div>
-        <draggable
-            class="dragArea list-group"
-            :list="list3"
-            :group="{ name: 'components', pull: 'clone', put: false,  }"
-            :sort="false"
-            :disabled="true"
-            ghost-class="ghost">
-            <div class="list-group-item"
-              v-for="(element, index) in list3"
-              :key="index + element.name"
-            >
-              <div class="inner-items">
-                <i class="fa fa-file-text-o"></i>
-                {{element.showName}}
-              </div>
-            </div>
-        </draggable>
-        <div class="my-components">高级</div>
-        <draggable
-            class="dragArea list-group"
-            :list="list4"
-            :group="{ name: 'people', pull: 'clone', put: false,  }"
-            :sort="false"
-            :disabled="true"
-            ghost-class="ghost">
-            <div class="list-group-item"
-              v-for="(element, index) in list4"
-              :key="index + element.name"
-            >
-              <div class="inner-items">
-                <i class="fa fa-file-text-o"></i>
-                {{element.showName}}
-              </div>
-            </div>
-        </draggable>
+          </div>
+      </draggable>
     </div>
-      
+  </div>
 </template>
 
 <script>
 import draggable from 'vuedraggable'
-import fieldComponents from './fieldComponents'
+import metas, { categories } from '../fields/index'
 
 export default {
-  name: "clone",
-  inject: ['leftAside'],
   components: {
     draggable
   },
   data() {
     return {
-      ...fieldComponents
+      categories,
     };
   },
   methods: {
     cloneComponent(component) {
-      return JSON.parse(JSON.stringify(component));
+      return component.default();
     }
-  },
-  mounted() {
   },
 };
 </script>

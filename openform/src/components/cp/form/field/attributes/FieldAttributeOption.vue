@@ -61,12 +61,11 @@ export default {
       this.options.splice(index, 1)
     },
     onAddClick() {
-      let _leg = Math.random() * 1000
       const option = {
         label: "选项",
         editable: false
-      }
-      this.selfDefVal.push(_itm)
+      };
+      this.value.push(option);
     }
   },
   watch: {

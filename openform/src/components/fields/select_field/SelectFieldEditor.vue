@@ -31,7 +31,6 @@ export default {
   components: {},
   data() {
     return {
-      select: []
     };
   },
   methods: {},

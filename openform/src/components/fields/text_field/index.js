@@ -3,9 +3,10 @@ import TextFieldPreview from './TextFieldPreview'
 // import FieldAttributeTitle from '../../cp/form/field/attributes/FieldAttributeTitle'
 import * as attrs from '../../cp/form/field/attributes'
 
-export default {
+const define = {
   name: '文本字段',
   discriminator: 'text-field',
+  category: 'basic',
   editor: TextFieldEditor,
   preview: TextFieldPreview,
   attributes: {
@@ -27,5 +28,15 @@ export default {
     other: [
       // FieldAttributeHidden
     ]
+  },
+  default() {
+    return {
+      discriminator: define.discriminator,
+      title: '未命名',
+      placeholder: '',
+      default: '',
+    }
   }
-}
+};
+
+export default define
