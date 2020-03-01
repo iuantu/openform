@@ -34,7 +34,7 @@ export default new Router({
       children: [
         { path: 'summary/:id', name: 'cp_form_summary', component: TheFormSummary },
         { path: 'editor', name: 'cp_form_editor', component: FormEditor },
-        { path: 'editor/:id', name: 'cp_form_editor', component: FormEditor },
+        { path: 'editor/:id', name: 'cp_form_editor_edit', component: FormEditor },
         { path: 'data/:id', name: 'cp_form_data', component: FormData },
         { path: 'reporter/:id', name: 'cp_form_reporter', component: FormReporter },
         { path: 'publish/:id', name: 'cp_form_publish', component: FormPublish },
