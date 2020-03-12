@@ -13,6 +13,7 @@ from sqlalchemy import (
     ForeignKey,
     DateTime,
     JSON,
+    text,
 )
 from .constraints import ValidationError
 from .mixins import SoftDeleteableMixin, TimeStampMixin, MultipleMixin
@@ -31,6 +32,9 @@ class Field(Model, SoftDeleteableMixin):
     discriminator = Column(String(50))
     constraints = relationship('Constraint')
     readonly = Column(Boolean, default=False)
+
+    error_message = Column(String)
+    error_message_enabled = Column(Boolean, server_default=text("false"))
 
     layout_row_index = Column(Integer)
     layout_column_index = Column(Integer)
@@ -80,8 +84,13 @@ class Field(Model, SoftDeleteableMixin):
 
         for constraint in self.constraints:
             try:
-                constraint.validate(self.value)
+                if constraint.enabled:
+                    constraint.validate(self.value)
             except ValidationError as e:
+                if self.error_message_enabled and \
+                    self.error_message_enabled:
+                    e = ValidationError(self.error_message)
+
                 self.errors.append(e)
 
         return 0 == len(self.errors)
