@@ -1,3 +1,6 @@
+import json
+import logging
+from flask import jsonify
 from app import models
 from app import db
 from datetime import datetime
@@ -22,6 +25,7 @@ class FormService(object):
         self.field_repository = models.FieldRepository(self.db)
         self.value_repository = models.ValueRepository(self.db)
         self.role_repository = models.RoleRepository(self.db)
+        self.logger = logging.getLogger('FormService')
 
     def add_new_form(self, command) -> models.Form:
         form = self.form_assembler.to_model(models.Form(), command)

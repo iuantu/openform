@@ -1,5 +1,6 @@
 import csv
 import io
+import logging
 from flask_appbuilder.api import BaseApi, expose
 from app import appbuilder, db
 from app.views.decorators import form_guard
@@ -31,6 +32,7 @@ class ControlPanelFormApi(BaseApi):
         self.event_repository = EventRepository(db)
         self.value_repository = ValueRepository(db)
         self.form_repository = FormRepository(db)
+        self.logger = logging.getLogger('ControlPanelFormApi')
 
     @jwt_required
     @expose('', methods=['POST'])
