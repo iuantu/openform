@@ -6,13 +6,14 @@ import FormList from './../components/FormList'
 import Register from '../components/Register'
 import Login from './../components/Login'
 
-import OpenForm from './../pages/openform/openForm'
+import Form from './../pages/Form/Form'
 import OpenFormList from './../pages/openFormList/openFormList'
-import TheFormSummary from './../components/openform/formSummary'
 import FormEditor from '../components/control_panel/FormEditor'
 import FormData from '../components/FormData'
 import FormReporter from '../components/FormReporter'
 import FormPublish from '../components/FormPublish'
+
+import FormSummary from '../components/FormSummary';
 
 Vue.use(Router)
 
@@ -30,9 +31,9 @@ export default new Router({
     },
     {
       path: '/form',
-      component: OpenForm,
+      component: Form,
       children: [
-        { path: 'summary/:id', name: 'cp_form_summary', component: TheFormSummary },
+        { path: 'summary/:id', name: 'cp_form_summary', component: FormSummary },
         { path: 'editor', name: 'cp_form_editor', component: FormEditor },
         { path: 'editor/:id', name: 'cp_form_editor_edit', component: FormEditor },
         { path: 'data/:id', name: 'cp_form_data', component: FormData },

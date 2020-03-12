@@ -32,7 +32,6 @@
   </div>
 </template>
 <script>
-// import axios from 'axios'
 import { SecurityService } from '../../functions';
 import moment from 'moment'
 export default {

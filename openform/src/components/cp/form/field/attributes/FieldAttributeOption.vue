@@ -1,24 +1,27 @@
 <template>
   <div>
     <div class="right-title">选项</div>
-      <div class="input-textarea">
-        <draggable tag="ul" :list="value" class="list-group" handle=".handle" @sort="onDraggableSort" ghost-class="ghost">
-          <div
-            class="list-group-item"
-            v-for="(option, index) in value"
-            :key="index"
-          >
-            <i class="fa fa-align-justify handle"></i>
-            <el-input v-model="option.label" @input="onOptionChange">
-              <!-- <el-button slot="append" @click="setIsText(index)">
-                <span :class="{'isText': optItm.isText}">T</span>
-              </el-button> -->
-            </el-input>
-            <i class="fa fa-trash-o" @click="onRemoteClick(index)"></i>
-          </div>
-        </draggable>
-        <el-button type="primary" size="small" @click="onAddClick">添加选项</el-button>
-      </div>
+    <div class="input-textarea">
+      <!-- <el-radio-group v-model="checked"> -->
+      <draggable tag="ul" :list="value" class="list-group" handle=".handle" @sort="onDraggableSort" ghost-class="ghost">        
+        <div
+          class="list-group-item"
+          v-for="(option, index) in value"
+          :key="index"
+        >
+          <i class="fa fa-align-justify handle"></i>
+          <input type="radio" id="choice" name="choice" :value="option.value" v-model="checked" />
+          <el-input v-model="option.label">
+            <!-- <el-button slot="append" @click="setIsText(index)">
+              <span :class="{'isText': optItm.isText}">T</span>
+            </el-button> -->
+          </el-input>
+          <i class="fa fa-trash-o" @click="onRemoteClick(index)"></i>
+        </div>
+      </draggable>
+      <!-- </el-radio-group> -->
+      <el-button type="primary" size="small" @click="onAddClick">添加选项</el-button>
+    </div>
   </div>
 </template>
 <script>
@@ -34,6 +37,7 @@ export default {
   data() {
     return {
       options: [],
+      checked: null,
     }
   },
   created() {
@@ -78,3 +82,5 @@ export default {
   }
 }
 </script>
+<style scoped>
+</style>

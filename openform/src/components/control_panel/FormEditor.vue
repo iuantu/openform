@@ -39,8 +39,6 @@ import draggable from "vuedraggable";
 
 import RichText from '../formComponent/components/RichEditor'
 import { editors } from '../fields/index'
-import allFieldMetas from '../fields/index'
-import { forView } from './FormEditorViewAssembler'
 
 export default {
   props: {
@@ -68,9 +66,6 @@ export default {
     ...editors
   },
   async created() {
-    console.log("form editor created");
-    console.log(this.form);
-    
     this.title = this.form.title;
     this.description = this.form.description;
   },
@@ -87,22 +82,15 @@ export default {
     },
     onFieldComponentClick(index, field) {
       this.activeIndex = index;
-      const meta = allFieldMetas[field.discriminator]
-      // this.setFieldAttributes(meta.attributes)
 
       this.$emit('field-component-active', field);
     },
-    onAdd(newIndex, element) {
+    onAdd(/*newIndex, element*/) {
       
     },
     onChange(e) {
       if (e.added) {
-        // debugger;
-        // for (const field of e.added) {
         e.added.element.viewId = Math.random();
-        console.log("Add field view id is " + e.added.element.viewId);
-        console.debug(this.fields)
-        // }
       }
       this.$emit('fields-change', this.fields, e);
     },
@@ -118,16 +106,9 @@ export default {
     },
   },
   watch: {
-    form(o, n) {
-      console.log("FormEditor: watch form");
-
-      // const view = forView(this.form);
-
+    form() {
       this.title = this.form.title;
       this.description = this.form.description;
-      // this.fields = view.fields;
-
-      // this.onFieldComponentClick(this.fields[0])
     }
   }
 }

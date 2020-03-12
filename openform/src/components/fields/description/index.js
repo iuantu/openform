@@ -26,6 +26,14 @@ const define = {
       discriminator: define.discriminator,
       title: '未命名',
     }
+  },
+  viewModelToRequestModel(/*viewModel, requestModel*/) {
+  },
+  requestModelToViewModel(/*requestModel, viewModel*/) {
+  },
+  attribtueModelToViewModel(/*viewModel, attribute, value*/) {
+  },
+  viewModelToAttributeModel(/*viewModel*/) {
   }
 };
 

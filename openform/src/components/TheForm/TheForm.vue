@@ -21,39 +21,41 @@
           </el-col>
         </el-row>
       </div>
-      <el-aside v-show="showRightAside" width="265px" class="openForm-side right">
-        <field-attribute-panel :field="currentField" @input="onFieldAttributePanelChange"></field-attribute-panel>
+      <el-aside v-show="showFieldAttributePanel" width="265px" class="openForm-side right">
+        <field-attribute-panel :attributes="attributes" :attributeValues="attributeValues" @input="onAttributeValuelsChange"></field-attribute-panel>
       </el-aside>
     </el-container>
   </div>
 </template>
 
 <script>
-import { SecurityService, FormService } from '../../functions';
+import { FormService } from '../../functions';
 import FieldAttributePanel from '../../components/cp/form/field/FieldAttributePanel'
-import allFieldMetas from '../../components/fields/index';
-import FormEditorController from './view'
-import { forView } from './../control_panel/FormEditorViewAssembler'
+import { getMeta } from '../../components/fields/index';
+import { FormModelAdapter, AbstractFieldModelAdapter } from './../ModelApater';
 
 export default {
-  name: "clone",
-  inject: ["reload", "leftAside", "hideLeftAside"],
+
+  inject: ["hideFieldPanel",],
   components: {
-    // 'right-aside': RightAside,
     FieldAttributePanel,
   },
 
   data() {
     return {
       list: [],
-      showRightAside: true,
+      showFieldAttributePanel: true,
 
       id: 0,
-      activeName: 'first',
+      activeName: 'cp_form_editor_edit',
       editIndex: null,
       isCreate: true,
 
       currentField: {},
+
+      attributes: {},
+      attributeValues: {},
+
       form: {},
       fields: {},
 
@@ -64,7 +66,7 @@ export default {
         },
         {
           label: '编辑',
-          name: 'cp_form_editor'
+          name: 'cp_form_editor_edit'
         },
         {
           label: '数据',
@@ -84,48 +86,85 @@ export default {
   methods: {
 
     async save() {
-      await this.controller.save();
-      await this.created();
+      const remote = this.formModelAdapter.toRequestModel(this.form);
+
+      if (this.id) {
+        await this.service.changeForm(this.id, remote);
+      } else {
+        this.service.createForm(remote);
+      }
     },
+
     onTabClick(tab){
-      this.$router.replace({name: tab.name});
+      if (tab.name.indexOf('cp_form_editor') > -1) {
+        this.hideFieldPanel(false);
+      }
+      this.showFieldAttributePanel = tab.name == "cp_form_editor_edit";
+      this.$router.replace({name: tab.name, id: this.$route.params.id,});
     },
+
     onFieldComponentActive(field) {
       this.currentField = field;
 
-      // 配置 AttributePanel 的Props
+      const meta = getMeta(field.discriminator);
+      const adapter = new AbstractFieldModelAdapter();
+      const values = adapter.fromViewModelToAttribute(field);
+
+      this.attributes = meta.attributes;
+      this.attributeValues = values;
     },
-    onFieldAttributePanelChange(attributeValues, attribute, value) {
-      
-      this.controller.fieldAttributeChange(this.currentField, attributeValues, attribute, value);
+
+    onAttributeValuelsChange(attributeValues, attribute, value) {
+      const field = this.currentField;
+      const meta = getMeta(field.discriminator);
+      const adapter = new AbstractFieldModelAdapter();
+      adapter.fromAttributeToViewModel(field, attribute.key, value);
+      meta.attribtueModelToViewModel(field, attribute.key, value);
     },
+
     onFormEditorChange(action, value) {
-      this.controller.formEditorChange(action, value);
+      if ('titleChange' == action) {
+        this.form.title = value;
+      } else if ('descriptionChange' == action) {
+        this.form.description = value;
+      } else if ('fieldChange' == action) {
+        this.form.fields.forEach((field) => {
+          if (field.viewId == value.viewId) {
+            field.description = value.description;
+          }
+        });
+      }
     },
+
     onFieldsChange(fields) {
       // this.controller.setEditorFields(fields);
     }
   },
+
   async created() {
     this.id = this.$route.params.id
     if (this.id) {
       this.isCreate = false;
     }
+    this.formModelAdapter = new FormModelAdapter();
+    this.service = new FormService();
 
-    const formService = new FormService();
     if (!this.isCreate) {
-      this.form = forView(await formService.fetchForm(this.id));
+      this.form = this.formModelAdapter.toViewModel(
+        await this.service.fetchForm(this.id)
+      );
     } else {
-      this.form = forView({
+      this.form = this.formModelAdapter.toViewModel({
         title: "未命名表单",
         description: "未命名表单的描述",
         fields: [],
-      })
+      });
     }
     this.fields = this.form.fields;
-    this.controller = new FormEditorController();
-    this.controller.setFormId(this.id);
-    this.controller.setForm(this.form);
+  },
+
+  mounted() {
+    this.hideFieldPanel(false);
   },
 
   computed: {
@@ -138,7 +177,6 @@ export default {
     return {
       setForm(form) {
         this.form = form;
-        this.controller.setForm(form)
       }
     }
   },
@@ -146,5 +184,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import "./css/index.scss";
+@import "./TheForm.scss";
 </style>

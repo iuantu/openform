@@ -1,19 +1,28 @@
-import allFieldMetas from './fields/index'
+import allFieldMetas, { getMeta } from './fields/index'
 
 class AbstractConstraint {
   toRequestModel(viewModel) {
+    const requestModel = {
+      id: viewModel.id,
+      enabled: viewModel.enabled
+    };
+
+    if (!viewModel.id) {
+      requestModel.discriminator = viewModel.discriminator;
+    }
+
+    return requestModel;
   }
 
-  fromViewModelToAttribute(viewModel, attributeValues) {
+  fromViewModelToAttribute(/*viewModel, attributeValues*/) {
 
   }
 
   fromAttributeToViewModel(fieldViewModel, attribute, value) {
     let found = null;
     fieldViewModel.constraints.forEach((constraint) => {
-      if (constraint.discriminator == attribute) {
+      if (constraint.discriminator === attribute) {
         found = constraint;
-        return;
       }
     });
 
@@ -28,14 +37,13 @@ class AbstractConstraint {
 }
 
 class ConstraintRequired extends AbstractConstraint {
-  toRequestModel(viewModel) {
-
-  }
 }
 
 class ConstraintMin extends AbstractConstraint {
   toRequestModel(viewModel) {
-
+    const requestModel = super.toRequestModel(viewModel);
+    requestModel.min = viewModel.min;
+    return requestModel;
   }
 
   fromAttributeToViewModel(fieldViewModel, attribute, value) {
@@ -48,7 +56,9 @@ class ConstraintMin extends AbstractConstraint {
 
 class ConstraintMax extends AbstractConstraint {
   toRequestModel(viewModel) {
-
+    const requestModel = super.toRequestModel(viewModel);
+    requestModel.max = viewModel.max;
+    return requestModel;
   }
 
   fromAttributeToViewModel(fieldViewModel, attribute, value) {
@@ -68,18 +78,27 @@ const constraintDiscriminators = {
 function constraintModelAdapterFactory(discriminator) {
   const adapter = constraintDiscriminators[discriminator];
   if (!adapter) {
-    console.error(`constraint model adapter [${discriminator}] not found.`);
+    throw new Error(`constraint model adapter [${discriminator}] not found.`);
   }
   return adapter;
 }
 
 class FormModelAdapter {
+
+  constructor() {
+    this.fieldModelAdapter = new AbstractFieldModelAdapter();
+  }
+
   toRequestModel(viewModel) {
     const requestModel = {
       title: viewModel.title,
       description: viewModel.description,
       fields: viewModel.fields.map((fieldViewModel) => {
-        return fieldModelAdapterFactory(fieldViewModel.discriminator).toRequestModel(fieldViewModel);
+
+        const fieldRequestModel = this.fieldModelAdapter.toRequestModel(fieldViewModel);
+        const fieldMeta = this.getMeta(fieldViewModel.discriminator);
+        fieldMeta.viewModelToRequestModel(fieldViewModel, fieldRequestModel);
+        return fieldRequestModel;
       })
     }
     if (viewModel.id) {
@@ -93,16 +112,17 @@ class FormModelAdapter {
 
     return requestModel;
   }
-  
+
   toViewModel(requestModel) {
     const viewModel = {
       id: requestModel.id,
       title: requestModel.title,
       description: requestModel.description,
       fields: requestModel.fields.map((fieldRequestModel) => {
-        const discriminator = fieldRequestModel.discriminator.replace('_', '-');
-        const fieldViewModel = fieldModelAdapterFactory(discriminator).toViewModel(fieldRequestModel);
-        return fieldViewModel;
+        const viewModel = this.fieldModelAdapter.toViewModel(fieldRequestModel);
+        const fieldMeta = this.getMeta(fieldRequestModel.discriminator);
+        fieldMeta.requestModelToViewModel(fieldRequestModel, viewModel);
+        return viewModel;
       }),
     };
 
@@ -112,18 +132,13 @@ class FormModelAdapter {
 
     return viewModel;
   }
-}
-  
-class AbstractConstraintModelAdapter {
-  toRequestModel(view) {
 
-  }
-
-  toView(request) {
-
+  getMeta(discriminator) {
+    return allFieldMetas[discriminator.replace("_", "-")];
   }
 }
-  
+
+
 /**
  * 模型适配器
  */
@@ -139,11 +154,16 @@ class AbstractFieldModelAdapter {
     } else {
       requestModel.discriminator = viewModel.discriminator.replace('-', '_');
     }
-    requestModel.title = viewModel.title;
-    requestModel.name = viewModel.name;
-    requestModel.description = viewModel.description;
-    requestModel.readonly = viewModel.readonly;
-    requestModel.constraints = viewModel.constraints;
+
+    this.attributeNames.forEach((attr) => {
+      requestModel[attr] = viewModel[attr];
+    });
+
+    requestModel.constraints = viewModel.constraints.map((constraint) => {
+      const assembler = constraintModelAdapterFactory(constraint.discriminator);
+      return assembler.toRequestModel(constraint);
+    });
+
     return requestModel;
   }
 
@@ -160,6 +180,8 @@ class AbstractFieldModelAdapter {
       discriminator: requestModel.discriminator.replace("_", "-"),
       title: requestModel.title,
       description: requestModel.description,
+      error_message: requestModel.error_message,
+      error_message_enabled: requestModel.error_message_enabled,
       constraints: requestModel.constraints.map((constraint) => {
         // TODO: 重新构造对象
         const viewModel = JSON.parse(JSON.stringify(constraint));
@@ -173,6 +195,13 @@ class AbstractFieldModelAdapter {
   }
 
   fromAttributeToViewModel(viewModel, attribute, value) {
+
+    if (attribute === 'error_message') {
+      viewModel.error_message = value['error_message'];
+      viewModel.error_message_enabled = value.error_message_enabled;
+      return;
+    }
+
     if (this.attributeNames.indexOf(attribute) > -1) {
       viewModel[attribute] = value;
     }
@@ -181,14 +210,17 @@ class AbstractFieldModelAdapter {
       const constraintAdapter = constraintModelAdapterFactory(attribute);
       const constraint = constraintAdapter.fromAttributeToViewModel(viewModel, attribute, value);
 
-      if (!constraint.id && viewModel.constraints.indexOf(constraint) == -1) {
+      const constraintDoesNotExists = !constraint.id && viewModel.constraints.indexOf(constraint) === -1;
+      if (constraintDoesNotExists) {
         viewModel.constraints.push(constraint);
       }
     }
+
+    getMeta(viewModel.discriminator).attribtueModelToViewModel(viewModel, attribute, value);
   }
 
   /**
-   * 
+   *
    * @param {*} viewModel 字段视图模型
    * @returns 属性值视图模型
    */
@@ -198,7 +230,7 @@ class AbstractFieldModelAdapter {
     const attributeNameList = meta.attributes.basic.map((fieldAttribute) => {
       return fieldAttribute.key;
     });
-  
+
     const attributeValues = {}
     attributeNameList.forEach((name) => {
       attributeValues[name] = viewModel[name];
@@ -208,106 +240,19 @@ class AbstractFieldModelAdapter {
       error_message: viewModel.error_message,
       error_message_enabled: viewModel.error_message_enabled,
     };
-  
-    if (viewModel.constraints) {
-      try {
-        viewModel.constraints.forEach((constraint) => {
-          attributeValues[constraint.discriminator] = constraint;
-        })
-      } catch (e) {
-        // TODO: 不应该出现异常
-      }
-    } else {
+
+    if (!viewModel.constraints) {
       viewModel.constraints = [];
     }
-  
+
+    viewModel.constraints.forEach((constraint) => {
+      attributeValues[constraint.discriminator] = constraint;
+    });
+
+    meta.viewModelToAttributeModel(viewModel, attributeValues);
+
     return attributeValues;
   }
 }
-  
-class TextFieldModelAdapter extends AbstractFieldModelAdapter {
-  constructor() {
-    super();
-    this.textFieldAttributeNames = ['default', 'placeholder'];
-  }
 
-  toRequestModel(viewModel) {
-    const request = super.toRequestModel(viewModel);
-    request.placeholder = viewModel.placeholder;
-    request.default = viewModel.default;
-    return request;
-  }
-
-  toViewModel(requestModel) {
-    const viewModel = super.toViewModel(requestModel);
-    viewModel.default = requestModel.default;
-    viewModel.placeholder = requestModel.placeholder;
-    return viewModel;
-  }
-
-  fromAttributeToViewModel(viewModel, attribute, value) {
-    super.fromAttributeToViewModel(viewModel, attribute, value);
-    if (this.textFieldAttributeNames.indexOf(attribute) > -1) {
-      viewModel[attribute] = value;
-    }
-  }
-}
-  
-class SelectFieldModelAdapter extends AbstractFieldModelAdapter {
-  toRequestModel(field) {
-    const request = super.toRequestModel(field);
-    request.options = field.options.map((option) => {
-      const requestOption = {
-        label: option.label,
-        editable: option.editable,
-        ordering: option.ordering,
-      }
-      if (option.id) {
-        requestOption.id = option.id;
-      }
-      return requestOption;
-    })
-
-    for (let i = 0, size = request.options.length; i < size; i++) {
-      const option = request.options[i];
-      option.ordering = i;
-    }
-    return request;
-  }
-
-  toViewModel(requestModel) {
-    return {
-      multiple: requestModel.multiple,
-      options: requestModel.options.map((option) => {
-        return {
-          id: option.id,
-          label: option.label,
-          value: option.value,
-          ordering: option.ordering,
-          editable: option.editable,
-        }
-      }).sort((a, b) => {
-        return a.ordering - b.ordering;
-      }),
-      ...super.toViewModel(requestModel),
-    }
-  }
-
-  fromViewModelToAttribute(viewModel) {
-    const values = super.fromViewModelToAttribute(viewModel);
-    values.options = viewModel.options;
-    return values;
-  }
-}
-  
-const discriminators = {
-  'text-field': new TextFieldModelAdapter(),
-  'select-field': new SelectFieldModelAdapter()
-}
-
-function fieldModelAdapterFactory(discriminator) {
-  const adapter = discriminators[discriminator];
-  return adapter;
-}
-
-export { FormModelAdapter, fieldModelAdapterFactory }
+export { FormModelAdapter, AbstractFieldModelAdapter }

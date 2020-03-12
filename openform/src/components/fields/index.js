@@ -44,7 +44,11 @@ metas.forEach((meta) => {
   category[0].components.push(meta);
 })
 
-export { editors, categories };
+function getMeta(discriminator) {
+  return d[discriminator.replace("_", "-")];
+}
+
+export { editors, categories, getMeta };
 export default {
   ...d
 }

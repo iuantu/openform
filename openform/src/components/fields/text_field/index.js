@@ -36,6 +36,23 @@ const define = {
       placeholder: '',
       default: '',
     }
+  },
+  viewModelToRequestModel(viewModel, requestModel) {
+    requestModel.placeholder = viewModel.placeholder;
+    requestModel.default = viewModel.default;
+  },
+  requestModelToViewModel(requestModel, viewModel) {
+    viewModel.default = requestModel.default;
+    viewModel.placeholder = requestModel.placeholder;
+  },
+  attribtueModelToViewModel(viewModel, attribute, value) {
+    const textFieldAttributeNames = ['default', 'placeholder'];
+    if (textFieldAttributeNames.indexOf(attribute) > -1) {
+      viewModel[attribute] = value;
+    }
+  },
+  viewModelToAttributeModel() {
+
   }
 };
 
