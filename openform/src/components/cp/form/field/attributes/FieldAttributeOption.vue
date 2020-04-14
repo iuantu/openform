@@ -1,8 +1,7 @@
 <template>
-  <div>
-    <div class="right-title">选项</div>
+  <div class="section">
+    <div class="section-heading">选项</div>
     <div class="input-textarea">
-      <!-- <el-radio-group v-model="checked"> -->
       <draggable
         tag="ul"
         :list="value"
@@ -35,17 +34,13 @@
             v-model="option.checked"
           />
 
-          <el-input v-model="option.label">
-            <!-- 其他选项 -->
-            <!-- <el-button slot="append" @click="setIsText(index)">
-              <span :class="{'isText': optItm.isText}">T</span>
-            </el-button> -->
+          <el-input v-model="option.label" :disabled="option.editable">
           </el-input>
-          <i class="fa fa-trash-o" @click="onRemoteClick(index)"></i>
+          <i class="fa fa-trash-o" @click="onRemoveClick(index)"></i>
         </div>
       </draggable>
-      <!-- </el-radio-group> -->
       <el-button type="primary" size="small" @click="onAddClick">添加选项</el-button>
+      <el-button type="primary" size="small" @click="onAddOtherClick" :disabled="this.hasEditable">添加其他选项</el-button>
     </div>
   </div>
 </template>
@@ -67,6 +62,7 @@ export default {
   },
   data() {
     return {
+      hasEditable: false,
       checkedOption: null,
     }
   },
@@ -80,12 +76,11 @@ export default {
       this.field.checkedOption = option.label;
       this.field.checkedOptionValue = option.value;
       this.value.forEach((opt) => {
-        opt.checked = opt.label == checkedLabel;
+        opt.checked = opt.label === checkedLabel;
       })
-      // this.$emit('input', option);
     },
 
-    onRemoteClick(index){
+    onRemoveClick(index){
       this.$confirm('此操作将删除该选项, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -94,9 +89,12 @@ export default {
           this.deleteOption(index)
         })
     },
+
     deleteOption(index){
-      this.value.splice(index, 1)
+      this.value.splice(index, 1);
+      this.calculateHasEditable();
     },
+
     onAddClick() {
       const option = {
         label: "选项",
@@ -104,6 +102,26 @@ export default {
         checked: false,
       };
       this.value.push(option);
+    },
+
+    onAddOtherClick() {
+      this.value.push({
+        label: '其他',
+        editable: true,
+        checked: false,
+      });
+
+      this.calculateHasEditable();
+    },
+
+    calculateHasEditable() {
+      for (const option of this.value) {
+        if (option.editable) {
+          this.hasEditable = true;
+          return;
+        }
+      }
+      this.hasEditable = false;
     }
   },
   components: {
@@ -112,8 +130,4 @@ export default {
 }
 </script>
 <style scoped>
-.checkbox {
-  display: inline;
-}
-
 </style>

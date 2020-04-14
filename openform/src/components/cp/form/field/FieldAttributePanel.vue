@@ -1,5 +1,5 @@
 <template>
-  <div class="right-aside">
+  <div class="field-attribute-panel">
     <div
       v-for="(section, i) in sections"
       :key="i"
