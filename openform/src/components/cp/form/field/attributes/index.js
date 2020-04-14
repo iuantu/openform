@@ -8,8 +8,6 @@ import FieldAttributeOption from './FieldAttributeOption'
 import FieldAttributeConstraintRequired from './FieldAttributeConstraintRequired'
 import FieldAttributeConstraintMin from './FieldAttributeConstraintMin'
 import FieldAttributeConstraintMax from './FieldAttributeConstraintMax'
-import FieldAttributeSelectConstraintMin from './FieldAttributeSelectConstraintMin'
-import FieldAttributeSelectConstraintMax from './FieldAttributeSelectConstraintMax'
 import FieldAttributeConstraintErrorMessage from './FieldAttributeConstraintErrorMessage'
 
 export { 
@@ -23,7 +21,5 @@ export {
     FieldAttributeConstraintRequired,
     FieldAttributeConstraintMin,
     FieldAttributeConstraintMax,
-    FieldAttributeSelectConstraintMin,
-    FieldAttributeSelectConstraintMax,
     FieldAttributeConstraintErrorMessage,
 }

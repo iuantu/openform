@@ -15,8 +15,8 @@ meta.default = ()=> {
 
 meta.attributes.validation = [
     attrs.FieldAttributeConstraintRequired,
-    // attrs.FieldAttributeContraintMin,
-    // attrs.FieldAttributeSelectContraintMax,
+    [attrs.FieldAttributeConstraintMin, ['最少选', '个选项']],
+    [attrs.FieldAttributeConstraintMax, ['最多选', '个选项']],
     attrs.FieldAttributeConstraintErrorMessage,
 ];
 

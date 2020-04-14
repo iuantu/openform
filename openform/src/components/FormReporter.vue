@@ -80,7 +80,7 @@ export default {
           return {
             option: opt.label,
             count: counter.count,
-            percent: counter.count / t * 100
+            percent: counter.count ? counter.count / t * 100 : 0
           }
         })
       }

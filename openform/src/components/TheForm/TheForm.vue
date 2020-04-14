@@ -3,10 +3,24 @@
     <el-container>
       <div class="inner-content">
         <div class="add-new">
-          <el-button type="primary" size="small" @click="save">保存</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="onSaveClick"
+            :loading="saving"
+            v-show="isEditor"
+          >保存
+          </el-button>
         </div>
         <el-tabs type="card" v-model="activeName" @tab-click="onTabClick">
-          <el-tab-pane v-for="(option, key) in options" :key="key" :label="option.label" :name="option.name" :disabled="isCreate"></el-tab-pane>
+          <el-tab-pane 
+            v-for="(option, key) in options"
+            :key="key"
+            :label="option.label"
+            :name="option.name"
+            :disabled="isCreate"
+          >
+          </el-tab-pane>
         </el-tabs>
         <el-row type="flex">
           <el-col>
@@ -21,8 +35,14 @@
           </el-col>
         </el-row>
       </div>
-      <el-aside v-show="showFieldAttributePanel" width="265px" class="openForm-side right">
-        <field-attribute-panel :attributes="attributes" :attributeValues="attributeValues" @input="onAttributeValuelsChange"></field-attribute-panel>
+      <el-aside v-show="isEditor" width="265px" class="openForm-side right">
+        <field-attribute-panel
+          :meta="meta"
+          :field="currentField"
+          :attributes="attributes"
+          :attributeValues="attributeValues"
+          @input="onAttributeValuelsChange">
+        </field-attribute-panel>
       </el-aside>
     </el-container>
   </div>
@@ -32,7 +52,7 @@
 import { FormService } from '../../functions';
 import FieldAttributePanel from '../../components/cp/form/field/FieldAttributePanel'
 import { getMeta } from '../../components/fields/index';
-import { FormModelAdapter, AbstractFieldModelAdapter } from './../ModelApater';
+import { FormModelAssembler } from './../ModelApater';
 
 export default {
 
@@ -53,11 +73,14 @@ export default {
 
       currentField: {},
 
+      meta: {},
       attributes: {},
       attributeValues: {},
 
       form: {},
       fields: {},
+      saving: false,
+      isEditor: false,
 
       options: [
         {
@@ -67,6 +90,10 @@ export default {
         {
           label: '编辑',
           name: 'cp_form_editor_edit'
+        },
+        {
+          label: '预览',
+          name: 'cp_form_preview',
         },
         {
           label: '数据',
@@ -85,41 +112,60 @@ export default {
   },
   methods: {
 
-    async save() {
-      const remote = this.formModelAdapter.toRequestModel(this.form);
+    async onSaveClick() {
+      this.saving = true;
+      
+      const remote = this.formModelAssembler.toRequestModel(this.form);
 
-      if (this.id) {
-        await this.service.changeForm(this.id, remote);
-      } else {
-        this.service.createForm(remote);
+      try {
+        if (this.id) {
+          await this.service.changeForm(this.id, remote);
+        } else {
+          const form = await this.service.createForm(remote);
+          this.$router.push({
+            name: 'cp_form_editor_edit',
+            params: {
+              id: form.id
+            }
+          });
+        }
+      } catch(e) {
+        this.$message(e);
+      } finally {
+        this.saving = false;
       }
     },
 
     onTabClick(tab){
+      if (tab.name == this.$route.name) {
+        return;
+      }
+
       if (tab.name.indexOf('cp_form_editor') > -1) {
         this.hideFieldPanel(false);
       }
-      this.showFieldAttributePanel = tab.name == "cp_form_editor_edit";
+      
       this.$router.replace({name: tab.name, id: this.$route.params.id,});
+      this.isEditor = this.$route.name == 'cp_form_editor_edit';
+      this.showFieldAttributePanel = tab.name == "cp_form_editor_edit";
+      this.hideFieldPanel(!this.isEditor);
     },
 
     onFieldComponentActive(field) {
       this.currentField = field;
 
       const meta = getMeta(field.discriminator);
-      const adapter = new AbstractFieldModelAdapter();
-      const values = adapter.fromViewModelToAttribute(field);
+      const values = meta.assembler.fromViewModelToAttribute(field);
 
       this.attributes = meta.attributes;
       this.attributeValues = values;
+      this.meta = meta;
     },
 
     onAttributeValuelsChange(attributeValues, attribute, value) {
       const field = this.currentField;
       const meta = getMeta(field.discriminator);
-      const adapter = new AbstractFieldModelAdapter();
-      adapter.fromAttributeToViewModel(field, attribute.key, value);
-      meta.attribtueModelToViewModel(field, attribute.key, value);
+      meta.assembler.fromAttribtueModelToViewModel(field, attribute.key, value);
     },
 
     onFormEditorChange(action, value) {
@@ -136,25 +182,27 @@ export default {
       }
     },
 
-    onFieldsChange(fields) {
-      // this.controller.setEditorFields(fields);
+    onFieldsChange(/*fields*/) {
     }
   },
 
   async created() {
     this.id = this.$route.params.id
+    this.activeName = this.$route.name;
+    this.isEditor = this.$route.name == 'cp_form_editor_edit';
+
     if (this.id) {
       this.isCreate = false;
     }
-    this.formModelAdapter = new FormModelAdapter();
+    this.formModelAssembler = new FormModelAssembler();
     this.service = new FormService();
 
     if (!this.isCreate) {
-      this.form = this.formModelAdapter.toViewModel(
+      this.form = this.formModelAssembler.toViewModel(
         await this.service.fetchForm(this.id)
       );
     } else {
-      this.form = this.formModelAdapter.toViewModel({
+      this.form = this.formModelAssembler.toViewModel({
         title: "未命名表单",
         description: "未命名表单的描述",
         fields: [],

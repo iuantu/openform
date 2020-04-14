@@ -1,7 +1,22 @@
 <template>
   <el-row type="flex" v-loading="!isFetched" justify="center">
+    <el-dialog
+      title="数据"
+      :visible.sync="detailVisible"
+      width="80%">
+      
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" type="primary" @click="detailVisible = false">修 改</el-button>
+        <el-button size="small" type="danger" @click="detailVisible = false">删 除</el-button>
+      </span>
+    </el-dialog>
+
     <el-col v-if="isFetched">
-      <DataTable v-bind:values="values" v-bind:columns="columns" />
+      <DataTable
+        v-bind:values="values"
+        v-bind:columns="columns"
+      />
+
       <el-pagination background
         :page-size="perPageSize" :pager-count="pageSize"
         layout="prev, pager, next" :total="total" @current-change="pageChanged" 
@@ -26,6 +41,7 @@ export default {
       perPageSize: 0,
       pageSize: 0,
       total: 0,
+      detailVisible: true,
     }
   },
 

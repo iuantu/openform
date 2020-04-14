@@ -6,6 +6,7 @@ const defaultValue = meta.default;
 meta.default = ()=> {
     const fieldValue = defaultValue();
     fieldValue.type = 'radio';
+    fieldValue.multiple = false;
     return fieldValue;
 }
 export default meta

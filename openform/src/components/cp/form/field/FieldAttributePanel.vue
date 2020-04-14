@@ -1,11 +1,20 @@
 <template>
   <div class="right-aside">
-    <div v-for="(section, i) in sections" :key="i" v-show="attributes[section.key] && attributes[section.key].length > 0">
+    <div
+      v-for="(section, i) in sections"
+      :key="i"
+      v-show="attributes[section.key] && attributes[section.key].length > 0"
+    >
+
       <div class="title-name">{{section.label}}</div>
       <component
         v-for="(attribute, i) in attributes[section.key]"
-        :key="i" :is="attribute"
-        :value="attributeValues[attribute.key]" 
+        :key="i"
+        :is="attribute instanceof Array ? attribute[0] : attribute"
+        :config="attribute instanceof Array ? attribute[1] : null"
+        :meta="meta"
+        :field="field"
+        :value="attributeValues[attribute.key]"
         @input="onInput(attribute, $event)">
       </component>
     </div>
@@ -20,6 +29,12 @@ export default {
       type: Object
     },
     attributeValues: {
+      type: Object,
+    },
+    meta: {
+      type: Object,
+    },
+    field: {
       type: Object,
     },
   },

@@ -1,16 +1,11 @@
 <template>
-    <div class="form-detail-content">
-        <div class="form-title">
-            {{field.title}}
-            <!-- <span class="form-require" v-if="field.constraints.isRequired">*</span> -->
-        </div>
-        <div class="form-subtitle">{{field.description}}</div>
-        <div class="area-texts">
-            <el-input size="small" :placeholder="field.placeholder" :disabled="field.readonly"></el-input>
-        </div>
-    </div>
+  <field-component :field="field" :index="index">
+    <el-input size="small" :placeholder="field.placeholder" :disabled="field.readonly"></el-input>
+  </field-component>
 </template>
 <script>
+import FieldComponent from '../FieldComponent';
+
 export default {
   props: {
     field: {
@@ -22,7 +17,6 @@ export default {
           description: '',
           placeholder: '',
           constraints: {
-            // isRequired: false
           }
         }
       }
@@ -31,8 +25,8 @@ export default {
       type: Number
     }
   },
-  created() {
-    console.log("TextField created");
+  components: {
+    FieldComponent
   }
 }
 </script>

@@ -1,13 +1,39 @@
 import DescriptionFieldEditor from './DescriptionFieldEditor'
 import DescriptionFieldPreview from './DescriptionFieldPreview'
 import * as attrs from '../../cp/form/field/attributes'
+import AbstractFieldAssembler from '../AbstractFieldAssembler'
+
+class DescriptionFieldAssembler extends AbstractFieldAssembler {
+  fromRequestModelToViewModel(requestModel) {
+    const viewModel = super.fromRequestModelToViewModel(requestModel);
+
+    return viewModel;
+  }
+
+  fromViewModelToRequestModel(viewModel) {
+    const requestModel = super.fromViewModelToRequestModel(viewModel);
+
+    return requestModel;
+  }
+
+  fromViewModelToAttributeModel(viewModel) {
+    const attributeModel = super.fromViewModelToAttributeModel(viewModel);
+
+    return attributeModel;
+  }
+
+  fromAttribtueModelToViewModel(viewModel, attribute, value) {
+    super.fromAttribtueModelToViewModel(viewModel, attribute, value);
+  }
+}
 
 const define = {
   name: '描述',
   discriminator: 'description-field',
   category: 'basic',
   editor: DescriptionFieldEditor,
-  preview: DescriptionFieldPreview,
+  component: DescriptionFieldPreview,
+  assembler: new DescriptionFieldAssembler(),
   attributes: {
     basic: [
       attrs.FieldAttributeTitle,
@@ -25,15 +51,8 @@ const define = {
     return {
       discriminator: define.discriminator,
       title: '未命名',
+      constraints: [],
     }
-  },
-  viewModelToRequestModel(/*viewModel, requestModel*/) {
-  },
-  requestModelToViewModel(/*requestModel, viewModel*/) {
-  },
-  attribtueModelToViewModel(/*viewModel, attribute, value*/) {
-  },
-  viewModelToAttributeModel(/*viewModel*/) {
   }
 };
 

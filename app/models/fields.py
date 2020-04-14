@@ -146,6 +146,7 @@ class Option(Model):
     value = Column(Integer, nullable=False)
     editable = Column(Boolean, default=False)
     ordering = Column(Integer, default=0)
+    checked = Column(Boolean, server_default=text("false"))
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 

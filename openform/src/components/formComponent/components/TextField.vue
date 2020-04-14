@@ -30,9 +30,6 @@ export default {
     index: {
       type: Number
     },
-  },
-  created() {
-    console.log("TextField created");
   }
 }
 </script>

@@ -2,9 +2,9 @@
   <div class="input-textarea">
     <el-checkbox v-model="enabled" class="required-checkbox" @change="onCheckboxChange"></el-checkbox>
     <div class="checkbox-right">
-      最少填
+      {{config ? config[0] : '最少填'}}
       <el-input v-model="min" type="number" size="mini" @input="onChange"></el-input>
-      个字
+      {{config ? config[1] : '字'}}
     </div>
   </div>
 </template>
@@ -14,6 +14,9 @@ export default {
   props: {
     value: {
       type: Object
+    },
+    config: {
+      type: Array 
     }
   },
   data() {

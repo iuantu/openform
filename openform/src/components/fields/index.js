@@ -12,10 +12,12 @@ const metas = [
 
 const d = {}
 const editors = {}
+const components = {}
 
 metas.forEach((meta) => {
   editors[meta.discriminator] = meta.editor
   d[meta.discriminator] = meta
+  components[meta.discriminator] = meta.component
 })
 
 const categories = [
@@ -48,7 +50,7 @@ function getMeta(discriminator) {
   return d[discriminator.replace("_", "-")];
 }
 
-export { editors, categories, getMeta };
+export { editors, components, categories, getMeta };
 export default {
   ...d
 }

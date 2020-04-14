@@ -66,7 +66,7 @@ export default {
     }
     .el-main{
       width: 100%;
-      text-align: center;
+      // text-align: center;
       padding: 0;
     }
   }
