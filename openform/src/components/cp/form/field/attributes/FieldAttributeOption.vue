@@ -60,12 +60,18 @@ export default {
       type: Object
     },
   },
+
   data() {
     return {
       hasEditable: false,
       checkedOption: null,
     }
   },
+
+  created() {
+    this.calculateHasEditable();
+  },
+
   methods: {
 
     onDraggableSort() {
