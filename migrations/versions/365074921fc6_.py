@@ -23,6 +23,8 @@ def upgrade():
 
     op.add_column('max_constraint', sa.Column('max', sa.Integer(), nullable=True))
     op.drop_column('max_constraint', 'min')
+
+
     # ### end Alembic commands ###
 
 
