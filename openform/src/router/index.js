@@ -1,16 +1,19 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import FormSummary from './../components/FormSummary'
-import FormData from './../components/TheFormData'
+
+
 import FormList from './../components/FormList'
-import FormControlPanel from './../components/FormControlPanel'
 import Register from '../components/Register'
-
-import OpenFormSetting from './../components/openform/openForm'
 import Login from './../components/Login'
-import OpenForm from './../pages/openform/openForm'
 
-import OpenFormList from './../pages/openFormList/openFormList'
+import Form from './../pages/Form/Form'
+import FormEditor from '../components/control_panel/FormEditor'
+import FormData from '../components/FormData'
+import FormReporter from '../components/FormReporter'
+import FormPublish from '../components/FormPublish'
+
+import FormSummary from '../components/FormSummary';
+import FormPreview from '../components/FormPreview';
 
 // import OpenFormPublic from './../pages/openFormPublic/openFormPublic'
 
@@ -29,33 +32,22 @@ export default new Router({
       component: Register,
     },
     {
-      path: '/openform',
-      name: 'OpenForm',
-      component: OpenForm,
+      path: '/form',
+      component: Form,
       children: [
-        { path: '/', component: OpenFormSetting},
+        { path: 'summary/:id', name: 'cp_form_summary', component: FormSummary },
+        { path: 'editor', name: 'cp_form_editor', component: FormEditor },
+        { path: 'editor/:id', name: 'cp_form_editor_edit', component: FormEditor },
+        { path: 'preview/:id', name: 'cp_form_preview', component: FormPreview },
+        { path: 'data/:id', name: 'cp_form_data', component: FormData },
+        { path: 'reporter/:id', name: 'cp_form_reporter', component: FormReporter },
+        { path: 'publish/:id', name: 'cp_form_publish', component: FormPublish },
       ]
     },
     { path: '/cp/form', name: 'cp_form_list', component: FormList},
     {
-      path: '/cp/form/:id', component: FormControlPanel,
-      children: [
-        { path: 'data', name: "cp_form_data", component: FormData},
-        { path: 'summary', name: "cp_form_summary", component: FormSummary},
-      ]
-    },
-    {
-      path: '/openFormList',
-      component: OpenFormList
-    },
-    {
       path: '/',
-      component: OpenFormList
-    },
-    // {
-    //   path: '/openFormPublic',
-    //   name: 'OpenFormPublic',
-    //   component: OpenFormPublic,
-    // },
+      component: FormList
+    }
   ]
 })

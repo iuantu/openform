@@ -2,7 +2,6 @@
   <div class="form-input" :style="{width: formItm.width + '%'}">
     <div class="title" :style="{textAlign: formItm.alignType}">
       {{formItm.title || '描述'}}
-      <!-- <el-input readonly="" size="small" :placeholder="formItm.placeholder" v-model="input" clearable></el-input> -->
       <rich-editor :text="input" @change="onChange"></rich-editor>
     </div>
   </div>
@@ -18,7 +17,7 @@ export default {
   data() {
     return {
       title: "描述",
-      input: "123"
+      input: ""
     };
   },
   methods: {
@@ -27,7 +26,6 @@ export default {
     }
   },
   created() {
-    console.log(this.formItm.description)
     this.input = this.formItm.description;
   },
   mounted() {},

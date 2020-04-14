@@ -103,6 +103,12 @@ def test_change_form():
                     },
                     {
                         "label": "Java"
+                    },
+                    {
+                        "label": "Golang"
+                    },
+                    {
+                        "label": "Erlang"
                     }
                 ],
                 "constraints": [
@@ -113,5 +119,43 @@ def test_change_form():
             }
         ]
     })
+
+    fields = response.json()['fields']
+
+    assert len(fields[0]['options']) == 4
+
+    for option in response.json()['fields'][0]['options']:
+        print("%s %d" % (option['label'], option['id'],))
+
+    response = session.put("%s/cp/form/%d" % (URL, FORM_ID), json={
+        "title": "一些小问题",
+        "fields": [
+            {
+                "id": field_id,
+                "title": "你喜欢的编程语言？",
+                "discriminator": "select_field",
+                "multiple": True,
+                "type": "checkbox",
+                "options": [
+                    {
+                        "id": option_id,
+                        "label": "PHP"
+                    },
+                    {
+                        "id": fields[0]['options'][1]['id'],
+                        "label": "Java"
+                    },
+                ],
+                "constraints": [
+                    {
+                        "discriminator": "required_constraint"
+                    }
+                ]
+            }
+        ]
+    })
+    fields = response.json()['fields']
+    for option in response.json()['fields'][0]['options']:
+        print("%s %d" % (option['label'], option['id'],))
 
     assert len(response.json()['fields'][0]['options']) == 2

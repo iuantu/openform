@@ -3,7 +3,7 @@
     <el-col :md="16">
       <el-row type="flex" class="create-button">
         <el-col>
-          <el-button round size="medium">创建表单</el-button>
+          <el-button round size="medium" @click="onNewFormClick()">创建表单</el-button>
         </el-col>
       </el-row>
       <el-row type="flex" class="form-table">
@@ -40,7 +40,8 @@
               width="100"
               label="操作">
               <template slot-scope="scope">
-                <i class="el-icon-delete" @click="onDeleteClick(scope.row.id)"></i>
+                <el-button type="text" size="small" @click="onEditClick(forms[scope.$index].id)">修改</el-button>
+                <el-button type="text" size="small" @click="onDeleteClick(forms[scope.$index].id)"><span class="color-red">删除</span></el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -81,6 +82,21 @@ export default {
     this.load();
   },
   methods: {
+    onNewFormClick() {
+      this.$router.push({
+        name: 'cp_form_editor'
+      });
+    },
+
+    onEditClick(id) {
+      this.$router.push({
+        name: 'cp_form_editor_edit',
+        params: {
+          id: id
+        }
+      });
+    },
+    
     async onDeleteClick(/*id*/) {
       this.$confirm('此操作将永久删除记录， 是否继续?', '提示', {
         confirmButtonText: '确定',

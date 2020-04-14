@@ -131,6 +131,8 @@ import { loadForFormSummary } from './service/form'
 import DataTable from './DataTable'
 
 export default {
+
+  inject: ["hideFieldPanel"],
   data() {
     return {
       values: [],
@@ -151,6 +153,7 @@ export default {
   },
 
   async created() {
+    this.hideFieldPanel(true);
     
     const { form, values, columns } = await loadForFormSummary(this.$route.params.id);
     this.form = form;
