@@ -26,7 +26,7 @@ export default {
 
     formURL() {
       const formURL = [document.location.protocol, "//", document.location.hostname];
-      if (document.location.port != 80) {
+      if (document.location.port != '') {
         formURL.push(':');
         formURL.push(document.location.port);
       }
