@@ -21,6 +21,7 @@ from .constraints import RequiredConstraint
 
 logger = logging.getLogger(__file__)
 
+
 class Field(Model, SoftDeleteableMixin):
     __tablename__ = 'field'
 
@@ -88,7 +89,7 @@ class Field(Model, SoftDeleteableMixin):
                     constraint.validate(self.value)
             except ValidationError as e:
                 if self.error_message_enabled and \
-                    self.error_message_enabled:
+                        self.error_message_enabled:
                     e = ValidationError(self.error_message)
 
                 self.errors.append(e)
@@ -98,6 +99,7 @@ class Field(Model, SoftDeleteableMixin):
     def to_text_value(self, val):
         return str(val)
 
+
 class TextFieldMixin(MultipleMixin):
     placeholder = Column(String(1000), nullable=True)
     default = Column(String(1000), nullable=True)
@@ -106,19 +108,22 @@ class TextFieldMixin(MultipleMixin):
     def to_text_value(self, val):
         return val
 
+
 class TextField(Field, TextFieldMixin):
     id = Column(Integer, ForeignKey('field.id'), primary_key=True)
 
     __tablename__ = 'text_field'
     __mapper_args__ = {
-        'polymorphic_identity':'text_field',
+        'polymorphic_identity': 'text_field',
     }
+
 
 class DescriptionField(Field):
     __tablename__ = 'field'
     __mapper_args__ = {
-        'polymorphic_identity':'description_field',
+        'polymorphic_identity': 'description_field',
     }
+
 
 class PhoneField(Field, TextFieldMixin):
     vertify = Column(Boolean, default=False)
@@ -131,13 +136,14 @@ class PhoneField(Field, TextFieldMixin):
         if not matched:
             self.errors.append(ValidationError("请输入正确的手机号码"))
             return False
-        
+
         return validated
 
     __tablename__ = 'text_field'
     __mapper_args__ = {
-        'polymorphic_identity':'phone_field',
+        'polymorphic_identity': 'phone_field',
     }
+
 
 class Option(Model):
     id = Column(Integer, primary_key=True)
@@ -155,6 +161,7 @@ class Option(Model):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
+
 class SelectField(Field, MultipleMixin):
     id = Column(Integer, ForeignKey('field.id'), primary_key=True)
     type = Column(String(20))
@@ -163,7 +170,7 @@ class SelectField(Field, MultipleMixin):
     default = Column(Integer, default=-1)
 
     __mapper_args__ = {
-        'polymorphic_identity':'select_field',
+        'polymorphic_identity': 'select_field',
     }
 
     def format(self, values):
@@ -193,6 +200,7 @@ class SelectField(Field, MultipleMixin):
 
         return "，".join(value)
 
+
 class Choice(Model, TimeStampMixin):
     id = Column(Integer, primary_key=True)
     form_id = Column(Integer)
@@ -204,6 +212,7 @@ class Choice(Model, TimeStampMixin):
         super().__init__()
         for k, v in kwargs.items():
             setattr(self, k, v)
+
 
 @event.listens_for(SelectField.options, 'append', propagate=True)
 def selected_append_listener(target, value, initiator):
