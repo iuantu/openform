@@ -128,6 +128,8 @@ export default {
               id: form.id
             }
           });
+          this.isCreate = false;
+          this.id = form.id;
         }
       } catch(e) {
         this.$message(e);
