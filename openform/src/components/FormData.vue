@@ -41,7 +41,7 @@ export default {
       perPageSize: 0,
       pageSize: 0,
       total: 0,
-      detailVisible: true,
+      detailVisible: false,
     }
   },
 
