@@ -14,6 +14,7 @@ from .fields import SelectField
 from .mixins import TimeStampMixin, SoftDeleteableMixin
 from .value import Value
 
+
 # form_collaborator_table = Table('form_collaborator', Base.metadata,
 #     Column('form_id', Integer, ForeignKey('form.id')),
 #     Column('user_id', Integer, ForeignKey('user.id')),
@@ -32,7 +33,7 @@ class FormCollaborator(Model, TimeStampMixin):
 
     def __init__(self, form_id=None, user_id=None, role_id=None):
         super().__init__()
-        
+
         self.form_id = form_id
         self.user_id = user_id
         self.role_id = role_id
@@ -61,7 +62,7 @@ class Form(Model, SoftDeleteableMixin, TimeStampMixin):
         value_dict = {}
         for field in self.fields:
             value_dict[field.id] = field.value
-        
+
         value = Value(user_id=self.user_id, form_id=self.id, values=value_dict)
         return value
 
@@ -90,3 +91,6 @@ class Form(Model, SoftDeleteableMixin, TimeStampMixin):
             if isinstance(field, SelectField):
                 fields.append(field)
         return fields
+
+    def sort(self):
+        self.fields.sort(key=lambda f: f.layout_row_index)

@@ -53,8 +53,6 @@ class FormService(object):
 
     def fetch_form(self, form_id, user) -> models.Form:
         form = self.form_repository.find_one(form_id)
-        user_id = (user and not user.is_anonymous) and user.id or None
-        db.session.commit()
 
         return form
 

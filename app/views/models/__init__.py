@@ -41,11 +41,9 @@ class FormView:
         return field_view_class(field, request)
 
     def as_element(self):
-        fields = []
-
-        formContainer = Div()
-        formContainer.append(H1(self.form.title))
-        formContainer.append(Div(self.form.description))
+        form_container = Div()
+        form_container.append(H1(self.form.title))
+        form_container.append(Div(self.form.description))
 
         row = Div(class_=["a"])
         form = Form(row)
@@ -58,9 +56,9 @@ class FormView:
             row.append(current.as_element())
         form.append(Button("提交", class_=["btn", "btn-primary"]))
 
-        formContainer.append(form)
+        form_container.append(form)
 
-        return formContainer
+        return form_container
 
 
 class OptionView:
@@ -277,5 +275,8 @@ class SelectFieldView(FieldView):
 class FormViewModelAssembler:
 
     def to_view_model(self, model, request):
+
+        model.sort()
+
         form_view = FormView(model, request)
         return form_view
