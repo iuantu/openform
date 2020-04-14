@@ -4,6 +4,7 @@ from io import StringIO
 
 E = TypeVar('E')
 
+
 class Element:
     class_ = []
 
@@ -54,7 +55,6 @@ class Element:
     def attributes(self):
         return []
 
-        
     def as_html(self, output=None):
         output = not output and StringIO() or output
         output.write("<")
@@ -84,11 +84,18 @@ class Element:
     def render(self):
         pass
 
+
 class Div(Element):
     class_ = []
 
+
 class Li(Element):
     pass
+
+
+class H1(Element):
+    pass
+
 
 class FormInput(Element):
 
@@ -96,16 +103,18 @@ class FormInput(Element):
     def attributes(self):
         return ['id', 'name', "disabled"]
 
+
 class TextArea(FormInput):
 
     @property
     def attributes(self):
         return super().attributes + ['rows', 'cols']
 
+
 class Label(Element):
     for_ = None
 
-    def render_attributes(self, output : StringIO):
+    def render_attributes(self, output: StringIO):
         super().render_attributes(output)
 
         if self.for_:
@@ -113,11 +122,14 @@ class Label(Element):
             output.write(self.for_)
             output.write("\"")
 
+
 class Section(Element):
-    title : str
+    title: str
+
 
 class Form(Element):
-    action : str = ''
+    action: str = ''
+
 
 class Input(FormInput):
 
@@ -125,16 +137,18 @@ class Input(FormInput):
     def attributes(self):
         return super().attributes + ["value", "type", "placeholder", "checked"]
 
+
 class Button(Element):
-    type : str = 'submit'
+    type: str = 'submit'
+
 
 class HtmlInput:
-    label : str = None
-    value : str = None
-    description : str = None
-    placeholder : str = None
-    type : str = 'text'
-    name : str = None
+    label: str = None
+    value: str = None
+    description: str = None
+    placeholder: str = None
+    type: str = 'text'
+    name: str = None
 
     def __init__(self, **kwargs):
         super().__init__()
@@ -150,21 +164,25 @@ class HtmlInput:
             'type': self.type
         }
 
+
 class TitleHtmlInput(HtmlInput):
-    name : str = 'title'
-    label : str = '标题'
-    value : str = '未命名'
+    name: str = 'title'
+    label: str = '标题'
+    value: str = '未命名'
+
 
 class DefaultValueHtmlInput(HtmlInput):
-    label : str = '默认值'
+    label: str = '默认值'
+
 
 class RequiredHtmlInput(HtmlInput):
-    type : str = 'checkbox'
-    label : str = '必填项'
-    description : str = '将所有字段设为 <a href="">必须填</a> 或 非必须填'
+    type: str = 'checkbox'
+    label: str = '必填项'
+    description: str = '将所有字段设为 <a href="">必须填</a> 或 非必须填'
+
 
 class FormFieldTemplate:
-    name : str = None
+    name: str = None
     attributes = None
     validators = None
 
@@ -174,6 +192,7 @@ class FormFieldTemplate:
             'attributes': [x.to_dict() for x in self.attributes],
             'validators': [x.to_dict() for x in self.attributes],
         }
+
 
 class FormInputFieldTemplate(FormFieldTemplate):
 

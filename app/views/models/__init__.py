@@ -7,8 +7,10 @@ from app.markup import (
     Input,
     Button,
     Li,
-    TextArea
+    TextArea,
+    H1,
 )
+
 
 class FormView:
     def __init__(self, form: models.Form, request):
@@ -40,19 +42,26 @@ class FormView:
 
     def as_element(self):
         fields = []
-        
+
+        formContainer = Div()
+        formContainer.append(H1(self.form.title))
+        formContainer.append(Div(self.form.description))
+
         row = Div(class_=["a"])
         form = Form(row)
         size = len(self.fields)
 
         for i in range(size):
             current = self.fields[i]
-            previous = i > 0 and self.fields[i-1] or None
+            previous = i > 0 and self.fields[i - 1] or None
 
             row.append(current.as_element())
         form.append(Button("提交", class_=["btn", "btn-primary"]))
 
-        return form
+        formContainer.append(form)
+
+        return formContainer
+
 
 class OptionView:
 
@@ -136,10 +145,12 @@ class OptionView:
 
         return opt
 
+
 class FieldView:
     def __init__(self, field, request):
         self.field = field
         self.request = request
+
 
 class DescriptionField(FieldView):
 
@@ -148,7 +159,6 @@ class DescriptionField(FieldView):
         return None
 
     def as_element(self):
-        
         children = [
             Label(self.field.title),
             Div(self.field.description)
@@ -159,6 +169,7 @@ class DescriptionField(FieldView):
                 class_=["form-group", "col-md-12"]),
             class_=["form-row"]
         )
+
 
 class TextFieldView(FieldView):
 
@@ -186,23 +197,23 @@ class TextFieldView(FieldView):
         if self.field.multiple:
             input = TextArea(
                 self.value,
-                class_=self.class_, 
-                id=self.id, 
-                name=self.id, 
+                class_=self.class_,
+                id=self.id,
+                name=self.id,
                 placeholder=self.field.placeholder
             )
         else:
-            input = Input(type="text", 
-                class_=self.class_, 
-                id=self.id,
-                name=self.id, 
-                value=self.value,
-                placeholder=self.field.placeholder
-            )
+            input = Input(type="text",
+                          class_=self.class_,
+                          id=self.id,
+                          name=self.id,
+                          value=self.value,
+                          placeholder=self.field.placeholder
+                          )
 
         if self.field.readonly:
             input.disabled = "disabled"
-        
+
         children = [
             Label(self.field.title, for_=self.id),
             input
@@ -218,8 +229,10 @@ class TextFieldView(FieldView):
             class_=["form-row"]
         )
 
+
 class PhoneFieldView(TextFieldView):
     pass
+
 
 class SelectFieldView(FieldView):
 
@@ -246,7 +259,7 @@ class SelectFieldView(FieldView):
         options = [
             Label(self.field.title, for_=str(self.field.id), class_=input_classes)
         ]
-        
+
         for opt in self.options:
             options.append(opt.as_element())
 
@@ -266,5 +279,3 @@ class FormViewModelAssembler:
     def to_view_model(self, model, request):
         form_view = FormView(model, request)
         return form_view
-            
-            

@@ -4,9 +4,14 @@ import logging
 """ jwt create access monkey patch"""
 import datetime
 import flask_jwt_extended
+
 _create_access_token = flask_jwt_extended.create_access_token
+
+
 def monkey_patch_create_access_token(identity, fresh=False, expires_delta=None, user_claims=None):
     return _create_access_token(identity, fresh, datetime.timedelta(days=365), user_claims)
+
+
 flask_jwt_extended.create_access_token = monkey_patch_create_access_token
 
 from flask import Flask, make_response, jsonify
@@ -39,8 +44,9 @@ CORS(app)
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
 INDEX_FILE = os.path.join(APP_DIR, "../openform/dist/static/index.html")
 
+
 class HomeView(IndexView):
-    
+
     @expose("/")
     def index(self):
         print(INDEX_FILE)
@@ -49,9 +55,9 @@ class HomeView(IndexView):
         fd.close()
         return make_response(index)
 
+
 migrate = Migrate(app, db)
 appbuilder = AppBuilder(app, db.session, indexview=HomeView)
-
 
 """
 from sqlalchemy.engine import Engine
@@ -66,10 +72,10 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor.close()
 """
 
-from . import views, models
+from app import views, models
 
+from app.exceptions import *
 
-from .exceptions import *
 
 @app.errorhandler(HttpStatusException)
 def error_handler(e):
