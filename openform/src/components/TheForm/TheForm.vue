@@ -146,9 +146,8 @@ export default {
       }
       
       this.$router.replace({name: tab.name, id: this.$route.params.id,});
-      this.isEditor = this.$route.name == 'cp_form_editor_edit';
-      this.showFieldAttributePanel = tab.name == "cp_form_editor_edit";
-      this.hideFieldPanel(!this.isEditor);
+      
+      this.showOrHiddenSaveButton(tab.name);
     },
 
     onFieldComponentActive(field) {
@@ -183,13 +182,29 @@ export default {
     },
 
     onFieldsChange(/*fields*/) {
-    }
+    },
+
+    getIsEditor() {
+      const routers = ['cp_form_editor_edit', 'cp_form_editor'];
+      for (const router of routers) {
+        if (this.$route.name == router) {
+          return true;
+        }
+      }
+      return false;
+    },
+
+    showOrHiddenSaveButton(tabName) {
+      this.isEditor = this.getIsEditor();
+      this.showFieldAttributePanel = tabName == "cp_form_editor_edit";
+      this.hideFieldPanel(!this.isEditor);
+    },
   },
 
   async created() {
     this.id = this.$route.params.id
     this.activeName = this.$route.name;
-    this.isEditor = this.$route.name == 'cp_form_editor_edit';
+    this.showOrHiddenSaveButton('');
 
     if (this.id) {
       this.isCreate = false;
@@ -218,7 +233,7 @@ export default {
   computed: {
     formId() {
       return new Number(this.$route.params.id);
-    }
+    },
   },
 
   provide() {
