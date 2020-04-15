@@ -11,7 +11,7 @@
                   <el-input class="form-field" v-model="login.username" placeholder="请输入电子邮件、用户名或手机号码"></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                  <el-input class="form-field" v-model="login.password" placeholder="请输入你的密码"></el-input>
+                  <el-input class="form-field" v-model="login.password" placeholder="请输入你的密码" type="password"></el-input>
                 </el-form-item>
                 <el-button class="form-field" type="primary" round @click="onLoginFormSubmit('loginForm')">登录</el-button>
               </el-form>
@@ -94,8 +94,7 @@ export default {
             if (!uiLogin.isSuccess) {
               this.$message(uiLogin.message);
             } else {
-              // this.$router.replace({name: "cp_form_list"});
-              this.$router.replace({path: "/openFormList"});
+              this.$router.replace({path: "/"});
             }
           })
         } else {

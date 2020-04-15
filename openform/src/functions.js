@@ -194,8 +194,10 @@ export async function ofFetch(path = '', options = {}) {
     for (let i = 0; i < 3; i++ ) {
         const response = await fetch(baseURL + path, options)
         // const response = await fetch(path, options)
-        if (401 == response.status) {
+        if (401 === response.status) {
             // no implement
+        } else if (422 === response.status) {
+            document.location = "/#/login";
         }
         return response
     }
