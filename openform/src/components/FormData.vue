@@ -1,15 +1,6 @@
 <template>
   <el-row type="flex" v-loading="!isFetched" justify="center">
-    <el-dialog
-      title="数据"
-      :visible.sync="detailVisible"
-      width="80%">
-      
-      <span slot="footer" class="dialog-footer">
-        <el-button size="small" type="primary" @click="detailVisible = false">修 改</el-button>
-        <el-button size="small" type="danger" @click="detailVisible = false">删 除</el-button>
-      </span>
-    </el-dialog>
+    <data-editor visible="detailVisible"></data-editor>
 
     <el-col v-if="isFetched">
       <DataTable
@@ -27,6 +18,7 @@
 </template>
 <script>
 import DataTable from './DataTable'
+import DataEditor from "./DataEditor";
 import { loadForFormData } from './service/form'
 
 export default {
@@ -50,7 +42,8 @@ export default {
   },
 
   components: {
-    DataTable: DataTable
+    DataTable,
+    DataEditor,
   },
 
   methods: {
