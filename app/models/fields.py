@@ -214,6 +214,17 @@ class Choice(Model, TimeStampMixin):
             setattr(self, k, v)
 
 
+class AttachmentField(Field):
+    id = Column(Integer, ForeignKey('field.id'), primary_key=True)
+    file_limit = Column(Integer, default=1)
+    file_size_limit = Column(Integer, default=20)
+    allow_file_type = Column(Integer, default=0)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'attachment_field',
+    }
+
+
 @event.listens_for(SelectField.options, 'append', propagate=True)
 def selected_append_listener(target, value, initiator):
     if not target.option_sequence:

@@ -19,6 +19,8 @@ export default {
       type: Boolean,
       default: false
     },
+    form_id: {
+    },
     id: {
     }
   },
@@ -30,7 +32,6 @@ export default {
   },
   created() {
     this.dialogVisible = this.visible;
-    console.log("created");
   },
   components: {
     FormFields

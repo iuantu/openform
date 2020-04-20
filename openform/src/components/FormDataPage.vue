@@ -1,18 +1,26 @@
 <template>
   <el-row type="flex" v-loading="!isFetched" justify="center">
-    <data-editor :visible="detailVisible" :id="$route.params.id"></data-editor>
+    <data-editor :visible="detailVisible" :form_id="$route.params.id" :id="0"></data-editor>
+    <el-col>
+      <el-row>
+        <el-col>
+          <el-button type="primary" size="mini">添加数据</el-button>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col v-if="isFetched">
+          <DataTable
+            v-bind:values="values"
+            v-bind:columns="columns"
+          />
 
-    <el-col v-if="isFetched">
-      <DataTable
-        v-bind:values="values"
-        v-bind:columns="columns"
-      />
-
-      <el-pagination background
-        :page-size="perPageSize" :pager-count="pageSize"
-        layout="prev, pager, next" :total="total" @current-change="pageChanged" 
-        :current-page.sync="currentPage">
-      </el-pagination>
+          <el-pagination background
+            :page-size="perPageSize" :pager-count="pageSize"
+            layout="prev, pager, next" :total="total" @current-change="pageChanged"
+            :current-page.sync="currentPage">
+          </el-pagination>
+        </el-col>
+      </el-row>
     </el-col>
   </el-row>
 </template>
@@ -33,7 +41,7 @@ export default {
       perPageSize: 0,
       pageSize: 0,
       total: 0,
-      detailVisible: false,
+      detailVisible: true,
     }
   },
 

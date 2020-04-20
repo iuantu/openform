@@ -1,13 +1,15 @@
-import TextFieldMeta from './text_field'
-import DescriptionFieldMeta from './description'
-import SingleSelectFieldMeta from './single_select_field'
-import MultipleSelectFieldMeta from './multiple_select_field'
+import TextFieldMeta from './text_field';
+import DescriptionFieldMeta from './description';
+import SingleSelectFieldMeta from './single_select_field';
+import MultipleSelectFieldMeta from './multiple_select_field';
+import AttachmentFieldMeta from "./attachment_field";
 
 const metas = [
   TextFieldMeta,
   SingleSelectFieldMeta,
   MultipleSelectFieldMeta,
   DescriptionFieldMeta,
+  AttachmentFieldMeta,
 ];
 
 const d = {}
@@ -35,12 +37,10 @@ const categories = [
 
 metas.forEach((meta) => {
   const category = categories.filter((category) => {
-    if (category.name == meta.category)
-      return true;
-    else
-      return false;
+    return category.name === meta.category;
   });
-  if (category.length == 0) {
+
+  if (!category || category.length === 0) {
     throw new Error(`Not found category ${meta.category}`)
   }
   category[0].components.push(meta);
