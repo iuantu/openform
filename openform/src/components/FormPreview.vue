@@ -15,19 +15,7 @@
             <div class="preview-content">
               <h1>{{form.title}}</h1>
               <div class="form-description" v-html="form.description"></div>
-              <div
-                v-for="(field, i) in fields"
-                :key="i"
-              >
-              
-                <component
-                  :is="field.discriminator"
-                  :field="field"
-                  :index="i"
-                  :key="i"
-                  @change="onComponentChange">
-                </component>
-              </div>
+              <form-fields :fields="fields"></form-fields>
             </div>
           </div>
         </el-col>
@@ -37,7 +25,7 @@
 </template>
 
 <script>
-import { components as fieldComponents } from './fields/index'
+import FormFields from "./FormFields";
 export default {
 
   props: {
@@ -58,7 +46,7 @@ export default {
     };
   },
   components: {
-    ...fieldComponents
+    FormFields
   },
   methods: {
     onComponentChange() {
@@ -70,7 +58,7 @@ export default {
 <style lang="scss">
 .devices {
   text-align: center;
-  margin: 40px 0px;
+  margin: 40px 0;
 }
 
 .preview-content {
@@ -78,7 +66,7 @@ export default {
 }
 
 .form-description {
-  margin: 30px 0px;
+  margin: 30px 0;
 }
 
 /* The device with borders */

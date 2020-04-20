@@ -1,6 +1,6 @@
 <template>
   <el-row type="flex" v-loading="!isFetched" justify="center">
-    <data-editor visible="detailVisible"></data-editor>
+    <data-editor :visible="detailVisible" :id="$route.params.id"></data-editor>
 
     <el-col v-if="isFetched">
       <DataTable
@@ -18,7 +18,7 @@
 </template>
 <script>
 import DataTable from './DataTable'
-import DataEditor from "./DataEditor";
+import DataEditor from "./FormDataEditor";
 import { loadForFormData } from './service/form'
 
 export default {
@@ -66,7 +66,7 @@ export default {
     },
 
     async pageChanged() {
-      this.loadFormData();
+      await this.loadFormData();
     }
   }
     
