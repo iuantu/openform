@@ -1,9 +1,10 @@
 from user_agents import parse
 from app.models import UserAgent
 
+
 def to_user_agent(request):
     ua = parse(request.user_agent.string)
-                
+
     user_agent = UserAgent(
         request.remote_addr,
         ua.browser.family,

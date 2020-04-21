@@ -1,6 +1,12 @@
 <template>
   <field-component :field="field" :index="index">
-    <el-input size="small" :placeholder="field.placeholder" :disabled="field.readonly"></el-input>
+    <el-input
+      class="input"
+      size="small"
+      v-model="text"
+      :placeholder="field.placeholder"
+      :disabled="field.readonly">
+    </el-input>
   </field-component>
 </template>
 <script>
@@ -25,8 +31,18 @@ export default {
       type: Number
     }
   },
+  data() {
+    return {
+      text: ''
+    }
+  },
   components: {
     FieldComponent
   }
 }
 </script>
+<style>
+  .input {
+    width: 50%;
+  }
+</style>

@@ -1,9 +1,8 @@
 <template>
   <div>
     <div
-            v-for="(field, i) in fields"
-            :key="i">
-
+      v-for="(field, i) in fields"
+      :key="i">
       <component
         :is="field.discriminator"
         :field="field"
@@ -15,7 +14,8 @@
   </div>
 </template>
 <script>
-import { components as fieldComponents } from './fields/index'
+import { getMeta, editors } from './fields/index'
+
 export default {
   props: {
     fields: {
@@ -23,11 +23,19 @@ export default {
     }
   },
   components: {
-    ...fieldComponents
+    // ...fieldComponents,
+    ...editors
+  },
+  created() {
   },
   methods: {
     onComponentChange() {
 
+    }
+  },
+  computed: {
+    metaFields() {
+      return this.fields.map(field => getMeta(field.discriminator));
     }
   }
 }

@@ -30,7 +30,7 @@
         :key="i"
         @change="onComponentChange">
       </component>
-      <div class="components-setting-btn" v-if="i == activeIndex">
+      <div class="components-setting-btn" v-if="i === activeIndex">
         <el-button type="danger" size="small" icon="el-icon-delete" circle @click.stop="deleteList(i)"></el-button>
       </div>
     </div>

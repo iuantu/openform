@@ -1,6 +1,10 @@
 import os
+import sys
 import json
+import logging
 import requests
+
+logging.basicConfig(level=logging.DEBUG)
 
 session = requests.Session()
 URL = os.getenv('BASE_URL', "https://staging.oform.cn/api/v1")
@@ -9,14 +13,18 @@ USER = "%s/user/" % URL
 USER_LOGIN_URL = "%s/security/login" % URL
 FORM_LIST = "%s/cp/form" % URL
 FORM_CREATE_URL = "%s/cp/form" % URL
+FORM_SUBMIT_URL = "%s/form" % URL
 FORM_ID = 0
 FORM = None
+
+
 def test_user_register():
     response = session.post(USER, json={
         'username': 'test',
         'email': 'test@example.com',
         'password': '111111',
     })
+
 
 def test_user_login():
     response = session.post(USER_LOGIN_URL, json={
@@ -25,9 +33,10 @@ def test_user_login():
         "refresh": True,
         "username": "test"
     })
-    
+
     tokens = response.json()
     session.headers.update({'Authorization': "Bearer %s" % tokens['access_token']})
+
 
 def test_create_form():
     global FORM
@@ -64,13 +73,28 @@ def test_create_form():
     FORM = response.json()
     assert len(FORM['fields'][0]['options']) > 0
 
+
 def test_form_list():
     global FORM_ID
     response = session.get(FORM_LIST)
     forms = response.json()
     FORM_ID = forms['data'][0]['id']
-    
+
     assert FORM_ID > 0
+
+
+def test_submit_form():
+    payload = {
+        FORM['fields'][0]['id']: 'python'
+    }
+    logging.info(FORM)
+    URL = FORM_SUBMIT_URL + "/%d" % FORM_ID
+    logging.info(URL)
+    response = session.post(URL, json=payload)
+    res = response.json()
+    logging.info(res)
+    sys.exit()
+
 
 def test_form():
     response = session.get("%s/cp/form/%d" % (URL, FORM_ID))
@@ -80,6 +104,7 @@ def test_form():
     assert "你喜欢的编程语言" == form['fields'][0]['description']
 
     assert "这是一段描述" == form['fields'][1]['description']
+
 
 def test_change_form():
     field = FORM['fields'][0]

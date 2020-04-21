@@ -31,6 +31,7 @@ export default {
   },
   computed: {
     isRequired() {
+        console.log(this.field)
       for (const constraint of this.field.constraints) {
         if (constraint.discriminator == "required_constraint") {
           return true;

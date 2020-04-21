@@ -93,20 +93,24 @@ class FormService(object):
 
         return field
 
-    def submit(self, form: models.Form, user, user_agent: UserAgent):
+    def submit(self,
+               # form_id: int,
+               form,
+               user, user_agent: UserAgent):
         """ 提交表单
         """
-       
+        # form = self.form_repository.find_one(form_id)
+
         if form.validate():
             session = db.session
-            
+
             v = form.values()
             v.assemble_from_user_agent(user_agent)
             user_id = (user and not user.is_anonymous) and user.id or None
             v.user_id = user_id
 
             # 查找所有的选项字段并保存选择的结果
-            
+
             def find_option_id(field, value):
                 for option in field.options:
                     if value == option.value:

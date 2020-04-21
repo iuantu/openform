@@ -1,37 +1,12 @@
 from flask_appbuilder import BaseView, expose
 from app import appbuilder, db
 from flask import request, g, redirect, url_for
-from app.models import UserAgent
 from app.services import FormService
+from app.views.parameter_container import ParameterContainer
 from app.views.models import FormViewModelAssembler
 from app.views.utils import to_user_agent
 from app.models import Event, EventType
 
-class ParameterContainer:
-    def __init__(self):
-        pass
-
-    def get(self, name):
-        query_string = request.args.get(name, None)
-        if query_string:
-            return query_string
-        
-        form = request.form.get(name, None)
-        if form:
-            return form
-        
-        return None
-
-    def getlist(self, name):
-        query_string = request.args.getlist(name, None)
-        if query_string:
-            return query_string
-        
-        form = request.form.getlist(name, None)
-        if form:
-            return form
-        
-        return []
 
 class FormView(BaseView):
     form_service = FormService()
@@ -57,8 +32,8 @@ class FormView(BaseView):
 
         return self.render_template(
             "openform/form.html",
-            form_view = form_view,
-            form = form
+            form_view=form_view,
+            form=form
         )
 
     @expose('/<form_id>/success_redirect', methods=['GET'])
@@ -74,5 +49,6 @@ class FormView(BaseView):
         return self.render_template(
             'openform/form_success.html'
         )
+
 
 appbuilder.add_view_no_menu(FormView)
