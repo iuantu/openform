@@ -8,6 +8,15 @@
     <div class="field-component">
       <slot></slot>
     </div>
+    <div class="errors" v-if="field.has_error">
+      <ul>
+        <li
+          v-for="(error, idx) in field.errors "
+          :key="field.id + '_' + idx">
+          {{error}}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 <script>
@@ -31,9 +40,8 @@ export default {
   },
   computed: {
     isRequired() {
-        console.log(this.field)
       for (const constraint of this.field.constraints) {
-        if (constraint.discriminator == "required_constraint") {
+        if (constraint.discriminator === "required_constraint") {
           return true;
         }
       }
@@ -50,5 +58,10 @@ export default {
 .field-title {
   font-weight: bold;
   line-height: 200%;
+}
+
+.errors {
+  margin: 0px;
+  color: darkred;
 }
 </style>

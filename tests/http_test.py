@@ -84,16 +84,27 @@ def test_form_list():
 
 
 def test_submit_form():
+    field = FORM['fields'][0]
     payload = {
-        FORM['fields'][0]['id']: 'python'
+        int(field['id']): [{
+            "text": "",
+            "value": field["options"][0]['value']
+        }]
     }
     logging.info(FORM)
-    URL = FORM_SUBMIT_URL + "/%d" % FORM_ID
-    logging.info(URL)
-    response = session.post(URL, json=payload)
-    res = response.json()
-    logging.info(res)
-    sys.exit()
+    request_url = FORM_SUBMIT_URL + "/%d" % FORM_ID
+    response = session.post(request_url, json=payload)
+    value = response.json()
+
+    payload = {
+        int(field['id']): [{
+            "text": "",
+            "value": field["options"][0]['value']
+        }]
+    }
+    request_url = FORM_SUBMIT_URL + "/%d/%d" % (FORM_ID, value['id'])
+    response = session.put(request_url, json=payload)
+    response.json()
 
 
 def test_form():

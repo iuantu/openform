@@ -93,10 +93,7 @@ class FormService(object):
 
         return field
 
-    def submit(self,
-               # form_id: int,
-               form,
-               user, user_agent: UserAgent):
+    def submit(self, form, user, user_agent: UserAgent, value_id=0):
         """ 提交表单
         """
         # form = self.form_repository.find_one(form_id)
@@ -104,29 +101,17 @@ class FormService(object):
         if form.validate():
             session = db.session
 
-            v = form.values()
+            if value_id > 0:
+                v = self.value_repository.find_one(value_id)
+                v.values = form.value_dict()
+            else:
+                v = form.values()
             v.assemble_from_user_agent(user_agent)
             user_id = (user and not user.is_anonymous) and user.id or None
             v.user_id = user_id
 
-            # 查找所有的选项字段并保存选择的结果
-
-            def find_option_id(field, value):
-                for option in field.options:
-                    if value == option.value:
-                        return option.id
-
-                return -1
-
-            for field in form.select_fields:
-                for value in field.value:
-                    choice = Choice(
-                        form_id=form.id,
-                        field_id=field.id,
-                        option_id=find_option_id(field, value['value']),
-                        value=value['value']
-                    )
-                    session.add(choice)
+            for choice in form.create_choice():
+                session.add(choice)
 
             form.increase_value_sequence()
             v.sequence = form.value_sequence
@@ -135,6 +120,9 @@ class FormService(object):
 
             return v
         return None
+
+    def fetch_value(self, value_id: int):
+        return self.value_repository.find_one(value_id)
 
     def fetch_values(self, form_id: int, page_request) -> Pageable:
         values = self.value_repository.find(form_id, page_request)

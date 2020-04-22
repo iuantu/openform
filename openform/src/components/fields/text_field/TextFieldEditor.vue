@@ -2,10 +2,12 @@
   <field-component :field="field" :index="index">
     <el-input
       class="input"
+      v-bind:class="{ error: field.has_error }"
       size="small"
       v-model="text"
       :placeholder="field.placeholder"
-      :disabled="field.readonly">
+      :disabled="field.readonly"
+      @change="onInputChange">
     </el-input>
   </field-component>
 </template>
@@ -29,7 +31,7 @@ export default {
     },
     index: {
       type: Number
-    }
+    },
   },
   data() {
     return {
@@ -38,11 +40,20 @@ export default {
   },
   components: {
     FieldComponent
+  },
+  methods: {
+    onInputChange(text) {
+      this.field.value = text;
+      this.$emit("change", text);
+    }
   }
 }
 </script>
 <style>
   .input {
     width: 50%;
+  }
+  .error {
+
   }
 </style>

@@ -1,3 +1,5 @@
+import { getMeta } from "./components/fields";
+
 export let baseURL;
 
 if (process.env.NODE_ENV === 'development') {
@@ -90,6 +92,38 @@ export class FormService extends BaseService {
         const json = await response.json();
 
         return json;
+    }
+
+    async fetchValue(valueId) {
+        const response = await this.client.request(
+            `/api/v1/form/0/${valueId}`
+        );
+        return await response.json();
+    }
+
+    async submit(formId, valueId, fields) {
+        let url;
+        if (valueId > 0) {
+            url = `/api/v1/cp/form/${formId}/${valueId}`
+        } else {
+            url = `/api/v1/cp/form/${formId}`
+        }
+
+        const request = {}
+        fields.forEach((field) => {
+            const meta = getMeta(field.discriminator);
+            request[field.id] = meta.assembler.toFormValueForRequest(field);
+        });
+        console.log(request);
+
+        // const response = await this.client.request(
+        //     url,
+        //     {
+        //         method: valueId > 0 ? 'PUT' : 'POST',
+        //         body: JSON.stringify(request)
+        //     }
+        // );
+        // return await response.json();
     }
 }
 

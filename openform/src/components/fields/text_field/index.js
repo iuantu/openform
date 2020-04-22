@@ -53,6 +53,10 @@ class TextFieldAssembler extends AbstractFieldAssembler {
       viewModel[attribute] = value;
     }
   }
+
+  toFormValueForRequest(viewModel) {
+    return viewModel.value;
+  }
 }
 
 const define = {
@@ -90,7 +94,18 @@ const define = {
       default: '',
       constraints: [],
     }
-  }
+  },
+  validate(field) {
+    const errors = [];
+    if (!field.value || field.value === "") {
+      errors.push("必选");
+    }
+
+    if (errors.length > 0) {
+      field.has_error = true;
+      field.errors = errors;
+    }
+  },
 };
 
 export default define

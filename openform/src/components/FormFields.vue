@@ -8,7 +8,7 @@
         :field="field"
         :index="i"
         :key="i"
-        @change="onComponentChange">
+        @change="(value) => onComponentChange(field, value, i)">
       </component>
     </div>
   </div>
@@ -23,14 +23,13 @@ export default {
     }
   },
   components: {
-    // ...fieldComponents,
     ...editors
   },
   created() {
   },
   methods: {
-    onComponentChange() {
-
+    onComponentChange(field, value, index) {
+      field.value = value;
     }
   },
   computed: {

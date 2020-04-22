@@ -20,6 +20,7 @@ class SelectFieldAssembler extends AbstractFieldAssembler {
         ordering: option.ordering,
         checked: option.checked,
         editable: option.editable,
+        text: "",
       };
 
       if (optionViewModel.checked) {
@@ -84,6 +85,17 @@ class SelectFieldAssembler extends AbstractFieldAssembler {
     
     viewModel[attribute] = value;
   }
+
+  toFormValueForRequest(viewModel) {
+    return viewModel.options
+        .filter(opt => opt.checked)
+        .map((opt) => {
+          return {
+            "text": opt.editable ? opt.text : "",
+            "value": opt.value,
+          }
+        })
+  }
 }
 
 const assembler = new SelectFieldAssembler();
@@ -126,21 +138,36 @@ function createDefine() {
             label: "选项1",
             editable: false,
             checked: false,
+            text: "",
           },
           {
             label: "选项2",
             editable: false,
             checked: false,
+            text: "",
           },
           {
             label: "选项3",
             editable: false,
             checked: false,
+            text: ""
           }
         ]
       }
-    }
-    
+    },
+    validate(field) {
+      const errors = [];
+      const checked = field.options.filter(opt => opt.checked);
+
+      if (checked.length === 0) {
+        errors.push("必选");
+      }
+
+      if (errors.length > 0) {
+        field.has_error = true;
+        field.errors = errors;
+      }
+    },
   };
 
   return define;

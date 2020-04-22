@@ -1,31 +1,18 @@
 <template>
   <field-component :field="field" :index="index">
-    <div>
-      <div v-if="!field.multiple">
-        <el-radio
-          v-for="(option, optionIndex) in field.options"
-          :key="optionIndex"
-          :label="option.label"
-          v-model="field.checkedOption"
-          @change="onRadioChange($event)"
-          >
-        </el-radio>
-      </div>
-      <div v-if="field.multiple">
-        <el-checkbox
-          v-for="(option, optionIndex) in field.options"
-          :key="`${field.viewId}${optionIndex}`"
-          :label="option.label"
-          v-model="option.checked"
-        >
-        </el-checkbox>
-      </div>
-    </div>
+    <option-editor
+      v-for="(option, optionIndex) in field.options"
+      :key="index + '_' + optionIndex"
+      :option="option"
+      :type="field.type"
+      @change="onRadioChange($event)">
+    </option-editor>
   </field-component>
 </template>
 
 <script>
 import FieldComponent from '../FieldComponent';
+import OptionEditor from './OptionEditor';
 
 export default {
   props: {
@@ -50,7 +37,7 @@ export default {
   methods: {
     onRadioChange(label) {
       this.field.options.forEach((option) => {
-        if (option.label == label) {
+        if (option.label === label) {
           this.field.checkedOptionValue = option.value;
         }
       })
@@ -79,7 +66,8 @@ export default {
     }
   },
   components: {
-    FieldComponent
+    FieldComponent,
+    OptionEditor,
   }
 };
 </script>

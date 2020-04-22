@@ -76,7 +76,7 @@ class OptionView:
     @property
     def name(self):
         if "checkbox" == self.field.type:
-            name = "%d[]" % (self.field.id)
+            name = "%d[]" % self.field.id
         else:
             name = "%d" % (self.field.id,)
         return name

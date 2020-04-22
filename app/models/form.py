@@ -13,7 +13,7 @@ from sqlalchemy import (
 from .fields import SelectField
 from .mixins import TimeStampMixin, SoftDeleteableMixin
 from .value import Value
-
+from .fields import Choice
 
 # form_collaborator_table = Table('form_collaborator', Base.metadata,
 #     Column('form_id', Integer, ForeignKey('form.id')),
@@ -58,13 +58,19 @@ class Form(Model, SoftDeleteableMixin, TimeStampMixin):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-    def values(self):
+    def value_dict(self):
         value_dict = {}
         for field in self.fields:
             value_dict[field.id] = field.value
+        return value_dict
 
-        value = Value(user_id=self.user_id, form_id=self.id, values=value_dict)
-        return value
+    def values(self):
+        value_dict = self.value_dict()
+        return Value(
+            user_id=self.user_id,
+            form_id=self.id,
+            values=value_dict
+        )
 
     def populate(self, value):
         for field in self.fields:
@@ -91,6 +97,28 @@ class Form(Model, SoftDeleteableMixin, TimeStampMixin):
             if isinstance(field, SelectField):
                 fields.append(field)
         return fields
+
+    def create_choice(self):
+        """ 生成一个选项一条数据行的Choice记录 """
+
+        choices = []
+        for field in self.select_fields:
+            for value in field.value:
+                choice = Choice(
+                    form_id=self.id,
+                    field_id=field.id,
+                    option_id=self.__find_option_id(field, value['value']),
+                    value=value['value']
+                )
+                choices.append(choice)
+        return choices
+
+    def __find_option_id(self, field, value):
+        for option in field.options:
+            if value == option.value:
+                return option.id
+
+        return -1
 
     def sort(self):
         self.fields.sort(key=lambda f: f.layout_row_index)

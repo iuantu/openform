@@ -15,6 +15,7 @@
 import FormFields from "./FormFields";
 import { FormModelAssembler } from './ModelApater'
 import { FormService } from '../functions'
+import { getMeta } from "./fields";
 
 export default {
   props: {
@@ -55,7 +56,10 @@ export default {
 
     },
     onSaveButtonClick() {
-
+      this.fields.forEach((field) => {
+          getMeta(field.discriminator).validate(field);
+      });
+      this.formService.submit(this.form_id, this.id, this.fields);
     }
   },
   computed: {

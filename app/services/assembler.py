@@ -1,15 +1,15 @@
 import logging
 from app import models
 from flask_appbuilder import Model
-from sqlalchemy import inspect
 from app.utils import to_camel_case
-from datetime import datetime
 from sqlalchemy.orm import class_mapper
+
 
 def find_model_for_relation(define, field_name):
     for pro in class_mapper(define).iterate_properties:
         if pro.key == field_name:
             return pro.entity.class_
+
 
 def find_primary_key(define, field_name):
     for pro in class_mapper(define).iterate_properties:
@@ -18,6 +18,7 @@ def find_primary_key(define, field_name):
                 if column.primary_key:
                     return column
 
+
 class ModelFactory:
 
     def clear_relation_field(self, dto):
@@ -25,7 +26,7 @@ class ModelFactory:
         """
         dto = dto.copy()
         return dict([
-            (k, v) for k, v in dto.items() if not isinstance(v, (list, ))
+            (k, v) for k, v in dto.items() if not isinstance(v, (list,))
         ])
 
     def not_in_dto(self, primary_key_value, dto_hash_map):
@@ -51,18 +52,18 @@ class ModelFactory:
             if not primary_key_value:
                 logging.debug("not primary key value")
                 continue
-            
+
             # logging.debug("primary key: %s, value: %s" % (primary_key.name, primary_key_value,))
             if self.not_in_dto(primary_key_value, dto_hash_map):
                 # logging.debug("remove")
                 removes.append(i)
                 # collection.remove(i)
-        
+
         for remove in removes:
             collection.remove(remove)
 
     def process_one_to_many(self, model, primary_key, dto_field_name, \
-        dto_collection, is_update: bool=False):
+                            dto_collection, is_update: bool = False):
 
         # logging.debug("process one to many, field %s" % dto_field_name)
 
@@ -73,7 +74,7 @@ class ModelFactory:
 
         for relation_dto in dto_collection:
             has_primary = primary_key.name in relation_dto \
-                and relation_dto[primary_key.name] in model_hash_map
+                          and relation_dto[primary_key.name] in model_hash_map
 
             # 有存在的主键id，更新对象
             if has_primary:
@@ -83,8 +84,8 @@ class ModelFactory:
             else:
                 # 无主键id，创建新对象
                 obj = self.create_object(
-                    model, 
-                    self.clear_relation_field(relation_dto), 
+                    model,
+                    self.clear_relation_field(relation_dto),
                     dto_field_name
                 )
 
@@ -94,7 +95,7 @@ class ModelFactory:
                 if isinstance(relation_dto, dict):
                     self.create_or_update(obj, relation_dto, False, skip_remove=True)
 
-    def create_or_update(self, model: Model, dto, is_update: bool=False, skip_remove=False):
+    def create_or_update(self, model: Model, dto, is_update: bool = False, skip_remove=False):
         # logging.debug('create or update')
         # logging.debug(type(model))
         # logging.debug(model.asdict())
@@ -103,12 +104,12 @@ class ModelFactory:
                 dto_collection = v
                 primary_key = find_primary_key(model.__class__, dto_field_name)
 
-                if is_update and not skip_remove:# and isinstance(dto, dict):
+                if is_update and not skip_remove:  # and isinstance(dto, dict):
                     # logging.debug('remove model')
                     self.remove_model(primary_key, model, dto, dto_field_name)
 
                 self.process_one_to_many(model, primary_key, dto_field_name, \
-                    dto_collection, is_update)
+                                         dto_collection, is_update)
 
             elif getattr(model, dto_field_name) != v:
                 setattr(model, dto_field_name, v)
@@ -128,12 +129,12 @@ class ModelFactory:
 
         model = find_model_for_relation(parent_object.__class__, releation_key)
         return model(**dto)
-    
+
 
 class FormAssembler:
     model_factory = ModelFactory()
 
-    def to_model(self, model: Model, dto, is_update: bool=False):
+    def to_model(self, model: Model, dto, is_update: bool = False):
         if not is_update:
             model.user_id = dto['user_id']
         return self.model_factory.create_or_update(model, dto, is_update)

@@ -1,5 +1,5 @@
-import { constraintModelAdapterFactory } from './constraints'
-import { getMeta } from './index'
+import {constraintModelAdapterFactory} from './constraints'
+import {getMeta} from './index'
 
 class AbstractFieldAssembler {
   constructor() {
@@ -47,7 +47,7 @@ class AbstractFieldAssembler {
       requestModel.constraints = [];
     }
 
-    const viewModel = {
+    return {
       id: requestModel.id,
       viewId,
       discriminator: requestModel.discriminator.replace("_", "-"),
@@ -60,9 +60,10 @@ class AbstractFieldAssembler {
         delete viewModel['field_id'];
         return viewModel;
       }),
+      has_error: false,
+      errors: []
       // layout_row_index: requestModel.layout_row_index
-    }
-    return viewModel;
+    };
   }
 
   fromAttributeModelToViewModel(viewModel, attribute, value) {
@@ -114,6 +115,10 @@ class AbstractFieldAssembler {
     });
 
     return attributeValues;
+  }
+
+  toFormValueForRequest(viewModel) {
+
   }
 }
 
