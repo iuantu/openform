@@ -119,6 +119,10 @@ class FormService(object):
             session.commit()
 
             return v
+        else:
+            return {
+                "errors": []
+            }
         return None
 
     def fetch_value(self, value_id: int):

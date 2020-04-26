@@ -10,7 +10,7 @@ from flask_jwt_extended import current_user
 class FormApiAssembler:
 
     def assemble(self, form):
-        r = request.json
+        r = request.json['fields']
         for field in form.fields:
             fieldValue = r.get(str(field.id))
             field.value = field.format(fieldValue)
@@ -54,7 +54,7 @@ class FormApi(BaseApi):
             }
         }))
 
-    @expose('/<form_id>', methods=['POST'])
+    @expose('/<form_id>/value', methods=['POST'])
     def submit(self, form_id):
         """Submit a form 
         ---
@@ -87,7 +87,7 @@ class FormApi(BaseApi):
 
         return jsonify(response), status
 
-    @expose('/<form_id>/<int:value_id>', methods=['PUT'])
+    @expose('/<form_id>/value/<int:value_id>', methods=['PUT'])
     def form_value_edit(self, form_id, value_id):
         status = 200
 

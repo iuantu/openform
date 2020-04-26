@@ -14,14 +14,18 @@ class MaxConstraint(Constraint):
         'polymorphic_identity':'max_constraint',
     }
 
-    def validate(self, value):
+    def validate(self, field, value):
+        has_error = False
         if not value:
-            raise ValidationError()
+            has_error = True
 
         if isinstance(value, int):
             if value > self.max:
-                raise ValidationError()
+                has_error = True
 
         elif isinstance(value, list):
             if len(value) > self.max:
-                raise ValidationError()
+                has_error = True
+
+        if has_error:
+            raise ValueError(field, "max")

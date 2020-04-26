@@ -1,6 +1,12 @@
 <template>
   <el-row type="flex" v-loading="!isFetched" justify="center">
-    <data-editor :visible="detailVisible" :form_id="$route.params.id" :id="0"></data-editor>
+    <data-editor
+      :visible="detailVisible"
+      :form_id="$route.params.id"
+      :id="0"
+      @submit="add($event)"
+    >
+    </data-editor>
     <el-col>
       <el-row>
         <el-col>
@@ -27,7 +33,8 @@
 <script>
 import DataTable from './DataTable'
 import DataEditor from "./FormDataEditor";
-import { loadForFormData } from './service/form'
+import { loadValues } from './service/form'
+import { mapActions, mapMutations } from 'vuex'
 
 export default {
   data() {
@@ -46,6 +53,11 @@ export default {
   },
 
   async created() {
+    // this.$store._mutations.$message = this.$message;
+    // debugger;
+    // console.log(this.$store.state.$message);
+    this.setMessage(this.$message);
+
     await this.loadFormData();
   },
 
@@ -59,7 +71,7 @@ export default {
       this.id = this.$route.params.id;
       this.isFetched = false;
 
-      const { form, values, columns, paginator } = await loadForFormData(
+      const { form, values, columns, paginator } = await loadValues(
         this.id, this.currentPage
       );
       this.form = form;
@@ -75,7 +87,10 @@ export default {
 
     async pageChanged() {
       await this.loadFormData();
-    }
+    },
+
+    ...mapActions('row', ['add']),
+    ...mapMutations('row', ['setMessage']),
   }
     
 }

@@ -28,7 +28,7 @@ function formatValue(field, fieldValue) {
 function assembleToDataTableColumns(form) {
   const valueColumns = form.fields.map((column) => {
     return {
-      property: new String(column.id),
+      property: String(column.id),
       label: column.title,
       width: "*",
     }

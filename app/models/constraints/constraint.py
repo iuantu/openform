@@ -9,6 +9,7 @@ from sqlalchemy import (
 )
 from ..mixins import (TimeStampMixin)
 
+
 class Constraint(Model, TimeStampMixin):
     id = Column(Integer, primary_key=True)
     field_id = Column(Integer, ForeignKey('field.id'))
@@ -21,6 +22,6 @@ class Constraint(Model, TimeStampMixin):
         'polymorphic_identity': 'field',
         'polymorphic_on': discriminator
     }
-    
-    def validate(self, value):
+
+    def validate(self, field, value):
         pass

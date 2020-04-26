@@ -13,6 +13,8 @@ import 'font-awesome/css/font-awesome.min.css'
 // 引入公共方法
 import publicMethods from './publicMethods/publicMethods'
 
+import store from './store/index'
+
 Vue.use(VueRouter)
 Vue.use(VueResource)
 Vue.use(ElementUI)
@@ -24,5 +26,6 @@ Vue.config.productionTip = false
 new Vue({
   // render: h => h(App),
   router,
+  store,
   render: h => h(App),
 }).$mount('#app')

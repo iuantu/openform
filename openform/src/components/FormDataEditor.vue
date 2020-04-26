@@ -56,10 +56,12 @@ export default {
 
     },
     onSaveButtonClick() {
-      this.fields.forEach((field) => {
-          getMeta(field.discriminator).validate(field);
-      });
-      this.formService.submit(this.form_id, this.id, this.fields);
+      const fields = this.fields;
+      this.$emit('submit', { formId: this.form_id, fields });
+      // this.fields.forEach((field) => {
+      //     getMeta(field.discriminator).validate(field);
+      // });
+      // this.formService.submit(this.form_id, this.id, this.fields);
     }
   },
   computed: {

@@ -6,22 +6,27 @@ from sqlalchemy import (
 from .exceptions import ValidationError
 from .constraint import Constraint
 
+
 class MinConstraint(Constraint):
     id = Column(Integer, ForeignKey('constraint.id'), primary_key=True)
     min = Column(Integer)
 
     __mapper_args__ = {
-        'polymorphic_identity':'min_constraint',
+        'polymorphic_identity': 'min_constraint',
     }
 
-    def validate(self, value):
+    def validate(self, field, value):
+        has_error = False
         if not value:
-            raise ValidationError()
+            has_error = True
 
         if isinstance(value, int):
             if value < self.min:
-                raise ValidationError()
+                has_error = True
 
         elif isinstance(value, list):
             if len(value) < self.min:
-                raise ValidationError()
+                has_error = True
+
+        if has_error:
+            raise ValueError(field, "min")

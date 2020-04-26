@@ -86,7 +86,7 @@ class Field(Model, SoftDeleteableMixin):
         for constraint in self.constraints:
             try:
                 if constraint.enabled:
-                    constraint.validate(self.value)
+                    constraint.validate(self, self.value)
             except ValidationError as e:
                 if self.error_message_enabled and \
                         self.error_message_enabled:

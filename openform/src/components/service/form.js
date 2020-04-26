@@ -32,7 +32,7 @@ export async function loadForm(formId) {
   return form;
 }
 
-export async function loadForFormData(formId, page=1) {
+export async function loadValues(formId, page=1) {
 
   const formResponse = await ofFetch(`/api/v1/form/${formId}`);
   const form = await formResponse.json();
