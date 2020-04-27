@@ -1,5 +1,6 @@
 import json
 import logging
+from app.services.exceptions import InvalidFields, InvalidField
 from flask import jsonify
 from app import models
 from app import db
@@ -120,9 +121,15 @@ class FormService(object):
 
             return v
         else:
-            return {
-                "errors": []
-            }
+            field_errors = []
+            for field in form.fields:
+                for error in field.errors:
+                    field_errors.append(error)
+
+            errors = InvalidFields([
+                InvalidField()
+                for error in form.errors
+            ])
         return None
 
     def fetch_value(self, value_id: int):
