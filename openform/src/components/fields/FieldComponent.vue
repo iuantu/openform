@@ -60,6 +60,16 @@ export default {
   line-height: 200%;
 }
 
+ul, li {
+  margin: 0px;
+  padding: 0;
+}
+
+ul {
+  margin-left: 20px;
+  line-height: 30px;
+}
+
 .errors {
   margin: 0px;
   color: darkred;

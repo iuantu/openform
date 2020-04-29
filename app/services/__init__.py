@@ -1,6 +1,6 @@
 import json
 import logging
-from app.services.exceptions import InvalidFields, InvalidField
+from app.services.exceptions import InvalidFormException
 from flask import jsonify
 from app import models
 from app import db
@@ -94,10 +94,10 @@ class FormService(object):
 
         return field
 
-    def submit(self, form, user, user_agent: UserAgent, value_id=0):
+    def submit(self, form, user, user_agent: UserAgent, value_id=0) -> models.Form:
         """ 提交表单
+        :raises InvalidFormException: 提交表单异常
         """
-        # form = self.form_repository.find_one(form_id)
 
         if form.validate():
             session = db.session
@@ -121,16 +121,7 @@ class FormService(object):
 
             return v
         else:
-            field_errors = []
-            for field in form.fields:
-                for error in field.errors:
-                    field_errors.append(error)
-
-            errors = InvalidFields([
-                InvalidField()
-                for error in form.errors
-            ])
-        return None
+            raise InvalidFormException.with_from(form)
 
     def fetch_value(self, value_id: int):
         return self.value_repository.find_one(value_id)

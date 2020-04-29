@@ -1,7 +1,46 @@
 import { getMeta } from './fields/index'
 
-class FormModelAssembler {
+/**
+ * @class
+ * @property {number} id
+ */
+// eslint-disable-next-line no-unused-vars
+class FieldViewModel {
 
+}
+
+/**
+ * @class
+ */
+// eslint-disable-next-line no-unused-vars
+class FormViewModel {
+  /**
+   * @type {number}
+   */
+  id;
+
+  /**
+   * @type {string}
+   */
+  title;
+
+  /**
+   * @type {string}
+   */
+  description;
+
+  /**
+   * @type {Array.<FieldViewModel>}
+   */
+  fields;
+}
+
+class FormModelAssembler {
+  /**
+   *
+   * @param viewModel
+   * @returns {{description: *, title: *, fields: *}}
+   */
   toRequestModel(viewModel) {
     const requestModel = {
       title: viewModel.title,

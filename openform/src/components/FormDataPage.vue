@@ -2,26 +2,29 @@
   <el-row type="flex" v-loading="!isFetched" justify="center">
     <data-editor
       :visible="detailVisible"
-      :form_id="$route.params.id"
-      :id="0"
+      :form="form"
+      :creation="true"
       @submit="add($event)"
+      @close="detailVisible = false"
     >
     </data-editor>
     <el-col>
       <el-row>
         <el-col>
-          <el-button type="primary" size="mini">添加数据</el-button>
+          <el-button type="primary" size="mini" @click="onAddDataClick()">添加数据</el-button>
         </el-col>
       </el-row>
       <el-row>
         <el-col v-if="isFetched">
           <DataTable
-            v-bind:values="values"
+            v-bind:values="rows"
             v-bind:columns="columns"
           />
-
+<!--
+             {* :pager-count="pageSize" *} -->
           <el-pagination background
-            :page-size="perPageSize" :pager-count="pageSize"
+            :page-size="perPageSize"
+            :page-count="pageSize"
             layout="prev, pager, next" :total="total" @current-change="pageChanged"
             :current-page.sync="currentPage">
           </el-pagination>
@@ -33,22 +36,15 @@
 <script>
 import DataTable from './DataTable'
 import DataEditor from "./FormDataEditor";
-import { loadValues } from './service/form'
-import { mapActions, mapMutations } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
 
 export default {
   data() {
     return {
       id: 0,
-      form: null,
-      values: [],
-      columns: [],
       isFetched: false,
+      detailVisible: false,
       currentPage: 1,
-      perPageSize: 0,
-      pageSize: 0,
-      total: 0,
-      detailVisible: true,
     }
   },
 
@@ -59,6 +55,8 @@ export default {
     this.setMessage(this.$message);
 
     await this.loadFormData();
+
+    // this.detailVisible = true;
   },
 
   components: {
@@ -71,16 +69,7 @@ export default {
       this.id = this.$route.params.id;
       this.isFetched = false;
 
-      const { form, values, columns, paginator } = await loadValues(
-        this.id, this.currentPage
-      );
-      this.form = form;
-      this.values = values;
-      this.columns = columns;
-
-      this.perPageSize = paginator.per_page_size;
-      this.pageSize = paginator.page_size;
-      this.total = paginator.total;
+      await this.load({ formId: this.id, page: 1 });
 
       this.isFetched = true;
     },
@@ -89,8 +78,15 @@ export default {
       await this.loadFormData();
     },
 
-    ...mapActions('row', ['add']),
-    ...mapMutations('row', ['setMessage']),
+    onAddDataClick() {
+      this.detailVisible = true;
+    },
+
+    ...mapActions('row', ['load', 'add']),
+    ...mapMutations('row', ['setMessage', 'setForm']),
+  },
+  computed: {
+    ...mapState('row', [ 'form', 'columns', 'rows', 'perPageSize', 'pageSize', 'total' ]),
   }
     
 }

@@ -170,13 +170,13 @@ export default {
     },
 
     onFormEditorChange(action, value) {
-      if ('titleChange' == action) {
+      if ('titleChange' === action) {
         this.form.title = value;
-      } else if ('descriptionChange' == action) {
+      } else if ('descriptionChange' === action) {
         this.form.description = value;
-      } else if ('fieldChange' == action) {
+      } else if ('fieldChange' === action) {
         this.form.fields.forEach((field) => {
-          if (field.viewId == value.viewId) {
+          if (field.viewId === value.viewId) {
             field.description = value.description;
           }
         });
@@ -198,7 +198,7 @@ export default {
 
     showOrHiddenSaveButton(tabName) {
       this.isEditor = this.getIsEditor();
-      this.showFieldAttributePanel = tabName == "cp_form_editor_edit";
+      this.showFieldAttributePanel = tabName === "cp_form_editor_edit";
       this.hideFieldPanel(!this.isEditor);
     },
   },
@@ -234,7 +234,7 @@ export default {
 
   computed: {
     formId() {
-      return new Number(this.$route.params.id);
+      return Number(this.$route.params.id);
     },
   },
 

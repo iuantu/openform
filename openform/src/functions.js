@@ -214,7 +214,7 @@ export class SecurityService {
 
 export async function ofFetch(path = '', options = {}) {
 
-    if (!path.substr(0, 1) == '/') {
+    if (!path.substr(0, 1) === '/') {
         path = '/' + path
     }
     

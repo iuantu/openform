@@ -1,5 +1,6 @@
 from app import appbuilder
 from flask_appbuilder.api import BaseApi, expose
+from app.services.exceptions import InvalidFormException
 from app.views.schema import SCHEMAS
 from app.views.utils import to_user_agent
 from app.services import FormService
@@ -73,17 +74,11 @@ class FormApi(BaseApi):
         form = self.form_service.fetch_form(form_id, None)
         self.assembler.assemble(form)
 
-        if form.validate():
+        try:
             response = self.form_service.submit(form, None, user_agent)\
                 .asdict(follow={})
-        else:
-            status = 400
-            response = {
-                "fields": [
-                    dict(id=field.id, errors=[str(error) for error in field.errors])
-                    for field in form.fields
-                ]
-            }
+        except InvalidFormException as e:
+            return jsonify(e.to_dict()), 400
 
         return jsonify(response), status
 
@@ -95,17 +90,11 @@ class FormApi(BaseApi):
         form = self.form_service.fetch_form(form_id, None)
         self.assembler.assemble(form)
 
-        if form.validate():
+        try:
             response = self.form_service.submit(form, None, user_agent, value_id)\
                 .asdict(follow={})
-        else:
-            status = 400
-            response = {
-                "fields": [
-                    dict(id=field.id, errors=[str(error) for error in field.errors])
-                    for field in form.fields
-                ]
-            }
+        except InvalidFormException as e:
+            return jsonify(e.to_dict()), 400
 
         return jsonify(response), status
 

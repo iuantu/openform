@@ -47,11 +47,11 @@ class SelectFieldAssembler extends AbstractFieldAssembler {
     const requestModel = super.fromViewModelToRequestModel(viewModel);
 
     requestModel.type = viewModel.type;
-    requestModel.multiple = viewModel.type == "checkbox" ? true : false;
+    requestModel.multiple = viewModel.type === "checkbox";
     requestModel.options = viewModel.options.map((option) => {
 
       const checked = viewModel.multiple ? option.checked
-       : viewModel.checkedOptionValue == option.value;
+       : viewModel.checkedOptionValue === option.value;
 
       const requestOption = {
         label: option.label,
