@@ -48,8 +48,8 @@
 <script>
 import draggable from "vuedraggable";
 
-import RichText from '../formComponent/components/RichEditor'
-import { editors } from '../fields/index'
+import RichText from '../RichEditor'
+import { editors } from '../../../fields'
 
 export default {
   props: {

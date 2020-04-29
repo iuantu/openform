@@ -25,7 +25,7 @@
 
 <script>
 import draggable from 'vuedraggable'
-import { categories } from '../fields/index'
+import { categories } from '../../../fields'
 
 export default {
   components: {
@@ -45,5 +45,5 @@ export default {
 </script>
 
 <style lang="scss">
-  @import "./FieldPanel.scss";
+  @import "FieldPanel";
 </style>

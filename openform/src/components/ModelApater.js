@@ -1,40 +1,5 @@
 import { getMeta } from './fields/index'
 
-/**
- * @class
- * @property {number} id
- */
-// eslint-disable-next-line no-unused-vars
-class FieldViewModel {
-
-}
-
-/**
- * @class
- */
-// eslint-disable-next-line no-unused-vars
-class FormViewModel {
-  /**
-   * @type {number}
-   */
-  id;
-
-  /**
-   * @type {string}
-   */
-  title;
-
-  /**
-   * @type {string}
-   */
-  description;
-
-  /**
-   * @type {Array.<FieldViewModel>}
-   */
-  fields;
-}
-
 class FormModelAssembler {
   /**
    *

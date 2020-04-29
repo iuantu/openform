@@ -6,8 +6,8 @@
   </el-row>
 </template>
 <script>
-import DataTable from './DataTable'
-import { loadForFormSummary } from './service/form'
+import DataTable from '../DataTable'
+import { loadForFormSummary } from '../../../service/form'
 
 export default {
   props: {

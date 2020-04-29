@@ -31,7 +31,7 @@
   </el-row>
 </template>
 <script>
-import { loadFormAnalysis, loadForm } from './service/form'
+import { loadFormAnalysis, loadForm } from '../../service/form'
 
 export default {
   data() {

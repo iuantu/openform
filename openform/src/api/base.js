@@ -14,8 +14,6 @@ class FieldError {
    */
   code;
 
-
-
   constructor(name, code, description) {
     this.name = name;
     this.code = code;

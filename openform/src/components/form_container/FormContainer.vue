@@ -13,8 +13,8 @@
 
 <script>
 
-import FieldPanel from './../../components/FieldPanel/FieldPanel'
-import TheForm from './../../components/TheForm/TheForm'
+import FieldPanel from '../cp/form/field_panel/FieldPanel'
+import TheForm from './tab/FormTabContainer'
 
 export default {
   components: {

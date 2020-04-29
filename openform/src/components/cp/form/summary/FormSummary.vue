@@ -126,9 +126,9 @@
 <script>
 import moment from 'moment'
 import echarts from 'echarts'
-import { ofFetch, baseURL } from '../functions'
-import { loadForFormSummary } from './service/form'
-import DataTable from './DataTable'
+import { ofFetch, baseURL } from '../../../../functions'
+import { loadForFormSummary } from '../../../service/form'
+import DataTable from '../DataTable'
 
 export default {
 

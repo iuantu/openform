@@ -66,7 +66,7 @@
 }
 </style>
 <script>
-import { ofFetch } from '../functions'
+import { ofFetch } from '../../../functions'
 import * as moment from 'moment'
 export default {
   data() {

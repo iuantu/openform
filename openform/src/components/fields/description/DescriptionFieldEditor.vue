@@ -7,7 +7,7 @@
   </div>
 </template>
 <script>
-import RichEditor from './../../formComponent/components/RichEditor'
+import RichEditor from '../../cp/form/RichEditor'
 
 export default {
   components: {

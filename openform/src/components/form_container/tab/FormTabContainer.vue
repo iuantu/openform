@@ -49,10 +49,10 @@
 </template>
 
 <script>
-import { FormService } from '../../functions';
-import FieldAttributePanel from '../../components/cp/form/field/FieldAttributePanel'
-import { getMeta } from '../../components/fields/index';
-import { FormModelAssembler } from './../ModelApater';
+import { FormService } from '../../../functions';
+import FieldAttributePanel from '../../cp/form/field/FieldAttributePanel'
+import { getMeta } from '../../fields';
+import { FormModelAssembler } from '../../ModelApater';
 
 export default {
 
@@ -122,7 +122,7 @@ export default {
           await this.service.changeForm(this.id, remote);
         } else {
           const form = await this.service.createForm(remote);
-          this.$router.push({
+          await this.$router.push({
             name: 'cp_form_editor_edit',
             params: {
               id: form.id
@@ -249,5 +249,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import "./TheForm.scss";
+@import "FormTabContainer";
 </style>

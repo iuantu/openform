@@ -46,8 +46,8 @@ import moment from 'moment'
 import { SecurityService, ofFetch, baseURL } from '../../functions';
 import { loadForFormSummary } from './../service/form'
 import echarts from 'echarts'
-import DataTable from './../DataTable'
-import FormSummaryData from './../../components/FormSummaryData'
+import DataTable from '../cp/form/DataTable'
+import FormSummaryData from '../cp/form/summary/FormSummaryData'
 
 export default {
   name: "formSummary",

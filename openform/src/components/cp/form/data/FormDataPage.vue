@@ -34,7 +34,7 @@
   </el-row>
 </template>
 <script>
-import DataTable from './DataTable'
+import DataTable from '../DataTable'
 import DataEditor from "./FormDataEditor";
 import { mapActions, mapMutations, mapState } from 'vuex'
 
