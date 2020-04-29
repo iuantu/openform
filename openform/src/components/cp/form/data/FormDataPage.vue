@@ -3,7 +3,8 @@
     <data-editor
       :visible="detailVisible"
       :form="form"
-      :creation="true"
+      :row="selectedRow"
+      :is-detail="isDetail"
       @submit="add($event)"
       @close="detailVisible = false"
     >
@@ -19,6 +20,7 @@
           <DataTable
             v-bind:values="rows"
             v-bind:columns="columns"
+            @row-click="value => { this.isDetail = true; detail(value) }"
           />
 <!--
              {* :pager-count="pageSize" *} -->
@@ -45,6 +47,7 @@ export default {
       isFetched: false,
       detailVisible: false,
       currentPage: 1,
+      isDetail: false,
     }
   },
 
@@ -82,11 +85,11 @@ export default {
       this.detailVisible = true;
     },
 
-    ...mapActions('row', ['load', 'add']),
+    ...mapActions('row', ['load', 'add', 'detail']),
     ...mapMutations('row', ['setMessage', 'setForm']),
   },
   computed: {
-    ...mapState('row', [ 'form', 'columns', 'rows', 'perPageSize', 'pageSize', 'total' ]),
+    ...mapState('row', [ 'form', 'selectedRow', 'columns', 'rows', 'perPageSize', 'pageSize', 'total' ]),
   }
     
 }

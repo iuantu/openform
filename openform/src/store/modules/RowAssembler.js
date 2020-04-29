@@ -35,6 +35,7 @@ export default class RowAssembler {
 
         row[field.id] = this._formatValue(field, fieldValue)
         row.sequence = v.sequence;
+        row.id = v.id;
         row.created_at = moment(v.created_at).format('YYYY-MM-DD HH:mm');
         row.updated_at = moment(v.updated_at).format('YYYY-MM-DD HH:mm');
       }

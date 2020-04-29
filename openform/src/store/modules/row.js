@@ -16,6 +16,7 @@ const state = {
   perPageSize: 50,
   total: 50,
   form: null,
+  selectedRow: null,
 }
 
 const getters = {}
@@ -56,6 +57,10 @@ const actions = {
     commit("onAdded");
     // commit("message", "hello", { root: true});
     dispatch('refresh', state.page);
+  },
+
+  async detail({state, commit}, value) {
+    console.log(value);
   }
 };
 

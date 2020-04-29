@@ -2,7 +2,7 @@
   <el-table 
     border
     :data="values"
-    @row-click="onRowClick"
+    @row-click="value => $emit('row-click', value)"
     style="width: 99.9%;"
   >
     <el-table-column
@@ -37,11 +37,6 @@ export default {
         return [];
       },
       required: true
-    }
-  },
-  methods: {
-    onRowClick(row) {
-      console.log(row)
     }
   }
 }
