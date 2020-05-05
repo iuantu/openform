@@ -24,6 +24,7 @@
             v-model="field.checkedOptionValue"
             :value="option.value"
             @change="onInputChange(option, $event)"
+            @click="onRadioClick(option)"
           />
 
           <input
@@ -118,6 +119,19 @@ export default {
       });
 
       this.calculateHasEditable();
+    },
+
+    onRadioClick(option) {
+      this.cancelRadioCheck(option)
+    },
+
+    cancelRadioCheck(option) {
+      if (option.value === this.field.checkedOptionValue) {
+        option.checked = false;
+
+        this.field.checkedOption = null;
+        this.field.checkedOptionValue = null;
+      }
     },
 
     calculateHasEditable() {

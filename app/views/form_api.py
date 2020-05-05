@@ -82,7 +82,7 @@ class FormApi(BaseApi):
 
         return jsonify(response), status
 
-    @expose('/<form_id>/value/<int:value_id>', methods=['PUT'])
+    @expose('/<int:form_id>/value/<int:value_id>', methods=['PUT'])
     def form_value_edit(self, form_id, value_id):
         status = 200
 
@@ -98,8 +98,8 @@ class FormApi(BaseApi):
 
         return jsonify(response), status
 
-    @expose('/<form_id>/<int:value_id>', methods=['GET'])
-    def form_value_edit(self, form_id, value_id):
-        return jsonify(self.form_service.fetch_value(value_id))
+    # @expose('/<form_id>/<int:value_id>', methods=['GET'])
+    # def form_value_edit(self, form_id, value_id):
+    #     return jsonify(self.form_service.fetch_value(value_id))
 
 appbuilder.add_api(FormApi)

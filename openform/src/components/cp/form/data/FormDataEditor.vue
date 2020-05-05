@@ -4,16 +4,18 @@
     @close="$emit('close')"
     :visible.sync="dialogVisible"
     width="80%">
-    <form-fields v-if="!isDetail" :fields="theForm && theForm.fields"></form-fields>
+    <row v-if="isDetailMode" :fields="theForm && theForm.fields" :row="row"></row>
+    <form-fields v-if="!isDetailMode" :fields="theForm && theForm.fields"></form-fields>
     <span slot="footer" class="dialog-footer">
-      <el-button v-if="!isDetail" size="small" type="primary" @click="onSaveButtonClick">确 定</el-button>
-      <el-button v-if="isDetail" size="small" type="primary" @click="dialogVisible === false">修 改</el-button>
-      <el-button v-if="isDetail" size="small" type="danger" @click="dialogVisible === false">删 除</el-button>
+      <el-button v-if="!isDetailMode" size="small" type="primary" @click="onSaveButtonClick">确 定</el-button>
+      <el-button v-if="isDetailMode" size="small" type="primary" @click="onEditButtonClick">修 改</el-button>
+      <el-button v-if="isDetailMode" size="small" type="danger" @click="dialogVisible === false">删 除</el-button>
     </span>
   </el-dialog>
 </template>
 <script>
 import FormFields from "../../../FormFields";
+import Row from "./Row";
 
 export default {
   props: {
@@ -31,7 +33,7 @@ export default {
       type: Object
     },
     isDetail: {
-      type: boolean,
+      type: Boolean,
       default() {
         return true;
       }
@@ -42,17 +44,21 @@ export default {
       dialogVisible: false,
       theForm: {},
       isEdition: false,
+      isDetailMode: false,
     };
   },
   async created() {
     this.dialogVisible = this.visible;
+    this.isDetailMode = this.isDetail;
+    // console.log("isDetail", this.isDetail);
   },
   components: {
-    FormFields
+    FormFields,
+    Row
   },
   methods: {
-    onEditClick() {
-
+    onEditButtonClick() {
+      this.isDetailMode = false;
     },
     onDeleteClick() {
 
@@ -70,6 +76,10 @@ export default {
     },
     form(form) {
       this.theForm = form;
+    },
+    isDetail(mode) {
+      this.isDetailMode = mode;
+      console.log("isDetail", mode);
     }
   }
 }

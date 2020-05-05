@@ -114,8 +114,9 @@ class FormService(object):
             for choice in form.create_choice():
                 session.add(choice)
 
-            form.increase_value_sequence()
-            v.sequence = form.value_sequence
+            if value_id < 1:
+                form.increase_value_sequence()
+                v.sequence = form.value_sequence
             session.add(v)
             session.commit()
 

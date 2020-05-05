@@ -1,6 +1,7 @@
 import TextFieldEditor from './TextFieldEditor'
 import * as attrs from '../../cp/form/field/attributes'
 import AbstractFieldAssembler from '../AbstractFieldAssembler'
+import TextFieldDetail from "./TextFieldDetail";
 
 
 /*
@@ -65,6 +66,7 @@ const define = {
   category: 'basic',
   editor: TextFieldEditor,
   component: TextFieldEditor,
+  detail: TextFieldDetail,
   assembler: new TextFieldAssembler(),
   attributes: {
     basic: [

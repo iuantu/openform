@@ -24,7 +24,7 @@
     <el-radio
       v-if="type === 'radio'"
       :label="option.label"
-      v-model="value"
+      v-model="field.checkedOption"
       @change="$emit('change', $event)"
       >
     </el-radio>
@@ -46,6 +46,9 @@ export default {
   },
   props: {
     option: {
+    },
+    field: {
+
     },
     type: {}
   }

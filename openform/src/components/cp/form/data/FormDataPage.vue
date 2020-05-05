@@ -1,18 +1,18 @@
 <template>
   <el-row type="flex" v-loading="!isFetched" justify="center">
     <data-editor
-      :visible="detailVisible"
+      :visible="dialogVisible"
       :form="form"
       :row="selectedRow"
       :is-detail="isDetail"
       @submit="add($event)"
-      @close="detailVisible = false"
+      @close="hidedAddDialog()"
     >
     </data-editor>
     <el-col>
       <el-row>
         <el-col>
-          <el-button type="primary" size="mini" @click="onAddDataClick()">添加数据</el-button>
+          <el-button type="primary" size="mini" @click="showAddDialog()">添加数据</el-button>
         </el-col>
       </el-row>
       <el-row>
@@ -20,10 +20,8 @@
           <DataTable
             v-bind:values="rows"
             v-bind:columns="columns"
-            @row-click="value => { this.isDetail = true; detail(value) }"
+            @row-click="value => { detail(value) }"
           />
-<!--
-             {* :pager-count="pageSize" *} -->
           <el-pagination background
             :page-size="perPageSize"
             :page-count="pageSize"
@@ -45,21 +43,14 @@ export default {
     return {
       id: 0,
       isFetched: false,
-      detailVisible: false,
       currentPage: 1,
-      isDetail: false,
     }
   },
 
   async created() {
-    // this.$store._mutations.$message = this.$message;
-    // debugger;
-    // console.log(this.$store.state.$message);
     this.setMessage(this.$message);
 
     await this.loadFormData();
-
-    // this.detailVisible = true;
   },
 
   components: {
@@ -81,15 +72,13 @@ export default {
       await this.loadFormData();
     },
 
-    onAddDataClick() {
-      this.detailVisible = true;
-    },
-
     ...mapActions('row', ['load', 'add', 'detail']),
-    ...mapMutations('row', ['setMessage', 'setForm']),
+    ...mapMutations('row', ['setMessage', 'setForm', 'showAddDialog', 'hidedAddDialog']),
   },
   computed: {
-    ...mapState('row', [ 'form', 'selectedRow', 'columns', 'rows', 'perPageSize', 'pageSize', 'total' ]),
+    ...mapState('row', [ 'form', 'selectedRow', 'columns', 'rows', 'perPageSize', 'pageSize', 'total', 'dialogVisible',
+      'isDetail'
+    ]),
   }
     
 }

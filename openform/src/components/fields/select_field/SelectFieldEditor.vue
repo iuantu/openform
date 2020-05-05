@@ -4,6 +4,7 @@
       v-for="(option, optionIndex) in field.options"
       :key="index + '_' + optionIndex"
       :option="option"
+      :field="field"
       :type="field.type"
       @change="onRadioChange($event)">
     </option-editor>
@@ -37,9 +38,7 @@ export default {
   methods: {
     onRadioChange(label) {
       this.field.options.forEach((option) => {
-        if (option.label === label) {
-          this.field.checkedOptionValue = option.value;
-        }
+        option.checked = option.label === label;
       })
     }
   },
@@ -47,10 +46,10 @@ export default {
     selectDescription() {
       let hasMin, hasMax, min, max;
       for (const constraint of this.field.constraints) {
-        if (constraint.discriminator == "min_constraint") {
+        if (constraint.discriminator === "min_constraint") {
           hasMin = true;
           min = constraint.min;
-        } else if (constraint.discriminator == "max_constraint") {
+        } else if (constraint.discriminator === "max_constraint") {
           hasMax = true;
           max = constraint.max;
         }

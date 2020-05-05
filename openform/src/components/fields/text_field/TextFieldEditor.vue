@@ -46,6 +46,9 @@ export default {
       this.field.value = text;
       this.$emit("change", text);
     }
+  },
+  created() {
+    this.text = this.field.value;
   }
 }
 </script>

@@ -13,4 +13,11 @@ export default class ValueHTTP extends BaseHTTP{
       body: JSON.stringify(value)
     });
   }
+
+  async update(formId, valueId, value) {
+    return await this.request(`/api/v1/form/${formId}/value/${valueId}`, {
+      method: 'PUT',
+      body: JSON.stringify(value)
+    });
+  }
 }

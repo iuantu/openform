@@ -20,6 +20,9 @@ export default {
   props: {
     fields: {
       // type: Array
+    },
+    row: {
+
     }
   },
   components: {
