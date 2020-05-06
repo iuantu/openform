@@ -8,20 +8,25 @@
     <el-table-column
       v-for="(column, key) in columns"
       :key="key"
+      :width="column.width"
       :prop="column.property"
       :label="column.label">
       <template slot-scope="scope">
-        <div v-if="!Array.isArray(scope.row[scope.column.property])">{{scope.row[scope.column.property]}}</div>
-        <div v-if="Array.isArray(scope.row[scope.column.property])">
-          <ul>
-            <li v-for="(value, key) in scope.row[scope.column.property]" :key="key">{{value}}</li>
-          </ul>
-        </div>
+        <div v-if="!isComponent(scope)">{{scope.row[scope.column.property]}}</div>
+        <component
+          v-if="isComponent(scope)"
+          :is="getField(scope.column.property).discriminator"
+          :field="getField(scope.column.property)"
+          :value="scope.row[scope.column.property]">
+        </component>
+
       </template>
     </el-table-column>
   </el-table>
 </template>
 <script>
+import { list } from "../../fields";
+
 export default {
   props: {
     columns: {
@@ -37,7 +42,29 @@ export default {
         return [];
       },
       required: true
-    }
+    },
+    fields: {
+      type: Array,
+      default() {
+        return []
+      }
+    },
+  },
+  components: {
+    ...list
+  },
+  methods: {
+    getField(id) {
+      for (const field of this.fields) {
+        if (String(field.id) === id) {
+          return field;
+        }
+      }
+    },
+    isComponent(scope) {
+      const isComponent = (['sequence', 'created_at', 'updated_at'].indexOf(scope.column.property)) < 0;
+      return isComponent;
+    },
   }
 }
 </script>

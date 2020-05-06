@@ -50,7 +50,6 @@ export default {
   async created() {
     this.dialogVisible = this.visible;
     this.isDetailMode = this.isDetail;
-    // console.log("isDetail", this.isDetail);
   },
   components: {
     FormFields,
@@ -79,7 +78,6 @@ export default {
     },
     isDetail(mode) {
       this.isDetailMode = mode;
-      console.log("isDetail", mode);
     }
   }
 }

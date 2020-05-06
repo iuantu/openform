@@ -20,6 +20,7 @@
           <DataTable
             v-bind:values="rows"
             v-bind:columns="columns"
+            :fields="form.fields"
             @row-click="value => { detail(value) }"
           />
           <el-pagination background
@@ -72,7 +73,7 @@ export default {
       await this.loadFormData();
     },
 
-    ...mapActions('row', ['load', 'add', 'detail']),
+    ...mapActions('row', ['load', 'save', 'detail']),
     ...mapMutations('row', ['setMessage', 'setForm', 'showAddDialog', 'hidedAddDialog']),
   },
   computed: {

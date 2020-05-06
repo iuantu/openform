@@ -1,6 +1,8 @@
 import SelectFieldEditor from './SelectFieldEditor';
+import SelectFieldList from "./SelectFieldList";
+import SelectFieldDetail from "./SelectFieldDetail";
 import * as attrs from '../../cp/form/field/attributes';
-import AbstractFieldAssembler from '../AbstractFieldAssembler'
+import AbstractFieldAssembler from '../AbstractFieldAssembler';
 
 class SelectFieldAssembler extends AbstractFieldAssembler {
 
@@ -107,6 +109,8 @@ function createDefine() {
     category: 'basic',
     editor: SelectFieldEditor,
     component: SelectFieldEditor,
+    list: SelectFieldList,
+    detail: SelectFieldDetail,
     attributes: {
       basic: [
         attrs.FieldAttributeTitle,

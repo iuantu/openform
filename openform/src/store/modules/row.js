@@ -25,7 +25,7 @@ const state = {
 const getters = {}
 
 const actions = {
-  async load({ commit, dispatch }, { formId, page }) {
+  async load({ commit }, { formId, page }) {
     const assembler2 = new FormModelAssembler();
 
     const value = await valueHTTP.fetch(formId, page);
@@ -33,7 +33,6 @@ const actions = {
     const rows = assembler.assembleToDataTableRows(value.data, form.fields);
     const columns = assembler.assembleToDataTableColumns(form);
     commit('formDataLoaded', { form, rows, columns, paginator: value.page_result})
-    // dispatch('detail', rows[0]);
   },
 
   refresh({dispatch}, page) {
@@ -42,7 +41,7 @@ const actions = {
     }
   },
 
-  async add({ state, dispatch, commit }, form) {
+  async save({ state, dispatch, commit }, form) {
     const request = { fields: {} };
     form.fields.forEach((field) => {
       const meta = getMeta(field.discriminator);
@@ -52,17 +51,14 @@ const actions = {
     try {
       if (state.valueId > 0) {
         const value = await valueHTTP.update(form.formId, state.valueId, request);
-        console.log(value);
       } else {
         const value = await valueHTTP.add(form.formId, request);
-        console.log(value);
       }
     } catch (e) {
       const exceptions = { valueError: e, form };
       commit('throwExceptionFromSubmit', exceptions);
     }
     commit("onAdded");
-    // commit("message", "hello", { root: true});
     dispatch('refresh', state.page);
   },
 
@@ -105,7 +101,6 @@ const mutations = {
   },
 
   showAddDialog(state) {
-    console.log('show add dialog');
     state.selectedRow = null;
     state.isDetail = false;
     state.dialogVisible = true;
@@ -120,7 +115,6 @@ const mutations = {
     state.isDetail = true;
     state.dialogVisible = true;
     state.valueId = value.id;
-    console.log(state.isDetail)
   },
 
   hidedAddDialog(state) {
@@ -129,8 +123,8 @@ const mutations = {
     state.dialogVisible = false;
   },
 
-  onAdded(state, value) {
-    state.message("hello");
+  onAdded(state) {
+    state.message('保存成功');
   },
 
   setMessage(state, message) {

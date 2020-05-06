@@ -1,6 +1,7 @@
-import TextFieldEditor from './TextFieldEditor'
-import * as attrs from '../../cp/form/field/attributes'
-import AbstractFieldAssembler from '../AbstractFieldAssembler'
+import TextFieldEditor from './TextFieldEditor';
+import TextFieldList from "./TextFieldList";
+import * as attrs from '../../cp/form/field/attributes';
+import AbstractFieldAssembler from '../AbstractFieldAssembler';
 import TextFieldDetail from "./TextFieldDetail";
 
 
@@ -67,6 +68,7 @@ const define = {
   editor: TextFieldEditor,
   component: TextFieldEditor,
   detail: TextFieldDetail,
+  list: TextFieldList,
   assembler: new TextFieldAssembler(),
   attributes: {
     basic: [

@@ -8,6 +8,7 @@
 <script>
 import DataTable from '../DataTable'
 import { loadForFormSummary } from '../../../service/form'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   props: {
@@ -22,16 +23,19 @@ export default {
 
   data() {
     return {
-      values: [],
-      columns: [],
     }
   },
 
   async created() {
-    const { form, values, columns } = await loadForFormSummary(this.id);
-    this.form = form;
-    this.values = values;
-    this.columns = columns;
+    await this.load({
+      formId: this.$route.params.id,
+      page: 1,
+    })
   },
+
+  computed: {
+    ...mapState('row', ['rows', 'columns', 'form']),
+    ...mapActions('row', ['load']),
+  }
 }
 </script>

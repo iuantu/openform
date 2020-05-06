@@ -56,7 +56,7 @@ export default class RowAssembler {
       {
         property: 'sequence',
         label: '序号',
-        width: '50',
+        width: 50,
       },
     ];
 
