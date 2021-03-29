@@ -54,7 +54,7 @@ port-for==0.3.1
 prison==0.1.2
 protobuf==3.11.2
 pycryptodome==3.9.4
-Pygments==2.5.2
+Pygments==2.7.4
 PyJWT==1.7.1
 pyparsing==2.4.6
 pyrsistent==0.15.6
