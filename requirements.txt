@@ -19,7 +19,7 @@ docutils==0.15.2
 Flask==1.1.1
 Flask-AppBuilder==2.2.1
 Flask-Babel==0.12.2
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 Flask-JWT-Extended==3.24.1
 Flask-Login==0.4.1
 Flask-Migrate==2.5.2
