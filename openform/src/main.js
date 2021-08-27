@@ -12,11 +12,15 @@ import 'font-awesome/css/font-awesome.min.css'
 
 // 引入公共方法
 import publicMethods from './publicMethods/publicMethods'
+import VueAnalytics from 'vue-analytics'
 
 Vue.use(VueRouter)
 Vue.use(VueResource)
 Vue.use(ElementUI)
 Vue.use(publicMethods);
+Vue.use(VueAnalytics, {
+  id: process.env.VUE_APP_GOOGLE_ANALYTICS_ID
+})
 
 
 Vue.config.productionTip = false
